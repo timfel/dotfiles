@@ -89,6 +89,7 @@ fi
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
+alias vi='e3vi'
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -98,7 +99,7 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 # source /usr/GNUstep/System/Library/Makefiles/GNUstep.sh
-export PATH=$HOME/bin/:/opt/bin/:$PATH
+export PATH=$HOME/bin/:/opt/bin/:$PATH:/opt/openoffice.org3/program/
 export LIBGL_ALWAYS_INDIRECT=1
 export INTEL_BATCH=1
 
