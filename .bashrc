@@ -114,6 +114,6 @@ PS1="$PS1 $VCS"
 # One-TAB-Completion
 set show-all-if-ambiguous on
 # Show last commands exit-code by smiley
-PS1="$PS1 \`if [ \$? = 0 ]; then echo -e '\[\033[01;32m\]:)'; else echo -e '\[\033[01;31m\]:('; fi\`\[\033[00m\] "
+PS1="$PS1\`if [ \$? = 0 ]; then echo -e '\[\033[01;32m\]:)'; else echo -e '\[\033[01;31m\]:('; fi\`\[\033[00m\] "
 
 

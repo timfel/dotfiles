@@ -9,12 +9,13 @@ smb="fs2"
 rdesktop="admin2"
 domainuser="rudolf.zirpmann"
 dhcpuser="rudi"
+nosmb=0
 
 ## No edit below this line
 
 function usage {
 	echo "Usage:"
-	echo "hpi_shares.sh (start|stop) [--samba=SAMBA-SERVER] [--rdesktop=RDESKTOP-SERVER]"
+	echo "hpi_shares.sh (start|stop) [--samba=SAMBA-SERVER | --no-smb] [--rdesktop=RDESKTOP-SERVER] "
 	echo
 	echo "start|stop has to come first, others can be arbitary, but only one"
 	echo "It will prompt for hpi domain password twice, and for dhcp-server password"
@@ -31,7 +32,11 @@ function parse {
       if test $(echo "$var" | grep '\-\-rdesktop=' ); then
 	 rdesktop=$(echo "$var" | sed 's/--rdesktop=//g')
       else
-	 usage
+         if test $(echo "$var" | grep '\-\-no\-smb' ); then
+             nosmb=1
+         else
+	     usage
+	 fi
       fi
    fi
 }
@@ -42,21 +47,25 @@ function start {
 
    echo "Starting as tunnel to smb://$smb and rdesktop://$rdesktop"
 
-   if test "$(ps -C smbd | grep smbd)"; then
-      sudo /etc/init.d/samba stop
-   fi
-
    screen -S hpi-tunnel ssh -L 12345:placebo:22 "$domainuser"@ssh-stud.hpi.uni-potsdam.de
    screen -S hpi-dhcp ssh -L 12346:dhcpserver:22 -p 12345 "$domainuser"@127.0.0.1
 
-   # have to run this as root, 139 is a protected port
-   sudo screen -S hpi-fs ssh -L 139:"$smb":139 -L 3389:"$rdesktop":3389 -p 12346 "$dhcpuser"@127.0.0.1
+   if [ $nosmb -eq 1 ]; then
+      screen -S hpi-fs ssh -L 3389:"$rdesktop":3389 -p 12346 "$dhcpuser"@127.0.0.1
+   else   
+      if test "$(ps -C smbd | grep smbd)"; then
+      	sudo /etc/init.d/samba stop
+      fi
+      # have to run this as root, 139 is a protected port
+      sudo screen -S hpi-fs ssh -L 139:"$smb":139 -L 3389:"$rdesktop":3389 -p 12346 "$dhcpuser"@127.0.0.1
+   fi
 }
 
 function stop {
    echo "Stopping all tunnels"
 
    sudo screen -S hpi-fs -X kill
+   screen -S hpi-fs -X kill
    screen -S hpi-dhcp -X kill
    screen -S hpi-tunnel -X kill
 }
