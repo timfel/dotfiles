@@ -48,7 +48,7 @@ module MyIRB
   def editor_preload format, object
     case format
     when :yaml then object.to_yaml
-    when :rb   then get_source object
+    when :rb   then object ? get_source(object) : ""
     end
   end
 
@@ -69,13 +69,44 @@ module MyIRB
     end
   end
 
-  def last_edit name = nil
+  def get_edit name = nil
+    @@edits        ||= {}
+    @@editor_stack ||= {}
+    raise ArgumentError, "No edits so far." if @@editor_stack.empty?
     if name
-      @@edits ||= {}
-      editor(*@@edits[name])
-      name_edit name
+      raise ArgumentError, "No edit called #{name}." unless @@edits[name]
+      @@edits[name]
     else
-      editor(*@@editor_stack[-1])
+      @@editor_stack[-1]
+    end
+  end
+
+  def get_editor_source name = nil
+    get_edit(name)[1]
+  end
+
+  def last_edit name = nil
+    result = editor(*get_edit(name))
+    name_edit name if name
+    result
+  end
+
+  def edit_to_file name, file = nil
+    name, file = nil, name unless file
+    File.write file, get_editor_source(name)
+  end
+
+  def edit_to_gist name = nil
+    Gist.post name
+  end
+
+  def edit_to_clipboad name = nil
+    begin
+      require 'win32/clipboard'
+      Win32::Clipboard.set_data get_editor_source(name)
+    rescue LoadError
+      RUBY_PLATFORM =~ /darwin/ ? cmd = "pbcopy" : cmd = "xclip"
+      IO.popen(cmd, "w") { |c| c.write get_editor_source(name) }
     end
   end
 
@@ -107,6 +138,23 @@ module MyIRB
     sh(gem_command, name.to_s[/[^_]*$/], *args)
   end
 
+end
+
+class Class
+  def publicize_methods
+    saved_private_instance_methods = self.private_instance_methods
+    class_eval { public(*saved_private_instance_methods) }
+    yield self
+    class_eval { private(*saved_private_instance_methods) }
+  end
+end
+
+class Object
+  unless respond_to? :tap
+    def tap
+      yield(self)
+    end
+  end
 end
 
 class << ENV
