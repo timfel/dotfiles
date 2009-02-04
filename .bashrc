@@ -1,6 +1,7 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
+source /usr/GNUstep/System/Library/Makefiles/GNUstep.sh
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -89,6 +90,8 @@ fi
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
+alias pdflatex='pdflatex -shell-escape'
+alias sudo='sudo -E'
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -113,6 +116,6 @@ PS1="$PS1 $VCS"
 # One-TAB-Completion
 set show-all-if-ambiguous on
 # Show last commands exit-code by smiley
-PS1="$PS1 \`if [ \$? = 0 ]; then echo -e '\[\033[01;32m\]:)'; else echo -e '\[\033[01;31m\]:('; fi\`\[\033[00m\] "
+PS1="$PS1\`if [ \$? = 0 ]; then echo -e '\[\033[01;32m\]:)'; else echo -e '\[\033[01;31m\]:('; fi\`\[\033[00m\] "
 
 
