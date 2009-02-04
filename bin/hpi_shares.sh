@@ -63,32 +63,49 @@ function start {
    smb=$1
    rdesktop=$2
 
-   if [ $nosmb -eq 1 && $nordesktop -eq 1 ]; then
+   if [ $nosmb -eq 1 ]; then if [ $nordesktop -eq 1 ]; then
       echo "You chose to not use any service. No point in a tunnel. Breaking..."
-   fi
+   fi fi
 
    echo "Starting as tunnel to smb://$smb and rdesktop://$rdesktop"
+      
+   if test $(host dhcpserver | grep -o "Host.*:" | awk '{ print $1 }'); then
+      # If we've got a route to dhcpserver, assume we're in HPI      
+      if test -z $(screen -ls | grep -o "hpi-tunnel"); then
+	 screen -S hpi-tunnel ssh -L 12345:placebo:22 "$domainuser"@ssh-stud.hpi.uni-potsdam.de
+      fi
+      if test -z $(screen -ls | grep -o "hpi-dhcp"); then
+	 screen -S hpi-dhcp ssh -L 12346:dhcpserver:22 -p 12345 "$domainuser"@127.0.0.1
+      fi
+   fi
+   startDhcp
+}
 
-   screen -S hpi-tunnel ssh -L 12345:placebo:22 "$domainuser"@ssh-stud.hpi.uni-potsdam.de
-   screen -S hpi-dhcp ssh -L 12346:dhcpserver:22 -p 12345 "$domainuser"@127.0.0.1
-
+function startDhcp {
    if [ $nosmb -eq 0 ]; then
       # have to run this as root, 139 is a protected port
-      sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
+      eval sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
    else
-      screen -S hpi-fs ssh "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
+      eval screen -S hpi-fs ssh "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
    fi
 }
 
 function stop {
    echo "Stopping all tunnels"
 
-   sudo screen -S hpi-fs -X kill
+   stopDhcp
    screen -S hpi-dhcp -X kill
    screen -S hpi-tunnel -X kill
 }
 
-if [ $# -le 1 ]; then
+function stopDhcp {
+   screen -S hpi-fs -X kill
+   if [ $? -ne 0 ]; then
+      sudo screen -S hpi-fs -X kill
+   fi
+}
+
+if [ $# -eq 0 ]; then
    usage
 fi
 
@@ -101,7 +118,7 @@ if [ "$action" = "start" ]; then
       echo "Tunnel already active. Replace? (y/n)"
       read answer
       if [ "$answer" = "y" ]; then
-	 stop
+	 stopDhcp
       else
 	 exit 0
       fi
