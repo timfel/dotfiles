@@ -7,6 +7,8 @@ _bold=$(tput bold)
 _normal=$(tput sgr0)
 
 __prompt_command() {
+   if [ -z $NOPROMPT ]; then
+
 	local vcs base_dir sub_dir ref last_command
 	sub_dir() {
 		local sub_dir
@@ -27,7 +29,7 @@ __prompt_command() {
 
 	svn_dir() {
 		[ -d ".svn" ] || return 1
-		ref=$(svn info "$base_dir" | awk '/^URL/ { sub(".*/","",$0); r=$0 } /^Revision/ { sub("[^0-9]*","",$0); print r":"$0 }')		
+		ref=$(svn info "$base_dir" | awk '/^URL/ { sub(".*/","",$0); r=$0 } /^Revision/ { sub("[^0-9]*","",$0); print $0 }')		
 		# this is too slow...
 		#if [ -n $(svn status -q) ]; then
 		#   ref="\e[0;31m$ref\e[m"
@@ -70,6 +72,7 @@ __prompt_command() {
 		__vcs_ref="$vcs:$ref"
 		echo " $__vcs_ref"
 	fi
+   fi
 }
 
 #export PROMPT_COMMAND=__prompt_command
