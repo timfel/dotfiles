@@ -15,6 +15,7 @@ dhcpuser="timfel"
 ## No edit below this line
 smbparam=""
 rdesktopparam=""
+directdhcp=0
 
 function usage {
 	echo "Usage:"
@@ -70,23 +71,34 @@ function start {
    echo "Starting as tunnel to smb://$smb and rdesktop://$rdesktop"
       
    if test $(host dhcpserver | grep -o "Host.*:" | awk '{ print $1 }'); then
-      # If we've got a route to dhcpserver, assume we're in HPI      
+      # If we haven't got a route to dhcpserver, don't assume we're in HPI      
       if test -z $(screen -ls | grep -o "hpi-tunnel"); then
 	 screen -S hpi-tunnel ssh -L 12345:placebo:22 "$domainuser"@ssh-stud.hpi.uni-potsdam.de
       fi
       if test -z $(screen -ls | grep -o "hpi-dhcp"); then
 	 screen -S hpi-dhcp ssh -L 12346:dhcpserver:22 -p 12345 "$domainuser"@127.0.0.1
       fi
+   else
+      directdhcp=1
    fi
    startDhcp
 }
 
 function startDhcp {
-   if [ $nosmb -eq 0 ]; then
-      # have to run this as root, 139 is a protected port
-      eval sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
+   if [ directdhcp -eq 0 ]; then
+      if [ $nosmb -eq 0 ]; then
+         # have to run this as root, 139 is a protected port
+         eval sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
+      else
+         eval screen -S hpi-fs ssh "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
+      fi
    else
-      eval screen -S hpi-fs ssh "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
+      if [ $nosmb -eq 0 ]; then
+         # have to run this as root, 139 is a protected port
+         eval sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" "$dhcpuser"@dhcpserver
+      else
+         eval screen -S hpi-fs ssh "$rdesktopparam" "$dhcpuser"@dhcpserver
+      fi
    fi
 }
 
