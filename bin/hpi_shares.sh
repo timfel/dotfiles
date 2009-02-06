@@ -67,6 +67,9 @@ function start {
    if [ $nosmb -eq 1 ]; then if [ $nordesktop -eq 1 ]; then
       echo "You chose to not use any service. No point in a tunnel. Breaking..."
    fi fi
+   
+   usesmb
+   userdesktop
 
    echo "Starting as tunnel to smb://$smb and rdesktop://$rdesktop"
       
@@ -85,7 +88,7 @@ function start {
 }
 
 function startDhcp {
-   if [ directdhcp -eq 0 ]; then
+   if [ $directdhcp -eq 0 ]; then
       if [ $nosmb -eq 0 ]; then
          # have to run this as root, 139 is a protected port
          eval sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
