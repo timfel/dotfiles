@@ -17,6 +17,6 @@ namespace :install do
   end
 
   install :irb, ".irbrc", ".config/irb/*.rb"
-  install :vim, ".vimrc", ".vim"
-
+  install :dot, ".bashrc", ".gemrc", ".vimrc", ".vim", ".gitignore"  
+  install :bin, "bin/*"
 end
