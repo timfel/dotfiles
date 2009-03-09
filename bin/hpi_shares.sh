@@ -89,14 +89,14 @@ function start {
 
 function startDhcp {
    if [ $directdhcp -eq 0 ]; then
-      if [ $nosmb -eq 0 ]; then
+      if [ $nosmb -ne 1 ]; then
          # have to run this as root, 139 is a protected port
          eval sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
       else
          eval screen -S hpi-fs ssh "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
       fi
    else
-      if [ $nosmb -eq 0 ]; then
+      if [ $nosmb -ne 1 ]; then
          # have to run this as root, 139 is a protected port
          eval sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" "$dhcpuser"@dhcpserver
       else
