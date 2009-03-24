@@ -66,7 +66,7 @@ endif
  map <C-N> :tabnew<CR>
 
  " Window Helpers
- set autochdir
+ " set autochdir
  map <S-Tab> <C-W>W:cd %:p:h<CR>:<CR>
  map <S-X> :w<CR>:q<CR>:cd %:p:h<CR>:<CR>
  map <Meta-O> :wincmd n<CR>:E<CR>
