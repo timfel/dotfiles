@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# This bundles windows programs with the currently running wine into a single dir. Got the idea from picasa. No more regressions!
+# This bundles windows programs with the currently running wine into a single dir. Got the idea from picasa.
 # $1 is WINEPREFIX
 # $2 is .exe - Path
 # $3 is die exe selber
