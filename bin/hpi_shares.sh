@@ -15,15 +15,17 @@ dhcpuser="timfel"
 ## No edit below this line
 smbparam=""
 rdesktopparam=""
+append=""
 directdhcp=0
 
 function usage {
 	echo "Usage:"
-	echo "hpi_shares.sh (start|stop) [--samba=SAMBA-SERVER] [--rdesktop=RDESKTOP-SERVER] [--no-smb] [--no-rdesktop]"
+	echo "hpi_shares.sh (start|stop) [--samba=SAMBA-SERVER] [--rdesktop=RDESKTOP-SERVER] [--no-smb] [--no-rdesktop] [--append=SSH-Option1] --append=[SSH-Option2] ..."
 	echo
 	echo "start|stop has to come first, others can be arbitary, but only one"
 	echo "It will prompt for hpi domain password twice, and for dhcp-server password"
 	echo "You have to detach from each screen manually (Usually \"C-a d\")"
+	echo "You can append something to the DHCP-tunnel using the --append option"
 	echo
 
 	exit 0
@@ -39,6 +41,9 @@ function parse {
       nosmb=1
    else if test $(echo "$var" | grep '\-\-no\-rdesktop' ); then
       nordesktop=1
+   else if test $(echo "$var" | grep '\-\-append=' ); then
+      append="$append $(echo $var | sed 's/--append=//g')"
+   fi
    fi
    fi
    fi
@@ -46,16 +51,19 @@ function parse {
 }
 
 function usesmb {
-   if test "$(ps -C smbd | grep smbd)"; then
-      sudo /etc/init.d/samba stop
+   if [ $nosmb -eq 0 ]; then
+      if test "$(ps -C smbd | grep smbd)"; then
+         sudo /etc/init.d/samba stop
+      fi
+      smbparam="-L 139:$smb:139"
+      echo "Starting tunnel to smb://$smb" 
    fi
-
-   smbparam="-L 139:$smb:139"
 }
 
 function userdesktop {
    if [ $nordesktop -eq 0 ]; then
       rdesktopparam="-L 3389:$rdesktop:3389"
+      echo "Starting tunnel to rdesktop://$rdesktop" 
    fi
 }
 
@@ -64,14 +72,9 @@ function start {
    smb=$1
    rdesktop=$2
 
-   if [ $nosmb -eq 1 ]; then if [ $nordesktop -eq 1 ]; then
-      echo "You chose to not use any service. No point in a tunnel. Breaking..."
-   fi fi
-   
    usesmb
    userdesktop
 
-   echo "Starting as tunnel to smb://$smb and rdesktop://$rdesktop"
       
    if test $(host dhcpserver | grep -o "Host.*:" | awk '{ print $1 }'); then
       # If we haven't got a route to dhcpserver, don't assume we're in HPI      
@@ -91,16 +94,16 @@ function startDhcp {
    if [ $directdhcp -eq 0 ]; then
       if [ $nosmb -ne 1 ]; then
          # have to run this as root, 139 is a protected port
-         eval sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
+         eval sudo screen -S hpi-fs ssh "$append" "$smbparam" "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
       else
-         eval screen -S hpi-fs ssh "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
+         eval screen -S hpi-fs ssh "$append" "$rdesktopparam" -p 12346 "$dhcpuser"@127.0.0.1
       fi
    else
       if [ $nosmb -ne 1 ]; then
          # have to run this as root, 139 is a protected port
-         eval sudo screen -S hpi-fs ssh "$smbparam" "$rdesktopparam" "$dhcpuser"@dhcpserver
+         eval sudo screen -S hpi-fs ssh "$append" "$smbparam" "$rdesktopparam" "$dhcpuser"@dhcpserver
       else
-         eval screen -S hpi-fs ssh "$rdesktopparam" "$dhcpuser"@dhcpserver
+         eval screen -S hpi-fs ssh "$append" "$rdesktopparam" "$dhcpuser"@dhcpserver
       fi
    fi
 }
