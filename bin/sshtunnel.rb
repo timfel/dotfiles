@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'rubygems'
 require 'net/ssh'
 
@@ -150,9 +151,9 @@ chain << SSHForwarder::Chain::Host.new('placebo', 'tim.felgentreff')
 chain.push SSHForwarder::Chain::Host.new('dhcpserver', 'timfel')
 chain.push SSHForwarder::Chain::Service.rdesktop("admin2")
 #chain.push SSHForwarder::Chain::Service.smb("fs2") # Needs root privileges
-chain.split do |myTwig| 
-  myTwig.push SSHForwarder::Chain::Host.new('hadoop09ws02', 'hadoop01') 
-end
+#chain.split do |myTwig| 
+#  myTwig.push SSHForwarder::Chain::Host.new('hadoop09ws02', 'hadoop01') 
+#end
 chain.push SSHForwarder::Chain::Host.new('172.16.23.120', 'tim')
 chain.push SSHForwarder::Chain::Service.vnc('localhost')
 chain.execute
