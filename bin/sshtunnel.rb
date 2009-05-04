@@ -22,7 +22,7 @@ module SSHTunnel
       pw
     end
 
-    def add_job (host, username)
+    def connect (host, username)
       pw = get_password(host, username)
 
       if @jobs.key?(host.to_sym)
@@ -45,7 +45,7 @@ module SSHTunnel
       @jobs[from].forward.local(localport, to, toport)
     end
 
-    def add_forward (from, to, port_options = {})
+    def forward (from, to, port_options = {})
       remoteport = port_options[:remote] || 22
       begin
         localport = port_options[:local] || ((rand + 1) * 2222).round
@@ -66,94 +66,79 @@ module SSHTunnel
   end
 
   class Chain
-    class Service
-      attr_reader :local, :host, :remote
-      def initialize (local, host, remote)
-        @local = local
-        @host = host
-        @remote = remote
-      end
+    attr_reader :chain
 
-      def is_a? service
-        service == :Service
-      end
+    module Service
+      class << self
+        def new hostport,hostname,localport
+	  Proc.new do |forwarder, last_host| 
+            forwarder.forward(last_host, hostname, 
+            {:local => localport, :remote => hostport})
+	    last_host
+	  end
+        end
 
-      def self.vnc hostname
-        self.new(5900,hostname,5900)
-      end
-
-      def self.smb hostname
-        self.new(139,hostname,139)
-      end
-
-      def self.rdesktop hostname
-        self.new(3389,hostname,3389)
+        {:vnc => 5900, :smb => 139,
+         :rdesktop => 3389, :ssh => 22,
+         :ftp => 21}.each do |k,v|
+	  define_method(k) { |hostname| new(v,hostname,v) }
+        end
       end
     end
 
-    class Host
-      attr_reader :name, :user
-      def initialize(hostname, username)
-        @name = hostname
-        @user = username
-      end
-
-      def is_a? host
-        host == :Host
+    module Host
+      def self.new hostname,username
+	Proc.new do |forwarder, last_host|
+          forwarder.forward(last_host, hostname) unless last_host.nil?
+          forwarder.connect(hostname, username)
+	  hostname
+	end
       end
     end
 
-    def initialize hostname, username
+    def initialize 
       @forwarder = Connector.new
-      @chain = [Host.new(hostname,username)]
+      @chain = []
     end
 
     def << host_or_service
       push(host_or_service)
     end
 
-    def push(host_or_service)
-      @chain << host_or_service
+    def push(*a_proc)
+      @chain.push *a_proc
+      self
     end
 
-    def pop
-      @chain.pop
+    def dequeue
+      @chain = @chain[1..-1] 
+      self
     end
 
     def split &block
-      # The plan: Save the block + current scope.
-      # On execution, run the block at the 
-      # appropriate position, rewind the stack
-      # and continue.
-      @chain << block
+      @chain << Proc.new do |forwarder, last_host|
+	execute(block.call(Chain.new).chain, last_host)
+	last_host
+      end
     end
 
-    def execute
-      last_host = nil
-      @chain.each do |item|
-        if item.respond_to? 'call'
-          item.call(@chain.clone)
-        elsif item.is_a? :Service
-          @forwarder.add_forward(last_host, item.host, 
-          {:local => item.local, :remote => item.remote})
-        elsif item.is_a? :Host
-          @forwarder.add_forward(last_host, item.name) unless last_host.nil?
-          @forwarder.add_job(item.name, item.user)
-          last_host = item.name
-        end
+    def execute chain=@chain,last_host=nil
+      chain.each do |item|
+        last_host = item.call(@forwarder, last_host)
       end
     end
   end
 end
 
-chain = SSHForwarder::Chain.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
-chain << SSHForwarder::Chain::Host.new('placebo', 'tim.felgentreff')
-chain.push SSHForwarder::Chain::Host.new('dhcpserver', 'timfel')
-chain.push SSHForwarder::Chain::Service.rdesktop("admin2")
-#chain.push SSHForwarder::Chain::Service.smb("fs2") # Needs root privileges
-#chain.split do |myTwig| 
-#  myTwig.push SSHForwarder::Chain::Host.new('hadoop09ws02', 'hadoop01') 
-#end
-chain.push SSHForwarder::Chain::Host.new('172.16.23.120', 'tim')
-chain.push SSHForwarder::Chain::Service.vnc('localhost')
+chain = SSHTunnel::Chain.new
+#chain = SSHTunnel::Chain.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
+#chain << SSHTunnel::Chain::Host.new('placebo', 'tim.felgentreff')
+chain << SSHTunnel::Chain::Host.new('dhcpserver', 'timfel')
+chain << SSHTunnel::Chain::Service.rdesktop("admin2")
+#chain << SSHTunnel::Chain::Service.smb("fs2") # Needs root privileges
+chain.split do |myTwig| 
+  myTwig << SSHTunnel::Chain::Host.new('hadoop09ws02', 'hadoop01') 
+end
+chain << SSHTunnel::Chain::Host.new('172.16.23.120', 'tim')
+chain << SSHTunnel::Chain::Service.vnc('localhost')
 chain.execute
