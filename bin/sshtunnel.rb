@@ -9,7 +9,7 @@ module SSHTunnel
     @@log = Logger.new(STDOUT)
     @@log.level = Logger::DEBUG 
     def initialize
-      @jobs = {}
+      @connections = {}
       @local_ports = []
     end
 
@@ -25,24 +25,22 @@ module SSHTunnel
     def connect (host, username)
       pw = get_password(host, username)
 
-      if @jobs.key?(host.to_sym)
-        port = @jobs[host.to_sym]
+      if @connections.key?(host.to_sym)
+        port = @connections[host.to_sym]
+	host = 'localhost'
         @@log.debug("Found local-port forward on port "+port.to_s) 
-        @jobs[host.to_sym] = Net::SSH.start('localhost', 
-        username, :password=> pw, :port => port)
-      else
-        @jobs[host.to_sym] = Net::SSH.start(host, username, :password=>pw)
       end
+      @connections[host.to_sym] = Net::SSH.start(host, username, :password=> pw, :port => port)
     end
 
     def activate_ssh_loop symbol,port
-      @jobs[symbol][:thread] = Thread.new(@jobs[symbol]) {|c| c.loop {true}}
+      @connections[symbol][:thread] = Thread.new(@connections[symbol]) {|c| c.loop {true}}
     end
 
     def register_ssh_forward from,to,localport,toport
-      @jobs[to] ||= localport
-      @jobs[from][:thread].exit! unless @jobs[from][:thread].nil?
-      @jobs[from].forward.local(localport, to, toport)
+      @connections[to] ||= localport
+      @connections[from][:thread].exit! unless @connections[from][:thread].nil?
+      @connections[from].forward.local(localport, to, toport)
     end
 
     def forward (from, to, port_options = {})
@@ -57,7 +55,7 @@ module SSHTunnel
     end
 
     def killall
-      @jobs.each do |k,v| 
+      @connections.each do |k,v| 
         v[:thread].exit! unless v[:thread].nil?
         v.shutdown!
       end
