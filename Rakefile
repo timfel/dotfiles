@@ -9,7 +9,7 @@ namespace :install do
         full = File.join Dir.pwd, file
         Dir.chdir ENV["HOME"] do
           mkdir_p File.dirname(file) 
-          sh "ln -sTf #{full} #{file}"
+          sh "ln -sf #{full} #{file}"
         end
       end
     end
