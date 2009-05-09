@@ -51,7 +51,7 @@ if [ "$color_prompt" = yes ]; then
     if [ $(whoami) = root ]; then 
         PS1="${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]"
     else
-        PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\$($HOME/bin/bash_pwd.sh)\[\033[00m\]"
+        PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\[\033[00m\]\[\033[01;34m\]\$($HOME/bin/bash_pwd.sh)\[\033[00m\]"
     fi
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w '
@@ -93,8 +93,8 @@ alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
 alias pdflatex='pdflatex -shell-escape'
-alias sudo='sudo -E'
 alias vi='vim'
+alias sshx='ssh -X -c arcfour -C'
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -104,7 +104,7 @@ if [ -f /etc/bash_completion ]; then
 fi
 
 # source /usr/GNUstep/System/Library/Makefiles/GNUstep.sh
-export PATH=$HOME/bin/:/opt/bin/:/sbin/:$PATH
+export PATH=/Applications/Utilities/synergy-1.3.1/:$HOME/bin/:/opt/bin/:/sbin/:$PATH
 # export LIBGL_ALWAYS_INDIRECT=1
 export INTEL_BATCH=1
 
