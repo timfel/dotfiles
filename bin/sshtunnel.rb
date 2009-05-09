@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'net/ssh'
+require 'pp'
 
 module SSHTunnel
   class Connector
@@ -8,9 +9,11 @@ module SSHTunnel
 
     @@log = Logger.new(STDOUT)
     @@log.level = Logger::DEBUG 
+
     def initialize
       @connections = {}
-      @local_ports = []
+      @@local_ports ||= []
+      puts @@local_ports
     end
 
     def get_password host,username
@@ -46,8 +49,8 @@ module SSHTunnel
     def forward (from, to, port_options = {})
       remoteport = port_options[:remote] || 22
       begin
-        localport = port_options[:local] || ((rand + 1) * 2222).round
-      end while @local_ports.include?(localport)
+        localport = port_options[:local] || ((rand + 1) * 2000).round
+      end while @@local_ports.include?(localport)
       @@log.debug("Adding forwarding to "+to+":"+remoteport.to_s+" on local port "+localport.to_s)
 
       register_ssh_forward(from.to_sym, to.to_sym, localport, remoteport)
@@ -85,9 +88,11 @@ module SSHTunnel
     end
 
     module Host
-      def self.new hostname,username
+      def self.new hostname,username,port=nil
+	localport = {}
+	localport[:local] = port if port
 	Proc.new do |forwarder, last_host|
-          forwarder.forward(last_host, hostname) unless last_host.nil?
+          forwarder.forward(last_host, hostname, localport) unless last_host.nil?
           forwarder.connect(hostname, username)
 	  hostname
 	end
@@ -129,13 +134,13 @@ module SSHTunnel
 end
 
 chain = SSHTunnel::Chain.new
-#chain = SSHTunnel::Chain.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
-#chain << SSHTunnel::Chain::Host.new('placebo', 'tim.felgentreff')
+chain << SSHTunnel::Chain::Host.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
+chain << SSHTunnel::Chain::Host.new('placebo', 'tim.felgentreff')
 chain << SSHTunnel::Chain::Host.new('dhcpserver', 'timfel')
 chain << SSHTunnel::Chain::Service.rdesktop("admin2")
 #chain << SSHTunnel::Chain::Service.smb("fs2") # Needs root privileges
 chain.split do |myTwig| 
-  myTwig << SSHTunnel::Chain::Host.new('hadoop09ws02', 'hadoop01') 
+  myTwig << SSHTunnel::Chain::Host.new('hadoop09ws02', 'hadoop01', 1234) 
 end
 chain << SSHTunnel::Chain::Host.new('172.16.23.120', 'tim')
 chain << SSHTunnel::Chain::Service.vnc('localhost')
