@@ -41,9 +41,9 @@ module MyIRB
 
   # This should be changed in other setups / operation systems.
   def ruby_binary
-    @@ruby_binary ||= [ "/usr/local/bin/#{RUBY_ENGINE}#{RUBY_ENGINE_VERSION}",
-      "/usr/local/bin/#{RUBY_ENGINE}#{RUBY_ENGINE_VERSION[/^\d+\.\d+/]}",
-      "/usr/local/bin/#{RUBY_ENGINE}" ].detect do |bin|
+    @@ruby_binary ||= [ "/usr/bin/#{RUBY_ENGINE}#{RUBY_ENGINE_VERSION}",
+      "/usr/bin/#{RUBY_ENGINE}#{RUBY_ENGINE_VERSION[/^\d+\.\d+/]}",
+      "/usr/bin/#{RUBY_ENGINE}" ].detect do |bin|
       bin.freeze
       File.exists? bin
     end

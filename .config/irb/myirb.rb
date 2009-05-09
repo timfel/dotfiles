@@ -8,8 +8,8 @@ module MyIRB
     rubygems map_by_method what_methods
     english/array english/inflect english/string
     english/style english/style_orm ruby2ruby
-    hpricot stringio mechanize stored_hash
-    highline ]
+    hpricot stringio stored_hash
+    duration highline ]
 
   def catch_stdout
     verbose  = $VERBOSE
