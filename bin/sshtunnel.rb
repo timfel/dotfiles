@@ -33,7 +33,7 @@ module SSHTunnel
 	host = 'localhost'
         @@log.debug("Found local-port forward on port "+port.to_s) 
       end
-      @connections[host.to_sym] = Net::SSH.start(host, username, :password=> pw, :port => port)
+      @connections[host.to_sym] = Net::SSH.start(host, username, :password => pw, :port => port)
     end
 
     def activate_ssh_loop symbol,port
