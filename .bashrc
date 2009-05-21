@@ -2,8 +2,9 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 #export DISTCC_POTENTIAL_HOSTS='localhost uerbe9ws01 uerbe9ws02 uerbe9ws03 uerbe9ws04 uerbe9ws05 uerbe9ws06 uerbe9ws07 uerbe9ws08 uerbe9ws09 uerbe9ws10'
-#source /usr/GNUstep/System/Library/Makefiles/GNUstep.sh
-#export PATH=$PATH:/usr/GNUstep/System/Tools
+source /usr/GNUstep/System/Library/Makefiles/GNUstep.sh
+#source /usr/share/GNUstep/Makefiles/GNUstep.sh
+export PATH=$PATH:/usr/GNUstep/System/Tools
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
