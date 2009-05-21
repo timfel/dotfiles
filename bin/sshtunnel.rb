@@ -5,7 +5,7 @@ require 'pp'
 
 module SSHTunnel
   class Connector
-    attr_reader :jobs, :local_ports
+    attr_reader :connections, :local_ports
 
     @@log = Logger.new(STDOUT)
     @@log.level = Logger::DEBUG 
@@ -13,7 +13,6 @@ module SSHTunnel
     def initialize
       @connections = {}
       @@local_ports ||= []
-      puts @@local_ports
     end
 
     def get_password host,username
@@ -30,10 +29,12 @@ module SSHTunnel
 
       if @connections.key?(host.to_sym)
         port = @connections[host.to_sym]
-	host = 'localhost'
+	tunnelhost = 'localhost'
         @@log.debug("Found local-port forward on port "+port.to_s) 
       end
-      @connections[host.to_sym] = Net::SSH.start(host, username, :password=> pw, :port => port)
+      tunnelhost ||= host
+
+      @connections[host.to_sym] = Net::SSH.start(tunnelhost, username, :password=> pw, :port => port)
     end
 
     def activate_ssh_loop symbol,port
@@ -44,6 +45,7 @@ module SSHTunnel
       @connections[to] ||= localport
       @connections[from][:thread].exit! unless @connections[from][:thread].nil?
       @connections[from].forward.local(localport, to, toport)
+      @@local_ports << localport
     end
 
     def forward (from, to, port_options = {})
@@ -55,6 +57,12 @@ module SSHTunnel
 
       register_ssh_forward(from.to_sym, to.to_sym, localport, remoteport)
       activate_ssh_loop(from.to_sym, localport)
+    end
+
+    def joinall
+      @connections.each do |k,v|
+	v[:thread].join
+      end
     end
 
     def killall
@@ -92,7 +100,7 @@ module SSHTunnel
 	localport = {}
 	localport[:local] = port if port
 	Proc.new do |forwarder, last_host|
-          forwarder.forward(last_host, hostname, localport) unless last_host.nil?
+	  forwarder.forward(last_host, hostname, localport) unless last_host.nil?
           forwarder.connect(hostname, username)
 	  hostname
 	end
@@ -129,19 +137,21 @@ module SSHTunnel
       chain.each do |item|
         last_host = item.call(@forwarder, last_host)
       end
+      @forwarder.joinall
     end
   end
 end
 
 chain = SSHTunnel::Chain.new
 chain << SSHTunnel::Chain::Host.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
+#chain << SSHTunnel::Chain::Service.new(22,'hadoop09ws02',1234)
 chain << SSHTunnel::Chain::Host.new('placebo', 'tim.felgentreff')
 chain << SSHTunnel::Chain::Host.new('dhcpserver', 'timfel')
 chain << SSHTunnel::Chain::Service.rdesktop("admin2")
 #chain << SSHTunnel::Chain::Service.smb("fs2") # Needs root privileges
-chain.split do |myTwig| 
-  myTwig << SSHTunnel::Chain::Host.new('hadoop09ws02', 'hadoop01', 1234) 
-end
-chain << SSHTunnel::Chain::Host.new('172.16.23.120', 'tim')
-chain << SSHTunnel::Chain::Service.vnc('localhost')
+#chain.split do |myTwig| 
+#  myTwig << SSHTunnel::Chain::Host.new('hadoop09ws02', 'hadoop01', 1234) 
+#end
+#chain << SSHTunnel::Chain::Host.new('172.16.23.120', 'tim')
+#chain << SSHTunnel::Chain::Service.vnc('localhost')
 chain.execute
