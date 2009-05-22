@@ -1,11 +1,11 @@
-#! /bin/sh
+#! /bin/bash
 #
 # usage: gst-squeak SOURCE DEST
 #
 # Converts Squeak code to GNU Smalltalk
 
-exec gst-convert -f squeak \ 
-  -r'Float->FloatD' \
+gst-convert -f squeak \
+  -r'Float->FloatD' 
   -r'BlockContext->BlockClosure' \
   -r'MessageSend->DirectedMessage' \
   -r'DateAndTime->DateTime' \
@@ -61,5 +61,4 @@ exec gst-convert -f squeak \
   -r'(``@arg2 assureExistence)->
      (``@arg2 createDirectories)' \
   -r'(FileDirectory on: ``@arg2 )->
-     (``@arg2 asFile)' \
-  "$@"
+     (``@arg2 asFile)' "$@" 
