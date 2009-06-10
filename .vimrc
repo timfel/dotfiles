@@ -294,7 +294,5 @@ endif
  " The following changes the default filetype back to 'tex':
  let g:tex_flavor='latex'
 
- au FileType st call FT_st()
-
  " Strange bug with rkh's vim...
  :syntax enable
