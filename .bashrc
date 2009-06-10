@@ -114,16 +114,16 @@ function prompt {
       else
 	 MACHINE="${MACHINE}${USER}@"
       fi fi fi fi
-      MACHINE="$MACHINE$HOST${COLOR_NONE}"
+      MACHINE="$MACHINE$HOST${COLOR_NONE}:"
    fi
 
    # Have a fancy coloured prompt
    color_prompt=yes
    if [ "$color_prompt" = yes ]; then
        if [ $(whoami) = root ]; then 
-	   PS1="${PS1}${MACHINE}$TIMESTAMP:\[\033[01;34m\]\w\[\033[00m\]"
+	   PS1="${PS1}${MACHINE}$TIMESTAMP\[\033[01;34m\]\w\[\033[00m\]"
        else
-	   PS1="${PS1}${MACHINE}$TIMESTAMP:${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
+	   PS1="${PS1}${MACHINE}$TIMESTAMP${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
        fi
    else
        PS1='${debian_chroot:+($debian_chroot)}$MACHINE:\w '
