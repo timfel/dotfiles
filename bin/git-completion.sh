@@ -95,7 +95,7 @@ __git_ps1 ()
 			b="$(cat "$g/rebase-merge/head-name")"
 		elif [ -f "$g/MERGE_HEAD" ]
 		then
-			r="|MERGING"
+			r="|MERGING⚠"
 			b="$(git symbolic-ref HEAD 2>/dev/null)"
 		else
 			if [ -f "$g/BISECT_LOG" ]
@@ -115,9 +115,9 @@ __git_ps1 ()
 			printf "$1" "${b##refs/heads/}$r"
 		else
 		   	if [ -n "$(git status | grep mod)" ]; then
-				printf "(%s)" "\e[0;31m${b##refs/heads/}$r\e[m"
+				printf "%s" "\e[0;31m${b##refs/heads/}$r⚡\e[m"
 			else
-				printf "(%s)" "${b##refs/heads/}$r"
+				printf "%s" "${b##refs/heads/}$r"
 			fi
 		fi
 	fi
