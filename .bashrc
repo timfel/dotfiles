@@ -1,124 +1,187 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
-#export DISTCC_POTENTIAL_HOSTS='localhost uerbe9ws01 uerbe9ws02 uerbe9ws03 uerbe9ws04 uerbe9ws05 uerbe9ws06 uerbe9ws07 uerbe9ws08 uerbe9ws09 uerbe9ws10'
-#source /usr/GNUstep/System/Library/Makefiles/GNUstep.sh
-#export PATH=$PATH:/usr/GNUstep/System/Tools
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# don't put duplicate lines in the history. See bash(1) for more options
-export HISTCONTROL=ignoredups
-# ... and ignore same sucessive entries.
-export HISTCONTROL=ignoreboth
+#define all colors
+COLOR_RED="\e[31;40m"
+COLOR_GREEN="\e[32;40m"
+COLOR_YELLOW="\e[33;40m"
+COLOR_BLUE="\e[34;40m"
+COLOR_MAGENTA="\e[35;40m"
+COLOR_CYAN="\e[36;40m"
+COLOR_RED_BOLD="\e[31;1m"
+COLOR_GREEN_BOLD="\e[32;1m"
+COLOR_YELLOW_BOLD="\e[33;1m"
+COLOR_BLUE_BOLD="\e[34;1m"
+COLOR_MAGENTA_BOLD="\e[35;1m"
+COLOR_CYAN_BOLD="\e[36;1m"
+COLOR_NONE="\e[0m"
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
+function titlebar {
+   BAR="\033[41;1m${PWD} - ${COLOR_GREEN_BOLD}$USER@$HOSTNAME${COLOR_NONE}"
+   echo -ne "\033[s\033[0;0H"
+   COLS=$1
+   for i in `seq 1 $RESTLINE`; do
+      echo -ne "\033[41;1m "
+   done
+   echo -ne "\033[0;0H$BAR\033[u"
+}
 
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+function spwd {
+   LENGTH="20"
+   HALF="$(($LENGTH/2))"
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
+   SPWD=${PWD#$HOME}
+   if [ ${#SPWD} -le ${#PWD} ]; then
+      SPWD="~${PWD#$HOME}"
+   else
+      SPWD=${PWD}
+   fi
+   if [ ${#PWD} -gt $(($LENGTH)) ]; then
+      echo "${SPWD:0:$(($HALF-3))}...${SPWD:$((${#SPWD}-$HALF)):$HALF}"
+   else
+      echo "$SPWD"
+   fi
+}
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
-color_prompt=yes
+function path {
+   export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin
+   export PATH=$HOME/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
+}
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-force_colored_prompt=yes
+function environment {
+   #export DISTCC_POTENTIAL_HOSTS='localhost uerbe9ws01 uerbe9ws02 uerbe9ws03 uerbe9ws04 uerbe9ws05 uerbe9ws06 uerbe9ws07 uerbe9ws08 uerbe9ws09'
+   #source /usr/GNUstep/System/Library/Makefiles/GNUstep.sh
+   #source /usr/share/GNUstep/Makefiles/GNUstep.sh
 
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
-fi
+   # don't put duplicate lines in the history. See bash(1) for more options
+   export HISTCONTROL=ignoredups
 
-if [ "$color_prompt" = yes ]; then
-    if [ $(whoami) = root ]; then 
-        PS1="${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]"
-    else
-        PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\$($HOME/bin/bash_pwd.sh)\[\033[00m\]"
-    fi
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w '
-fi
-unset color_prompt force_color_prompt
+   # ... and ignore same sucessive entries.
+   export HISTCONTROL=ignoreboth
+}
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
-    ;;
-*)
-    ;;
-esac
+function bash_options {
+   # check the window size after each command and, if necessary,
+   # update the values of LINES and COLUMNS.
+   shopt -s checkwinsize
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+   # enable programmable completion features (you don't need to enable
+   # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+   # sources /etc/bash.bashrc).
+   if [ -f /etc/bash_completion ]; then
+       . /etc/bash_completion
+   fi
 
-#if [ -f ~/.bash_aliases ]; then
-#    . ~/.bash_aliases
-#fi
+   # One-TAB-Completion
+   set show-all-if-ambiguous on
+}
 
-# enable color support of ls and also add handy aliases
-if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
-    eval "`dircolors -b`"
-    alias ls='ls --color=auto'
-    alias dir='ls --color=auto --format=vertical'
-    alias vdir='ls --color=auto --format=long'
+function prompt {
 
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
+   # Show last commands exit-code by smiley
+   if [ $? = 0 ]; then 
+      EXITCODE="${COLOR_GREEN_BOLD}✔"
+   else 
+      EXITCODE="${COLOR_RED_BOLD}✘"
+   fi
+   EXITCODE=$EXITCODE${COLOR_NONE}
 
-# some more ls aliases
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
-alias pdflatex='pdflatex -shell-escape'
-alias sudo='sudo -E'
-alias vi='vim'
+   # set variable identifying the chroot you work in (used in the prompt below)
+   if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+       debian_chroot=$(cat /etc/debian_chroot)
+   fi
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-fi
+   PS1="${debian_chroot:+($debian_chroot)}"
+   #TIMESTAMP="${COLOR_MAGENTA_BOLD}($(date +%T))${COLOR_NONE}"
 
-# source /usr/GNUstep/System/Library/Makefiles/GNUstep.sh
-export PATH=$HOME/bin/:/opt/bin/:/sbin/:$PATH
-# export LIBGL_ALWAYS_INDIRECT=1
-export INTEL_BATCH=1
+   if [ -n "$SSH_TTY" ]; then
+      # set user and host
+      if [ $USER == "root" ]; then
+	 MACHINE="${COLOR_RED_BOLD}"
+      else
+	 MACHINE="${COLOR_GREEN_BOLD}"
+      fi
+      if [ "$USER" == "tim" ]; then
+	 MACHINE="${MACHINE}➔"
+      else if [ "$USER" == "timfel" ]; then
+	 MACHINE="${MACHINE}➔"
+      else if [ "$USER" == "tim.felgentreff" ]; then
+	 MACHINE="${MACHINE}➔"
+      else if [ "$USER" == "timme" ]; then
+	 MACHINE="${MACHINE}➔"
+      else
+	 MACHINE="${MACHINE}${USER}@"
+      fi fi fi fi
+      MACHINE="$MACHINE$HOST${COLOR_NONE}:"
+   fi
 
-# Show the current git branch
-#source ~/bin/git-completion.sh
-source ~/bin/bash_vcs.sh
-#GIT='`__git_ps1`'
-VCS='`echo -e $(__prompt_command)`'
-#PS1="$PS1$GIT"
-PS1="$PS1 $VCS"
+   # Have a fancy coloured prompt
+   color_prompt=yes
+   if [ "$color_prompt" = yes ]; then
+       if [ $(whoami) = root ]; then 
+	   PS1="${PS1}${MACHINE}$TIMESTAMP\[\033[01;34m\]\w\[\033[00m\]"
+       else
+	   PS1="${PS1}${MACHINE}$TIMESTAMP${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
+       fi
+   else
+       PS1='${debian_chroot:+($debian_chroot)}$MACHINE:\w '
+   fi
+   unset color_prompt 
 
-# One-TAB-Completion
-set show-all-if-ambiguous on
-# Show last commands exit-code by smiley
-PS1="$PS1\`if [ \$? = 0 ]; then echo -e '\[\033[01;32m\]:)'; else echo -e '\[\033[01;31m\]:('; fi\`\[\033[00m\] "
+   # If this is an xterm set the title to user@host:dir
+   case "$TERM" in
+   xterm*|rxvt*)
+       echo -ne "\033]0;${MACHINE}: ${PWD/$HOME/~}\007"
+       ;;
+   *)
+       ;;
+   esac
 
+   # Put a nice topbar
+   # titlebar $COLUMNS
+
+   # Show the current branch
+   source $HOME/bin/bash_vcs.sh
+   VCS=`echo -e $(__prompt_command)`
+   if [ -z "$VCS" ]; then  
+      EXITCODE=" ${EXITCODE}"
+   else
+      VCS=" ❰$VCS❱ "
+   fi
+   PS1="$PS1$VCS"
+   PS1="$PS1$EXITCODE "
+}
+
+function bin_options {
+   # make less more friendly for non-text input files, see lesspipe(1)
+   [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+
+   # enable color support of ls and also add handy aliases
+   if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
+       eval "`dircolors -b`"
+       alias ls='ls --color=auto'
+       alias dir='ls --color=auto --format=vertical'
+       alias vdir='ls --color=auto --format=long'
+
+       alias grep='grep --color=auto'
+       alias fgrep='fgrep --color=auto'
+       alias egrep='egrep --color=auto'
+   fi
+
+   # some more ls aliases
+   alias ll='ls -l'
+   alias la='ls -A'
+   alias l='ls -CF'
+   alias pdflatex='pdflatex -shell-escape'
+   alias sudo='sudo -E'
+   alias vi='vim'
+}
+
+path
+environment
+bash_options
+bin_options
+PROMPT_COMMAND=prompt
 

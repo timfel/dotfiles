@@ -88,7 +88,7 @@ TexLet g:Tex_DebugLog = ''
 if has('macunix')
 	TexLet g:Tex_DefaultTargetFormat = 'pdf'
 else
-	TexLet g:Tex_DefaultTargetFormat = 'dvi'
+	TexLet g:Tex_DefaultTargetFormat = 'pdf'
 endif
 
 " Override default... I like PDFs
