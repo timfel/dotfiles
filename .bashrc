@@ -133,7 +133,7 @@ function prompt {
    # If this is an xterm set the title to user@host:dir
    case "$TERM" in
    xterm*|rxvt*)
-       echo -ne "\033]0;${MACHINE}: ${PWD/$HOME/~}\007"
+       #echo -ne "\033]0;${MACHINE}: ${PWD/$HOME/~}\007"
        ;;
    *)
        ;;
