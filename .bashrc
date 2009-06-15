@@ -114,7 +114,7 @@ function prompt {
       else
 	 MACHINE="${MACHINE}${USER}@"
       fi fi fi fi
-      MACHINE="$MACHINE$HOST${COLOR_NONE}:"
+      MACHINE="$MACHINE\h${COLOR_NONE}:"
    fi
 
    # Have a fancy coloured prompt
@@ -133,7 +133,7 @@ function prompt {
    # If this is an xterm set the title to user@host:dir
    case "$TERM" in
    xterm*|rxvt*)
-       echo -ne "\033]0;${MACHINE}: ${PWD/$HOME/~}\007"
+       #echo -ne "\033]0;${MACHINE}: ${PWD/$HOME/~}\007"
        ;;
    *)
        ;;
@@ -159,7 +159,7 @@ function bin_options {
    [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
    # enable color support of ls and also add handy aliases
-   if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
+   if [ $(uname) != "SunOS" ] && [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
        eval "`dircolors -b`"
        alias ls='ls --color=auto'
        alias dir='ls --color=auto --format=vertical'
