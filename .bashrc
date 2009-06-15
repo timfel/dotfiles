@@ -47,7 +47,10 @@ function spwd {
 
 function path {
    export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin
-   export PATH=$HOME/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
+   export PATH=$HOME/bin/:/opt/ruby/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
+   if [ $(uname) == "SunOS" ]; then
+	export PATH=/opt/ruby/bin:/opt/csw/bin:/opt/sfw/bin:$PATH
+   fi
 }
 
 function environment {
@@ -96,6 +99,10 @@ function prompt {
    PS1="${debian_chroot:+($debian_chroot)}"
    #TIMESTAMP="${COLOR_MAGENTA_BOLD}($(date +%T))${COLOR_NONE}"
 
+   USER=$(whoami)
+   if [ -z $HOSTNAME ]; then
+      export HOSTNAME=$(hostname)
+   fi
    if [ -n "$SSH_TTY" ]; then
       # set user and host
       if [ $USER == "root" ]; then
@@ -114,7 +121,7 @@ function prompt {
       else
 	 MACHINE="${MACHINE}${USER}@"
       fi fi fi fi
-      MACHINE="$MACHINE\h${COLOR_NONE}:"
+      MACHINE="$MACHINE$HOSTNAME${COLOR_NONE}:"
    fi
 
    # Have a fancy coloured prompt
