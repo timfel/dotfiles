@@ -38,7 +38,7 @@ function spwd {
    else
       SPWD=${PWD}
    fi
-   if [ ${#PWD} -gt $(($LENGTH)) ]; then
+   if [ ${#SPWD} -gt $(($LENGTH)) ]; then
       echo "${SPWD:0:$(($HALF-3))}...${SPWD:$((${#SPWD}-$HALF)):$HALF}"
    else
       echo "$SPWD"
@@ -116,11 +116,13 @@ function prompt {
 	 MACHINE="${MACHINE}➔"
       else if [ "$USER" == "tim.felgentreff" ]; then
 	 MACHINE="${MACHINE}➔"
+      else if [ "$USER" == "timfelgentreff" ]; then
+	 MACHINE="${MACHINE}➔"
       else if [ "$USER" == "timme" ]; then
 	 MACHINE="${MACHINE}➔"
       else
 	 MACHINE="${MACHINE}${USER}@"
-      fi fi fi fi
+      fi fi fi fi fi
       MACHINE="$MACHINE$HOSTNAME${COLOR_NONE}:"
    fi
 
