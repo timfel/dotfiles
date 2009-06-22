@@ -29,17 +29,17 @@ module SSHTunnel
     # Opens an SSH Tunnel to the given host with the given username
     # Also checks whether a localhost port-forward exists for that 
     # host and uses that for connection if it does  
-    def connect (host, username)
+    def connect (host, username,port=22)
       pw = get_password(host, username)
 
+      tunnelhost = host
       if @connections.key?(host.to_sym)
         port = @connections[host.to_sym]
 	tunnelhost = 'localhost'
         @@log.debug("Found local-port forward on port "+port.to_s) 
       end
-      tunnelhost ||= host
 
-      @connections[host.to_sym] = Net::SSH.start(tunnelhost, username, :password=> pw, :port => port)
+      @connections[host.to_sym] = Net::SSH.start(tunnelhost, username, :password => pw, :port => port)
     end
 
     # Spins off a new thread for the ssh-connection, to keep it open
@@ -63,7 +63,7 @@ module SSHTunnel
     def forward (from, to, port_options = {})
       remoteport = port_options[:remote] || 22
       localport = port_options[:local]
-      while @@local_ports.include?(localport) do
+      while (@@local_ports.include?(localport) || localport.nil?) do
 	 localport = ((rand + 1) * 2000).round
       end
       @@log.debug("Adding forwarding to "+to+":"+remoteport.to_s+" on local port "+localport.to_s)
@@ -106,20 +106,19 @@ module SSHTunnel
         end
 
         {:vnc => 5900, :smb => 139,
-         :rdesktop => 3389, :ssh => 22,
-         :ftp => 21}.each do |k,v|
+         :rdesktop => 3389, :ssh => 22}.each do |k,v|
 	  define_method(k) { |hostname| new(v,hostname,v) }
         end
       end
     end
 
     module Host
-      def self.new hostname,username,port=nil
-	localport = {}
-	localport[:local] = port if port
+      def self.new hostname,username,ports={}
+	localport = ports
+	remoteport = ports[:remote] || 22
 	Proc.new do |forwarder, last_host|
 	  forwarder.forward(last_host, hostname, localport) unless last_host.nil?
-          forwarder.connect(hostname, username)
+          forwarder.connect(hostname, username, remoteport)
 	  hostname
 	end
       end
@@ -166,17 +165,20 @@ module SSHTunnel
 end
 
 chain = SSHTunnel::Chain.new
-chain << SSHTunnel::Chain::Host.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
-chain << SSHTunnel::Chain::Service.new(22,'172.16.23.120',4002)
-chain << SSHTunnel::Chain::Service.new(22,'hadoop09ws02',4001)
-chain << SSHTunnel::Chain::Service.new(50070,'hadoop09ws02',50070)
-chain << SSHTunnel::Chain::Service.new(50030,'hadoop09ws02',50030)
+chain << SSHTunnel::Chain::Host.new('timfelgentreff.homelinux.org', 'timfelgentreff', {:remote => 2223})
+#chain << SSHTunnel::Chain::Host.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
+#chain << SSHTunnel::Chain::Service.new(22,'172.16.23.120',4002)
+#chain << SSHTunnel::Chain::Service.new(22,'hadoop09ws10',4001)
+#chain << SSHTunnel::Chain::Service.new(50070,'hadoop09ws02',50070)
+#chain << SSHTunnel::Chain::Service.new(50030,'hadoop09ws02',50030)
 #chain << SSHTunnel::Chain::Host.new('placebo', 'tim.felgentreff')
 #chain << SSHTunnel::Chain::Host.new('dhcpserver', 'timfel')
 #chain << SSHTunnel::Chain::Service.rdesktop("admin2")
+#chain << SSHTunnel::Chain::Service.new(3389, "admin2", 3389)
 #chain << SSHTunnel::Chain::Service.smb("fs2") # Needs root privileges
 #chain.split do |myTwig| 
 #  myTwig << SSHTunnel::Chain::Host.new('hadoop09ws02', 'hadoop01', 1234) 
 #end
-#chain << SSHTunnel::Chain::Service.vnc('localhost')
+chain << SSHTunnel::Chain::Service.vnc('timfelgentreff.homelinux.org')
+chain << SSHTunnel::Chain::Service.new(4567, "timfelgentreff.homelinux.org", 4567)
 chain.execute
