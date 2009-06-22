@@ -60,6 +60,9 @@ function environment {
 
    # ... and ignore same sucessive entries.
    export HISTCONTROL=ignoreboth
+
+   export EDITOR="vim"
+   export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
 }
 
 function bash_options {
@@ -177,6 +180,7 @@ function bin_options {
    alias pdflatex='pdflatex -shell-escape'
    alias sudo='sudo -E'
    alias vi='vim'
+   alias sshx='ssh -X -C -c blowfish-cbc'
 }
 
 path
