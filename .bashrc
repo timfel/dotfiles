@@ -38,7 +38,7 @@ function spwd {
    else
       SPWD=${PWD}
    fi
-   if [ ${#PWD} -gt $(($LENGTH)) ]; then
+   if [ ${#SPWD} -gt $(($LENGTH)) ]; then
       echo "${SPWD:0:$(($HALF-3))}...${SPWD:$((${#SPWD}-$HALF)):$HALF}"
    else
       echo "$SPWD"
@@ -47,7 +47,10 @@ function spwd {
 
 function path {
    export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin
-   export PATH=$HOME/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
+   export PATH=$HOME/bin/:/opt/ruby/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
+   if [ $(uname) == "SunOS" ]; then
+	export PATH=/opt/ruby/bin:/opt/csw/bin:/opt/sfw/bin:$PATH
+   fi
 }
 
 function environment {
@@ -99,6 +102,10 @@ function prompt {
    PS1="${debian_chroot:+($debian_chroot)}"
    #TIMESTAMP="${COLOR_MAGENTA_BOLD}($(date +%T))${COLOR_NONE}"
 
+   USER=$(whoami)
+   if [ -z $HOSTNAME ]; then
+      export HOSTNAME=$(hostname)
+   fi
    if [ -n "$SSH_TTY" ]; then
       # set user and host
       if [ $USER == "root" ]; then
@@ -112,12 +119,14 @@ function prompt {
 	 MACHINE="${MACHINE}➔"
       else if [ "$USER" == "tim.felgentreff" ]; then
 	 MACHINE="${MACHINE}➔"
+      else if [ "$USER" == "timfelgentreff" ]; then
+	 MACHINE="${MACHINE}➔"
       else if [ "$USER" == "timme" ]; then
 	 MACHINE="${MACHINE}➔"
       else
 	 MACHINE="${MACHINE}${USER}@"
-      fi fi fi fi
-      MACHINE="$MACHINE$HOST${COLOR_NONE}:"
+      fi fi fi fi fi
+      MACHINE="$MACHINE$HOSTNAME${COLOR_NONE}:"
    fi
 
    # Have a fancy coloured prompt
@@ -136,7 +145,7 @@ function prompt {
    # If this is an xterm set the title to user@host:dir
    case "$TERM" in
    xterm*|rxvt*)
-       echo -ne "\033]0;${MACHINE}: ${PWD/$HOME/~}\007"
+       #echo -ne "\033]0;${MACHINE}: ${PWD/$HOME/~}\007"
        ;;
    *)
        ;;
@@ -162,7 +171,7 @@ function bin_options {
    [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
    # enable color support of ls and also add handy aliases
-   if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
+   if [ $(uname) != "SunOS" ] && [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
        eval "`dircolors -b`"
        alias ls='ls --color=auto'
        alias dir='ls --color=auto --format=vertical'
