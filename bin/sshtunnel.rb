@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby19
+#!/usr/local/bin/ruby1.9
 require 'rubygems'
 require 'net/ssh'
 require 'pp'
@@ -30,16 +30,20 @@ module SSHTunnel
     # Also checks whether a localhost port-forward exists for that 
     # host and uses that for connection if it does  
     def connect (host, username,port=22)
-      pw = get_password(host, username)
+      begin
+        pw = get_password(host, username)
 
-      tunnelhost = host
-      if @connections.key?(host.to_sym)
-        port = @connections[host.to_sym]
-	tunnelhost = 'localhost'
-        @@log.debug("Found local-port forward on port "+port.to_s) 
+        tunnelhost = host
+        if @connections.key?(host.to_sym)
+          port = @connections[host.to_sym]
+          tunnelhost = 'localhost'
+          @@log.debug("Found local-port forward on port "+port.to_s) 
+        end
+
+        @connections[host.to_sym] = Net::SSH.start(tunnelhost, username, :password => pw, :port => port)
+      rescue Net::SSH::AuthenticationFailed
+        retry
       end
-
-      @connections[host.to_sym] = Net::SSH.start(tunnelhost, username, :password => pw, :port => port)
     end
 
     # Spins off a new thread for the ssh-connection, to keep it open
@@ -162,23 +166,46 @@ module SSHTunnel
       @forwarder.killall
     end
   end
+
+  class Configuration
+    def initialize filepath="default"
+      if File.exists? filepath
+        parse filepath
+      else
+        parse "#{ENV["HOME"]}/.ssh/#{filepath}"
+      end
+    end
+
+    def construct_chain
+    end
+
+    def parse file
+      File.open(file).read.split("---") do |entry|
+        h = YAML.load(entry)
+        type = h.keys.first
+        hostname = h.values.first[:hostname]
+        username = h.values.first[:username]
+        port = h.values.first[:port] || {}
+        SSHTunnel::Chain.const_get(type).new(hostname, username, port)
+      end
+    end
+  end
 end
 
 chain = SSHTunnel::Chain.new
-chain << SSHTunnel::Chain::Host.new('timfelgentreff.homelinux.org', 'timfelgentreff', {:remote => 2223})
-#chain << SSHTunnel::Chain::Host.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
+#chain << SSHTunnel::Chain::Host.new('timfelgentreff.homelinux.org', 'timfelgentreff', {:remote => 2223})
+chain << SSHTunnel::Chain::Host.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
 #chain << SSHTunnel::Chain::Service.new(22,'172.16.23.120',4002)
 #chain << SSHTunnel::Chain::Service.new(22,'hadoop09ws10',4001)
 #chain << SSHTunnel::Chain::Service.new(50070,'hadoop09ws02',50070)
 #chain << SSHTunnel::Chain::Service.new(50030,'hadoop09ws02',50030)
-#chain << SSHTunnel::Chain::Host.new('placebo', 'tim.felgentreff')
-#chain << SSHTunnel::Chain::Host.new('dhcpserver', 'timfel')
+chain << SSHTunnel::Chain::Host.new('placebo', 'tim.felgentreff')
+chain << SSHTunnel::Chain::Host.new('dhcpserver', 'timfel')
 #chain << SSHTunnel::Chain::Service.rdesktop("admin2")
-#chain << SSHTunnel::Chain::Service.new(3389, "admin2", 3389)
-#chain << SSHTunnel::Chain::Service.smb("fs2") # Needs root privileges
+chain << SSHTunnel::Chain::Service.smb("fs2") # Needs root privileges
 #chain.split do |myTwig| 
 #  myTwig << SSHTunnel::Chain::Host.new('hadoop09ws02', 'hadoop01', 1234) 
 #end
-chain << SSHTunnel::Chain::Service.vnc('timfelgentreff.homelinux.org')
-chain << SSHTunnel::Chain::Service.new(4567, "timfelgentreff.homelinux.org", 4567)
+#chain << SSHTunnel::Chain::Service.vnc('timfelgentreff.homelinux.org')
+#chain << SSHTunnel::Chain::Service.new(4567, "timfelgentreff.homelinux.org", 4567)
 chain.execute
