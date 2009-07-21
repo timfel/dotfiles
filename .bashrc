@@ -171,8 +171,10 @@ function bin_options {
    [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
    # enable color support of ls and also add handy aliases
-   if [ $(uname) != "SunOS" ] && [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
-       eval "`dircolors -b`"
+   if [ $(uname) != "SunOS" ] && [ "$TERM" != "dumb" ]; then
+       if [ -x /usr/bin/dircolors ]; then
+           eval "`dircolors -b`"
+       fi
        alias ls='ls --color=auto'
        alias dir='ls --color=auto --format=vertical'
        alias vdir='ls --color=auto --format=long'
