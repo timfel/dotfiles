@@ -1,7 +1,7 @@
-if version >= 600
-set foldenable
-set foldmethod=marker
-endif
+"" if version >= 600
+"" set foldenable
+"" set foldmethod=marker
+"" endif
 
 "" :filetype on
  set nocompatible
@@ -55,9 +55,6 @@ endif
  " PgDown
  map <ESC>[6~ <C-F>
 
- " Explorer
- map <S-E> :VE<CR><CR>
- 
  " Tab helpers
  map <Tab> :tabnext<CR>:cd %:p:h<CR>:<CR>
  map <C-T> :tabnext<CR>:cd %:p:h<CR>:<CR>
@@ -289,10 +286,25 @@ endif
  " OPTIONAL: This enables automatic indentation as you type.
  filetype indent on
 
- " Startingwith Vim 7, the filetype of empty .tex files defaults to
+ " Starting with Vim 7, the filetype of empty .tex files defaults to
  " 'plaintex' instead of 'tex', which results in vim-latex not being loaded.
  " The following changes the default filetype back to 'tex':
  let g:tex_flavor='latex'
+ set iskeyword+=:
 
  " Strange bug with rkh's vim...
  :syntax enable
+
+ " Enable spelling errors correction for German and English 
+ set spell
+ setlocal spell spelllang=en_us,de_de
+
+ " Smalltalk indentation
+ au FileType st call FT_st()
+ function FT_st()
+    set tabstop=8
+    set softtabstop=4
+    set shiftwidth=4
+    set noexpandtab
+    retab 8
+ endfunction
