@@ -48,6 +48,7 @@ function spwd {
 function path {
    export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin
    export PATH=$HOME/bin/:/opt/ruby/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
+   export PATH=/opt/bin/:$PATH
    if [ $(uname) == "SunOS" ]; then
 	export PATH=/opt/ruby/bin:/opt/csw/bin:/opt/sfw/bin:$PATH
    fi
@@ -64,7 +65,7 @@ function environment {
    # ... and ignore same sucessive entries.
    export HISTCONTROL=ignoreboth
 
-   export EDITOR="vim"
+   # export EDITOR="vim"
    export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
 }
 
