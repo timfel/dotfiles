@@ -48,7 +48,7 @@ function spwd {
 function path {
    export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin
    export PATH=$HOME/bin/:/opt/ruby/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
-   export PATH=/opt/bin/:$PATH
+   export PATH=/opt/bin/:/opt/ruby/bin/:$PATH
    if [ $(uname) == "SunOS" ]; then
 	export PATH=/opt/ruby/bin:/opt/csw/bin:/opt/sfw/bin:$PATH
    fi
@@ -67,6 +67,9 @@ function environment {
 
    # export EDITOR="vim"
    export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
+
+   export RUBY_PATH=/opt/ruby/
+   export RUBY_VERSION=1.9.1
 }
 
 function bash_options {
@@ -134,7 +137,7 @@ function prompt {
    color_prompt=yes
    if [ "$color_prompt" = yes ]; then
        if [ $(whoami) = root ]; then 
-	   PS1="${PS1}${MACHINE}$TIMESTAMP\[\033[01;34m\]\w\[\033[00m\]"
+	   PS1="${PS1}${MACHINE}$TIMESTAMP${COLOR_RED_BOLD}\w${COLOR_NONE}"
        else
 	   PS1="${PS1}${MACHINE}$TIMESTAMP${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
        fi
