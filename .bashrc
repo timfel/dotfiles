@@ -4,19 +4,19 @@
 [ -z "$PS1" ] && return
 
 #define all colors
-COLOR_RED="\e[31;40m"
-COLOR_GREEN="\e[32;40m"
-COLOR_YELLOW="\e[33;40m"
-COLOR_BLUE="\e[34;40m"
-COLOR_MAGENTA="\e[35;40m"
-COLOR_CYAN="\e[36;40m"
-COLOR_RED_BOLD="\e[31;1m"
-COLOR_GREEN_BOLD="\e[32;1m"
-COLOR_YELLOW_BOLD="\e[33;1m"
-COLOR_BLUE_BOLD="\e[34;1m"
-COLOR_MAGENTA_BOLD="\e[35;1m"
-COLOR_CYAN_BOLD="\e[36;1m"
-COLOR_NONE="\e[0m"
+COLOR_RED="\[\033[31;40m\]"
+COLOR_GREEN="\[\033[32;40m\]"
+COLOR_YELLOW="\[\033[33;40m\]"
+COLOR_BLUE="\[\033[34;40m\]"
+COLOR_MAGENTA="\[\033[35;40m\]"
+COLOR_CYAN="\[\033[36;40m\]"
+COLOR_RED_BOLD="\[\033[31;1m\]"
+COLOR_GREEN_BOLD="\[\033[32;1m\]"
+COLOR_YELLOW_BOLD="\[\033[33;1m\]"
+COLOR_BLUE_BOLD="\[\033[34;1m\]"
+COLOR_MAGENTA_BOLD="\[\033[35;1m\]"
+COLOR_CYAN_BOLD="\[\033[36;1m\]"
+COLOR_NONE="\[\033[0m\]"
 
 function titlebar {
    BAR="\033[41;1m${PWD} - ${COLOR_GREEN_BOLD}$USER@$HOSTNAME${COLOR_NONE}"
@@ -104,11 +104,10 @@ function prompt {
    fi
 
    PS1="${debian_chroot:+($debian_chroot)}"
-   #TIMESTAMP="${COLOR_MAGENTA_BOLD}($(date +%T))${COLOR_NONE}"
 
    USER=$(whoami)
    if [ -z $HOSTNAME ]; then
-      export HOSTNAME=$(hostname)
+      export HOSTNAME=`hostname -s`
    fi
    if [ -n "$SSH_TTY" ]; then
       # set user and host
@@ -130,33 +129,23 @@ function prompt {
       else
 	 MACHINE="${MACHINE}${USER}@"
       fi fi fi fi fi
-      MACHINE="$MACHINE$HOSTNAME${COLOR_NONE}:"
+      MACHINE="${MACHINE}${HOSTNAME}${COLOR_NONE}:"
+   else
+      MACHINE=""
    fi
 
    # Have a fancy coloured prompt
    color_prompt=yes
    if [ "$color_prompt" = yes ]; then
        if [ $(whoami) = root ]; then 
-	   PS1="${PS1}${MACHINE}$TIMESTAMP${COLOR_RED_BOLD}\w${COLOR_NONE}"
+	   PS1="${MACHINE}${COLOR_RED_BOLD}\w${COLOR_NONE}"
        else
-	   PS1="${PS1}${MACHINE}$TIMESTAMP${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
+	   PS1="${MACHINE}${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
        fi
    else
        PS1='${debian_chroot:+($debian_chroot)}$MACHINE:\w '
    fi
    unset color_prompt 
-
-   # If this is an xterm set the title to user@host:dir
-   case "$TERM" in
-   xterm*|rxvt*)
-       #echo -ne "\033]0;${MACHINE}: ${PWD/$HOME/~}\007"
-       ;;
-   *)
-       ;;
-   esac
-
-   # Put a nice topbar
-   # titlebar $COLUMNS
 
    # Show the current branch
    source $HOME/bin/bash_vcs.sh
