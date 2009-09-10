@@ -115,7 +115,7 @@ __git_ps1 ()
 			printf "$1" "${b##refs/heads/}$r"
 		else
 		   	if [ -n "$(git status | grep mod)" ]; then
-				printf "%s" "\e[0;31m${b##refs/heads/}$r⚡\e[m"
+				printf "%s" "\[\033[0;31m\]${b##refs/heads/}$r⚡\[\033[m\]"
 			else
 				printf "%s" "${b##refs/heads/}$r"
 			fi
