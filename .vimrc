@@ -305,6 +305,13 @@
     set tabstop=8
     set softtabstop=4
     set shiftwidth=4
-    set noexpandtab
+    set expandtab
     retab 8
+ endfunction
+
+ au FileType rb call FT_rb()
+ function FT_rb()
+    set sw=2
+    set ts=2
+    set expandtab
  endfunction
