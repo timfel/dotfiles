@@ -69,7 +69,9 @@ function environment {
    export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
 
    export RUBY_PATH=/opt/ruby/
-   export RUBY_VERSION=1.9.1
+   export RUBY_VERSION=1.8.7
+
+   export EDITOR=vi
 }
 
 function bash_options {
