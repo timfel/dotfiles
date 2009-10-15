@@ -58,6 +58,10 @@ gst-convert -f squeak \
      (``@object parent)' \
   -r'(FileDirectory default)->
      (Directory working)' \
+  -r'(FileDirectory pathNameDelimiter)->
+     (Directory pathSeparator)' \
+  -r'(FileDirectory)->
+     (Directory)' \
   -r'(``@arg2 assureExistence)->
      (``@arg2 createDirectories)' \
   -r'(FileDirectory on: ``@arg2 )->
