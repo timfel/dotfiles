@@ -70,6 +70,7 @@ function environment {
 
    export RUBY_PATH=/opt/ruby/
    export RUBY_VERSION=1.8.7
+   export RUBYOPT="rubygems"
 
    export EDITOR=vi
 }

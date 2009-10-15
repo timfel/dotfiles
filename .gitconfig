@@ -1,3 +1,10 @@
 [github]
 	user = timfel
 	token = ec98cb1fe2b505a94e4d5069af193e89
+[user]
+	name = Tim Felgentreff
+	email = timfelgentreff@gmail.com
+[alias]
+   	changes = diff --name-status -r
+[diff]
+   	renames = true
