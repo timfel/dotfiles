@@ -70,6 +70,7 @@ function environment {
 
    export RUBY_PATH=/opt/ruby/
    export RUBY_VERSION=1.9.1
+   export RUBYOPT="rubygems"
 }
 
 function bash_options {
