@@ -122,7 +122,7 @@
  map ,if oif()<CR>{<CR>}<ESC>kk$i
  map ,for ofor(;;)<CR>{<CR>}<ESC>kk$hhi
  map ,els oelse<CR>{<CR>}<ESC>O
- map ,tex ggO\documentclass[a4paper]{article}<CR>\usepackage{amsmath, amssymb}<CR>\usepackage[ngerman]{babel}<CR>\usepackage[utf8x]{inputenc}<CR>\usepackage[T1]{fontenc}<CR>\usepackage{listings}<CR>\author{Tim Felgentreff, 738147}<CR>\title{}<CR>\date{\today}<CR><CR>\begin{document}<CR>\maketitle<CR>\end{document}<ESC>kkkkk$i
+ map ,tex ggO\documentclass[a4paper]{scrartcl}<CR>\usepackage{amsmath, amssymb}<CR>\usepackage[ngerman]{babel}<CR>\usepackage[utf8x]{inputenc}<CR>\usepackage[T1]{fontenc}<CR>\usepackage{listings}<CR>\usepackage{fancyhdr}<CR>\pagestyle{fancy}<CR>\author{Tim Felgentreff, 738147}<CR>\title{<CR>\date{\today}<CR><CR>\begin{document}<CR>\maketitle<CR>\end{document}<ESC>kkkkk$i
 
 
 
@@ -296,8 +296,8 @@
  :syntax enable
 
  " Enable spelling errors correction for German and English 
- set spell
- setlocal spell spelllang=en_us,de_de
+ " set spell
+ " setlocal spell spelllang=en_us,de_de
 
  " Smalltalk indentation
  au FileType st call FT_st()
