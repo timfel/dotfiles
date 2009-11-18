@@ -4,19 +4,21 @@
 [ -z "$PS1" ] && return
 
 #define all colors
-COLOR_RED="\[\033[31;40m\]"
-COLOR_GREEN="\[\033[32;40m\]"
-COLOR_YELLOW="\[\033[33;40m\]"
-COLOR_BLUE="\[\033[34;40m\]"
-COLOR_MAGENTA="\[\033[35;40m\]"
-COLOR_CYAN="\[\033[36;40m\]"
-COLOR_RED_BOLD="\[\033[31;1m\]"
-COLOR_GREEN_BOLD="\[\033[32;1m\]"
-COLOR_YELLOW_BOLD="\[\033[33;1m\]"
-COLOR_BLUE_BOLD="\[\033[34;1m\]"
-COLOR_MAGENTA_BOLD="\[\033[35;1m\]"
-COLOR_CYAN_BOLD="\[\033[36;1m\]"
-COLOR_NONE="\[\033[0m\]"
+if [ $(uname) != "SunOS" ] && [ "$TERM" != "dumb" ]; then
+   COLOR_RED="\[\033[31;40m\]"
+   COLOR_GREEN="\[\033[32;40m\]"
+   COLOR_YELLOW="\[\033[33;40m\]"
+   COLOR_BLUE="\[\033[34;40m\]"
+   COLOR_MAGENTA="\[\033[35;40m\]"
+   COLOR_CYAN="\[\033[36;40m\]"
+   COLOR_RED_BOLD="\[\033[31;1m\]"
+   COLOR_GREEN_BOLD="\[\033[32;1m\]"
+   COLOR_YELLOW_BOLD="\[\033[33;1m\]"
+   COLOR_BLUE_BOLD="\[\033[34;1m\]"
+   COLOR_MAGENTA_BOLD="\[\033[35;1m\]"
+   COLOR_CYAN_BOLD="\[\033[36;1m\]"
+   COLOR_NONE="\[\033[0m\]"
+fi
 
 function titlebar {
    BAR="\033[41;1m${PWD} - ${COLOR_GREEN_BOLD}$USER@$HOSTNAME${COLOR_NONE}"
