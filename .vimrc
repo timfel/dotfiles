@@ -123,7 +123,7 @@
  map ,for ofor(;;)<CR>{<CR>}<ESC>kk$hhi
  map ,els oelse<CR>{<CR>}<ESC>O
  map ,tex ggO\documentclass[a4paper]{scrartcl}<CR>\usepackage{amsmath, amssymb}<CR>\usepackage[ngerman]{babel}<CR>\usepackage[utf8x]{inputenc}<CR>\usepackage[T1]{fontenc}<CR>\usepackage{listings}<CR>\usepackage{fancyhdr}<CR>\pagestyle{fancy}<CR>\author{Tim Felgentreff, 738147}<CR>\title{<CR>\date{\today}<CR><CR>\begin{document}<CR>\maketitle<CR>\end{document}<ESC>kkkkk$i
-
+ map ,rdb orequire 'ruby-debug'; debugger<CR><ESC>
 
 
  "" <F9> toggles highlightning
