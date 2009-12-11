@@ -1,5 +1,5 @@
 [alias]
-	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr, %Cblue%an%Creset%Cgreen)%Creset' --abbrev-commit --date=relative
    	chp = cherry-pick
    	st = status
    	co = checkout
