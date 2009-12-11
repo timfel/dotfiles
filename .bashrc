@@ -49,10 +49,9 @@ function spwd {
 
 function path {
    export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin
-   export PATH=$HOME/bin/:/opt/ruby/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
-   export PATH=/opt/bin/:/opt/ruby/bin/:$PATH
+   export PATH=$HOME/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
    if [ $(uname) == "SunOS" ]; then
-	export PATH=/opt/ruby/bin:/opt/csw/bin:/opt/sfw/bin:$PATH
+	export PATH=/opt/csw/bin:/opt/sfw/bin:$PATH
    fi
 }
 
@@ -70,9 +69,8 @@ function environment {
    # export EDITOR="vim"
    export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
 
-   export RUBY_PATH=/opt/ruby/
    export RUBY_VERSION=1.8.7
-   export RUBYOPT="rubygems"
+   #export RUBYOPT="rubygems"
 
    export EDITOR=vi
 }
@@ -197,4 +195,8 @@ environment
 bash_options
 bin_options
 PROMPT_COMMAND=prompt
+
+
+# rvm-install added line:
+if [[ -s /home/tim/.rvm/scripts/rvm ]] ; then source /home/tim/.rvm/scripts/rvm ; fi
 
