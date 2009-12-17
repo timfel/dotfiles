@@ -309,9 +309,15 @@
     retab 8
  endfunction
 
+ " Ruby indendation
  au FileType rb call FT_rb()
  function FT_rb()
     set sw=2
     set ts=2
     set expandtab
  endfunction
+
+ " Enable overlength highlighting
+ highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+ match OverLength /\%81v.*/
+
