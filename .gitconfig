@@ -1,10 +1,12 @@
 [alias]
-	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr, %Cblue%an%Creset%Cgreen)%Creset' --abbrev-commit --date=relative
-   	chp = cherry-pick
-   	st = status
-   	co = checkout
+   lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr, %Cblue%an%Creset%Cgreen)%Creset' --abbrev-commit --date=relative
+   chp = cherry-pick
+   st = status
+   co = checkout
+   merge = merge --no-ff
+   pull = pull --no-ff
 [user]
-	name = Tim Felgentreff
-   	email = "timfelgentreff@gmail.com"
+   name = Tim Felgentreff
+   email = "timfelgentreff@gmail.com"
 [color]
-   	branch = auto
+   branch = auto
