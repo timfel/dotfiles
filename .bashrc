@@ -185,7 +185,7 @@ function bin_options {
    alias l='ls -CF'
    alias pdflatex='pdflatex -shell-escape'
    alias sudo='sudo -E'
-   alias vi='vim'
+   alias vi='RUBYOPTS="$RUBYOPTS -W0" vim'
    alias sshx='ssh -X -C -c blowfish-cbc'
    alias ruby='__ruby__'
    alias jruby='__jruby__'
