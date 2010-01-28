@@ -70,7 +70,7 @@ function environment {
    export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
 
    export RUBY_VERSION=1.8.7
-   #export RUBYOPT="rubygems"
+   export RUBYOPT="rubygems"
 
    export EDITOR=vi
 }
@@ -198,5 +198,5 @@ PROMPT_COMMAND=prompt
 
 
 # rvm-install added line:
-if [[ -s /home/tim/.rvm/scripts/rvm ]] ; then source /home/tim/.rvm/scripts/rvm ; fi
+if [[ -s $HOME/.rvm/scripts/rvm ]] ; then source $HOME/.rvm/scripts/rvm ; fi
 
