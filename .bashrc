@@ -70,7 +70,7 @@ function environment {
    export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
 
    export RUBY_VERSION=1.8.7
-   #export RUBYOPT="rubygems"
+   export RUBYOPT="rubygems"
 
    export EDITOR=vi
 }
