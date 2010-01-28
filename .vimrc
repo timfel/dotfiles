@@ -309,9 +309,24 @@
     retab 8
  endfunction
 
+ " Ruby indendation
  au FileType rb call FT_rb()
  function FT_rb()
     set sw=2
     set ts=2
     set expandtab
+ endfunction
+
+ " Enable overlength highlighting
+ highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+ match OverLength /\%81v.*/
+
+ " Some printing logic
+ command! -nargs=* Hardcopy call DoPrint("<args>")
+ function DoPrint(filename)
+    set background=light
+    highlight clear Normal
+    highlight Comment term=italic cterm=italic gui=italic
+    highlight Constant term=bold cterm=bold gui=bold
+    " exec "hardcopy ".a:args
  endfunction
