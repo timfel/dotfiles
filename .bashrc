@@ -32,7 +32,6 @@ function titlebar {
 
 function spwd {
    LENGTH="20"
-   HALF="$(($LENGTH/2))"
 
    SPWD=${PWD#$HOME}
    if [ ${#SPWD} -le ${#PWD} ]; then
@@ -41,7 +40,7 @@ function spwd {
       SPWD=${PWD}
    fi
    if [ ${#SPWD} -gt $(($LENGTH)) ]; then
-      echo "${SPWD:0:$(($HALF-3))}...${SPWD:$((${#SPWD}-$HALF)):$HALF}"
+      echo "${SPWD:0:1}...${SPWD:$((${#SPWD}-$LENGTH+3)):$LENGTH}"
    else
       echo "$SPWD"
    fi
@@ -149,6 +148,9 @@ function prompt {
    fi
    unset color_prompt 
 
+   # SHOW RUBY VERSION
+   PS1="$PS1 [$RUBY_VERSION]"
+
    # Show the current branch
    source $HOME/bin/bash_vcs.sh
    VCS=`echo -e $(__prompt_command)`
@@ -209,13 +211,11 @@ function __jruby__ {
    $(which jruby) --ng "$@"
 }
 
+# rvm-install added line:
+if [[ -s $HOME/.rvm/scripts/rvm ]] ; then source $HOME/.rvm/scripts/rvm ; fi
+
 path
 environment
 bash_options
 bin_options
 PROMPT_COMMAND=prompt
-
-
-# rvm-install added line:
-if [[ -s $HOME/.rvm/scripts/rvm ]] ; then source $HOME/.rvm/scripts/rvm ; fi
-
