@@ -192,6 +192,8 @@ function bin_options {
    alias ruby='__ruby__'
    alias jruby='__jruby__'
    alias gitpp="git pull && git push"
+   alias sc="env RAILSCONSOLE=1 script/console"
+   alias ss="script/console"
 }
 
 function __ruby__ {
