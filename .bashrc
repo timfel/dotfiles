@@ -191,6 +191,7 @@ function bin_options {
    alias sshx='ssh -X -C -c blowfish-cbc'
    alias ruby='__ruby__'
    alias jruby='__jruby__'
+   alias gitpp="git pull && git push"
 }
 
 function __ruby__ {

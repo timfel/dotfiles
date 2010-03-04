@@ -194,14 +194,15 @@ end
 
 chain = SSHTunnel::Chain.new
 #chain << SSHTunnel::Chain::Host.new('timfelgentreff.homelinux.org', 'timfelgentreff', {:remote => 2223})
-#chain << SSHTunnel::Chain::Host.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
+chain << SSHTunnel::Chain::Host.new('ssh-stud.hpi.uni-potsdam.de', 'tim.felgentreff')
 #chain << SSHTunnel::Chain::Service.new(22,'172.16.23.120',4002)
 #chain << SSHTunnel::Chain::Service.new(22,'hadoop09ws10',4001)
 #chain << SSHTunnel::Chain::Service.new(50070,'hadoop09ws02',50070)
 #chain << SSHTunnel::Chain::Service.new(50030,'hadoop09ws02',50030)
 #chain << SSHTunnel::Chain::Host.new('placebo', 'tim.felgentreff')
 #chain << SSHTunnel::Chain::Host.new('dhcpserver', 'timfel')
-chain << SSHTunnel::Chain::Service.new(22, "bp2009h1ws03", 4001)
+#chain << SSHTunnel::Chain::Service.new(22, "bp2009h1ws03", 4001)
+chain << SSHTunnel::Chain::Service.new(22, "swa1", 4004)
 #chain << SSHTunnel::Chain::Service.smb("fs2") # Needs root privileges
 #chain.split do |myTwig| 
 #  myTwig << SSHTunnel::Chain::Host.new('hadoop09ws02', 'hadoop01', 1234) 

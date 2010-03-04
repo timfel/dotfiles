@@ -128,9 +128,9 @@
 
  "" <F9> toggles highlightning
  " Syntax Highlightning an bzw. aus
- nmap <F9> :if has("syntax_items")<CR>syntax off<CR>else<CR>syntax on<CR>endif<CR><CR>
+ " nmap <F9> :if has("syntax_items")<CR>syntax off<CR>else<CR>syntax on<CR>endif<CR><CR>
 
- map <F5> maH:let x="Shown: lines ".line(".")<CR>L:let x=x." - ".line(".")<CR>:echo x<CR>`a
+ " map <F5> maH:let x="Shown: lines ".line(".")<CR>L:let x=x." - ".line(".")<CR>:echo x<CR>`a
  "" Let's see what it does:
  " Schauen wir doch mal, was das hier tut:
  "" ## use <F5> for mapping :)
