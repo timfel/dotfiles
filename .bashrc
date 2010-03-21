@@ -191,7 +191,7 @@ function bin_options {
    alias sshx='ssh -X -C -c blowfish-cbc'
    alias gitpp="git pull && git push"
    alias sc="env RAILSCONSOLE=1 script/console"
-   alias ss="script/console"
+   alias ss="script/server"
 }
 
 # rvm-install added line:
