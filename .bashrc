@@ -149,7 +149,7 @@ function prompt {
    unset color_prompt 
 
    # SHOW RUBY VERSION
-   PS1="$PS1 [$RUBY_VERSION]"
+   PS1="$PS1 [\$(~/.rvm/bin/rvm-prompt i v)]"
 
    # Show the current branch
    source $HOME/bin/bash_vcs.sh
