@@ -189,29 +189,9 @@ function bin_options {
    alias sudo='sudo -E'
    alias vi='RUBYOPTS="$RUBYOPTS -W0" vim'
    alias sshx='ssh -X -C -c blowfish-cbc'
-   alias ruby='__ruby__'
-   alias jruby='__jruby__'
    alias gitpp="git pull && git push"
    alias sc="env RAILSCONSOLE=1 script/console"
    alias ss="script/console"
-}
-
-function __ruby__ {
-   if [[ $RUBY_VERSION == jruby* ]]; then
-       __jruby__ "$@"
-   else
-       $(which ruby) "$@"
-   fi
-}
-
-function __jruby__ {
-   # make sure Nailgun is running
-   if [ -z "$(netstat -an | grep 2113.*LISTEN)" ]; then 
-       echo "Starting Nailgun Server..."
-       $(which jruby) --ng-server 2>&1 > /dev/null &
-       sleep 2
-   fi
-   $(which jruby) --ng "$@"
 }
 
 # rvm-install added line:
