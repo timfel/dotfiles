@@ -149,7 +149,7 @@ function prompt {
    unset color_prompt 
 
    # SHOW RUBY VERSION
-   PS1="$PS1 [$RUBY_VERSION]"
+   PS1="$PS1 \$(~/.rvm/bin/rvm-prompt u)"
 
    # Show the current branch
    source $HOME/bin/bash_vcs.sh
@@ -191,7 +191,7 @@ function bin_options {
    alias sshx='ssh -X -C -c blowfish-cbc'
    alias gitpp="git pull && git push"
    alias sc="env RAILSCONSOLE=1 script/console"
-   alias ss="script/console"
+   alias ss="script/server"
 }
 
 # rvm-install added line:
