@@ -1,7 +1,7 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+if [[ -n $PS1 ]]; then 
 
 #define all colors
 if [ $(uname) != "SunOS" ] && [ "$TERM" != "dumb" ]; then
@@ -212,3 +212,5 @@ environment
 bash_options
 bin_options
 PROMPT_COMMAND=prompt
+
+fi # closing fi if not run in interactive mode
