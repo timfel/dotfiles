@@ -172,13 +172,23 @@ function bin_options {
        if [ -x /usr/bin/dircolors ]; then
            eval "`dircolors -b`"
        fi
-       alias ls='ls --color=auto'
-       alias dir='ls --color=auto --format=vertical'
-       alias vdir='ls --color=auto --format=long'
+       if [ $(uname) != "Darwin" ]; then
+	  alias ls='ls --color=auto'
+	  alias dir='ls --color=auto --format=vertical'
+	  alias vdir='ls --color=auto --format=long'
 
-       alias grep='grep --color=auto'
-       alias fgrep='fgrep --color=auto'
-       alias egrep='egrep --color=auto'
+	  alias grep='grep --color=auto'
+	  alias fgrep='fgrep --color=auto'
+	  alias egrep='egrep --color=auto'
+       else
+	  alias ls='ls -G'
+	  alias dir='ls -G'
+	  alias vdir='ls -G -l'
+
+	  alias grep='grep --color=auto'
+	  alias fgrep='fgrep --color=auto'
+	  alias egrep='egrep --color=auto'
+       fi
    fi
 
    # some more ls aliases

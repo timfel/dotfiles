@@ -9,7 +9,7 @@ namespace :install do
         full = File.join Dir.pwd, file
         Dir.chdir ENV["HOME"] do
           mkdir_p File.dirname(file) 
-          sh "ln -sTf #{full} #{file}"
+          sh "ln -sf #{full} #{file}"
         end
       end
     end
@@ -17,6 +17,6 @@ namespace :install do
   end
 
   install :irb, ".irbrc", ".config/irb/*.rb"
-  install :dot, ".bashrc", ".gemrc", ".vimrc", ".vim", ".gitignore", ".gitconfig"
+  install :dot, ".bash_profile", ".bashrc", ".gemrc", ".vimrc", ".vim", ".gitignore", ".gitconfig"
   install :bin, "bin/*"
 end
