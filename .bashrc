@@ -157,7 +157,7 @@ function prompt {
    if [ -z "$VCS" ]; then  
       EXITCODE=" ${EXITCODE}"
    else
-      VCS=" ❰$VCS❱ "
+      VCS=" ❰${VCS}❱ "
    fi
    PS1="$PS1$VCS"
    PS1="$PS1$EXITCODE "
