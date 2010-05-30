@@ -77,30 +77,30 @@ __git_ps1 ()
 		then
 			if test -f "$g/rebase-apply/rebasing"
 			then
-				r="|REBASE"
+				r="|₨"
 			elif test -f "$g/rebase-apply/applying"
 			then
-				r="|AM"
+				r="|✉"
 			else
-				r="|AM/REBASE"
+				r="|✉/₨"
 			fi
 			b="$(git symbolic-ref HEAD 2>/dev/null)"
 		elif [ -f "$g/rebase-merge/interactive" ]
 		then
-			r="|REBASE-i"
+			r="|₨-¡"
 			b="$(cat "$g/rebase-merge/head-name")"
 		elif [ -d "$g/rebase-merge" ]
 		then
-			r="|REBASE-m"
+			r="|₨-₥"
 			b="$(cat "$g/rebase-merge/head-name")"
 		elif [ -f "$g/MERGE_HEAD" ]
 		then
-			r="|MERGING⚠"
+			r="|₥"
 			b="$(git symbolic-ref HEAD 2>/dev/null)"
 		else
 			if [ -f "$g/BISECT_LOG" ]
 			then
-				r="|BISECTING"
+				r="|฿"
 			fi
 			if ! b="$(git symbolic-ref HEAD 2>/dev/null)"
 			then
@@ -115,7 +115,7 @@ __git_ps1 ()
 			printf "$1" "${b##refs/heads/}$r"
 		else
 		   	if [ -n "$(git status | grep mod)" ]; then
-				printf "%s" "${COLOR_RED_BOLD}${b##refs/heads/}$r⚡${COLOR_NONE}"
+				printf "%s" "${COLOR_RED_BOLD}${b##refs/heads/}${r}⚡${COLOR_NONE}"
 			else
 				printf "%s" "${b##refs/heads/}$r"
 			fi
