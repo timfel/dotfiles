@@ -18,7 +18,8 @@ namespace :install do
   end
 
   install :irb, ".irbrc", ".config/irb/*.rb"
-  install :dot, ".bash_profile", ".bashrc", ".gemrc", ".vimrc", ".vim", ".gitignore", ".gitconfig"
+  install :dot, ".bash_profile", ".bashrc", ".gemrc", ".vimrc", ".vim",
+     ".gitignore", ".gitconfig", ".ssh/config"
   install :bin, "bin/*"
 
   desc "installs the custom texmf folder"
