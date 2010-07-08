@@ -206,7 +206,11 @@ function bin_options {
 }
 
 # rvm-install added line:
-if [[ -s $HOME/.rvm/scripts/rvm ]] ; then source $HOME/.rvm/scripts/rvm ; fi
+if [[ -n $NORVM ]]; then
+   echo "No rvm"
+else
+   if [[ -s $HOME/.rvm/scripts/rvm ]] ; then source $HOME/.rvm/scripts/rvm ; fi
+fi
 
 path
 environment
