@@ -1,3 +1,6 @@
 [submodule "texmf"]
 	path = texmf
 	url = git@github.com:timfel/texmf
+[submodule "bin/git-subtree"]
+	path = bin/git-subtree
+	url = http://github.com/apenwarr/git-subtree.git
