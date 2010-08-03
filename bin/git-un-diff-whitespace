@@ -34,6 +34,13 @@ def strip_whitespace_regions(filename, hunks):
   print "wrote " + filename
 
 def main():
+  working_directory = os.getcwd()
+  while ((not os.path.exists(".git")) and (os.getcwd() != "/")):
+    os.chdir("..")
+  if (not os.path.exists(".git")):
+    print "Not in a git tree"
+    os.chdir(working_directory)
+    return -1
   diffproc = subprocess.Popen(['git', 'diff'], stdout=subprocess.PIPE)
   curfile = None
   hunks = []
@@ -49,6 +56,7 @@ def main():
         hunks = []
   if curfile:
     strip_whitespace_regions(curfile, hunks)
+  os.chdir(working_directory)
 
 if __name__ == '__main__':
   main()
