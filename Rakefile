@@ -8,9 +8,13 @@ namespace :install do
       Dir[*files].collect do |file|
         full = File.join Dir.pwd, file
         Dir.chdir ENV["HOME"] do
-          mkdir_p File.dirname(file) 
-	  sh "rm #{file}" if (File.exist? file and File.directory? full)
-          sh "ln -sf #{full} #{file}"
+          mkdir_p File.dirname(file)
+          sh "rm #{file}" if (File.exist? file and File.directory? full)
+          Dir.chdir File.join(ENV["HOME"], File.dirname(file)) do
+            relative = File.join("../" * File.dirname(file).split("/").size, full.sub(ENV["HOME"], ""))
+            "ln -sf #{relative} #{File.basename(file)}"
+            sh "ln -sf #{relative} #{File.basename(file)}"
+          end
         end
       end
     end
