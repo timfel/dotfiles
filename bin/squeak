@@ -1,14 +1,24 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ "$1" == "--init" ]; then
+if [ "$1" == "download" ]; then
    if [[ -z $(ls | grep "Squeak[^\.]*\.sources") ]]; then
       echo "Downloading current trunk image"
-      SQUEAK_IMAGE_FILES=$(curl ftp://ftp.squeak.org/trunk/ | grep "Squeak.*zip" | tail -1 | awk '{print $NF}')
-      SQUEAK_SOURCES_FILE=$(curl ftp://ftp.squeak.org/sources_files/ | grep "sources.gz" | tail -1 | awk '{print $NF}')
-      wget $SQUEAK_SOURCES_FILE
-      wget $SQUEAK_IMAGE_FILES
+      TRUNK="ftp://ftp.squeak.org/trunk/"
+      SOURCES="ftp://ftp.squeak.org/sources_files/"
+      SQUEAK_IMAGE_FILES=$(curl ${TRUNK} | grep "Squeak.*zip" | tail -1 | awk '{print $NF}')
+      SQUEAK_SOURCES_FILE=$(curl ${SOURCES} | grep "sources.gz" | tail -1 | awk '{print $NF}')
+      wget "${SOURCES}${SQUEAK_SOURCES_FILE}"
+      wget "${TRUNK}${SQUEAK_IMAGE_FILES}"
       unzip Squeak*zip
       gunzip Squeak*sources.gz
+      rm Squeak*zip
+      if [[ -z $(ls | grep Squeak.*image) ]]; then
+         possible_squeak_dir="$(ls --group-directories-first | grep -m1 Squeak)"
+         if [[ -d $possible_squeak_dir ]]; then
+            mv "$possible_squeak_dir"/* .
+            rmdir "$possible_squeak_dir"
+         fi
+      fi
    fi
 else
    BIN=`/usr/bin/dirname "$0"`/lib/squeak/3.9-7
