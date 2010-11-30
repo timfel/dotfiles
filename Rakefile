@@ -11,8 +11,12 @@ namespace :install do
           mkdir_p File.dirname(file)
           sh "rm #{file}" if (File.exist? file and File.directory? full)
           Dir.chdir File.join(ENV["HOME"], File.dirname(file)) do
-            relative = File.join("../" * File.dirname(file).split("/").size, full.sub(ENV["HOME"], ""))
-            "ln -sf #{relative} #{File.basename(file)}"
+            if Dir.pwd == ENV["HOME"] or Dir.pwd == "#{ENV["HOME"]}/"
+              relative = full.sub(ENV["HOME"], "")
+              relative = relative[1..-1] while relative.start_with? "/"
+            else
+              relative = File.join("../" * File.dirname(file).split("/").size, full.sub(ENV["HOME"], ""))
+            end
             sh "ln -sf #{relative} #{File.basename(file)}"
           end
         end
