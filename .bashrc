@@ -47,8 +47,8 @@ function spwd {
 }
 
 function path {
-   export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin
-   export PATH=$HOME/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
+   export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin
+   export PATH="$HOME"/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
    if [ $(uname) == "SunOS" ]; then
 	export PATH=/opt/csw/bin:/opt/sfw/bin:$PATH
    fi
@@ -152,7 +152,7 @@ function prompt {
    PS1="$PS1 \$(~/.rvm/bin/rvm-prompt u)"
 
    # Show the current branch
-   source $HOME/bin/bash_vcs.sh
+   source "$HOME"/bin/bash_vcs.sh
    VCS=`echo -e $(__prompt_command)`
    if [ -z "$VCS" ]; then  
       EXITCODE=" ${EXITCODE}"
@@ -203,13 +203,40 @@ function bin_options {
    alias sc="env RAILSCONSOLE=1 script/console"
    alias ss="script/server"
    alias jruby="rvm use jruby; ruby"
+   alias rb_uses="grep -h -o 'rb_[^ )(,]*' *.cpp *.c *.h | grep -v 'rb_.*\.[hc]' | sort | uniq"
+
+   # Git aliases
+   alias gitss="git submodule init && git submodule sync && git submodule update"
+   alias gitcp="git cherry-pick"
+   alias gitrb="git rebase -i"
+   alias gitap="git add --patch"
+   alias gitciam="git commit --amend -m"
+   alias gitcim="git commit -m"
+
+   # RVM shortcuts
+   alias rvm_isolate="rvm gemset create \$(basename \`pwd\`); echo 'rvm gemset use \$(basename \`pwd\`)' >> .rvmrc; cd ../\$(basename \`pwd\`)"
 }
 
 # rvm-install added line:
 if [[ -n $NORVM ]]; then
    echo "No rvm"
 else
-   if [[ -s $HOME/.rvm/scripts/rvm ]] ; then source $HOME/.rvm/scripts/rvm ; fi
+   if [ "Linux" == `uname` ]; then
+      if [[ -s "$HOME"/.rvm_linux/.rvm/scripts/rvm ]]; then
+	 export rvm_prefix="$HOME"/.rvm_linux/
+	 source "$HOME"/.rvm_linux/.rvm/scripts/rvm
+      else
+         if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then source "$HOME"/.rvm/scripts/rvm ; fi
+      fi
+   else
+      if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then source "$HOME"/.rvm/scripts/rvm ; fi
+   fi
+fi
+
+if [ "Linux" == `uname` ]; then
+   if [[ -n "$DISPLAY" ]]; then
+      xcalib /etc/xcalib/Color\ LCD-00000610-0000-9CC7-0000-0000042731C0.icc
+   fi
 fi
 
 path

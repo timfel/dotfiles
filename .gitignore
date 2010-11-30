@@ -6,3 +6,6 @@ nbproject
 /.vim/sessions
 *.pyc
 /.vim/sessions/**/*
+.redcar
+.sass-cache
+.rvmrc
