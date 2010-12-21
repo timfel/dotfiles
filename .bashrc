@@ -215,34 +215,39 @@ function bin_options {
 
    # RVM shortcuts
    alias rvm_isolate="rvm gemset create \$(basename \`pwd\`); echo 'rvm gemset use \$(basename \`pwd\`)' >> .rvmrc; cd ../\$(basename \`pwd\`)"
+
+   # Work shortcuts
+   alias swa_hiwi="cd ~/Documents/HPI/SWA-HiWi"
 }
 
-# rvm-install added line:
-if [[ -n $NORVM ]]; then
-   echo "No rvm"
-else
-   if [ "Linux" == `uname` ]; then
-      if [[ -s "$HOME"/.rvm_linux/.rvm/scripts/rvm ]]; then
-	 export rvm_prefix="$HOME"/.rvm_linux/
-	 source "$HOME"/.rvm_linux/.rvm/scripts/rvm
-      else
-         if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then source "$HOME"/.rvm/scripts/rvm ; fi
-      fi
+function rvm_env {
+   # rvm-install added line:
+   if [[ -n $NORVM ]]; then
+      echo "No rvm"
    else
-      if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then source "$HOME"/.rvm/scripts/rvm ; fi
+      if [ "Linux" == `uname` ]; then
+         if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then source "$HOME"/.rvm/scripts/rvm ; fi
+      else
+         if [[ -s "/usr/local/lib/rvm" ]] ; then source "/usr/local/lib/rvm" ; fi
+      fi
+      rvm use ree
    fi
-fi
+}
 
-if [ "Linux" == `uname` ]; then
-   if [[ -n "$DISPLAY" ]]; then
-      xcalib /etc/xcalib/Color\ LCD-00000610-0000-9CC7-0000-0000042731C0.icc
+function system_tweaks {
+   if [ "Linux" == `uname` ]; then
+      if [[ -n "$DISPLAY" ]]; then
+         xcalib /etc/xcalib/Color\ LCD-00000610-0000-9CC7-0000-0000042731C0.icc
+      fi
    fi
-fi
+}
 
 path
 environment
 bash_options
 bin_options
+rvm_env
+system_tweaks
 PROMPT_COMMAND=prompt
 
 fi # closing fi if not run in interactive mode
