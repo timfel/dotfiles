@@ -50,7 +50,10 @@ function path {
    export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin
    export PATH="$HOME"/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
    if [ $(uname) == "SunOS" ]; then
-	export PATH=/opt/csw/bin:/opt/sfw/bin:$PATH
+      export PATH=/opt/csw/bin:/opt/sfw/bin:$PATH
+   fi
+   if [[ -e "$HOME/Devel/projects/git-hg/bin" ]]; then
+      export PATH=$PATH:$HOME/Devel/projects/git-hg/bin
    fi
 }
 
