@@ -32,9 +32,9 @@ else
    # prepending is less flexible but safer because it ensures we find the plugins
    # in the same directory as the VM.
    if [[ -n $1 ]]; then
-      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$IMAGE" "$@"
+      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$@"
    else
-      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls Squeak*image)"
+      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls Squeak*image)" "$@"
    fi
 fi
 
