@@ -205,7 +205,6 @@ function bin_options {
    alias gitpp="git pull && git push"
    alias sc="env RAILSCONSOLE=1 script/console"
    alias ss="script/server"
-   alias jruby="rvm use jruby; ruby"
    alias rb_uses="grep -h -o 'rb_[^ )(,]*' *.cpp *.c *.h | grep -v 'rb_.*\.[hc]' | sort | uniq"
 
    # Git aliases
