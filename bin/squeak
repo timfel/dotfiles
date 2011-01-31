@@ -1,14 +1,25 @@
 #!/bin/bash
 
 function run {
-   BIN=`/usr/bin/dirname "$0"`/lib/squeak/3.9-7
-   if [[ -e "$1" ]]; then
-      if [[ -n $(echo "$1" | grep "\.image$") ]]; then
-         IMAGE="$1" # If the file exists and ends with image, use it
+   if [[ "$1" == "oldvm" ]]; then
+      version="4.0.3-2202"
+      image_arg="$2"
+      args=${@:2}
+      echo "Using old VM"
+      echo "Remaining arguments are $args"
+   else
+      version="3.9-7"
+      image_arg="$1"
+      args=$@
+   fi
+   BIN=`/usr/bin/dirname "$0"`/lib/squeak/$version
+   if [[ -e "$image_arg" ]]; then
+      if [[ -n $(echo "$image_arg" | grep "\.image$") ]]; then
+         IMAGE="$image_arg" # If the file exists and ends with image, use it
       fi
    fi
-   if [[ -e "${1}.image" ]]; then
-      IMAGE="${1}.image" # If an image file with that prefix exists, use it
+   if [[ -e "${image_arg}.image" ]]; then
+      IMAGE="${image_arg}.image" # If an image file with that prefix exists, use it
    fi
 
    # At least on linux LD_LIBRARY_PATH's components must be absolute path names
@@ -19,9 +30,9 @@ function run {
    # prepending is less flexible but safer because it ensures we find the plugins
    # in the same directory as the VM.
    if [[ -n $IMAGE ]]; then
-      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$@"
+      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$args"
    else
-      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls Squeak*image | head -1)" "$@"
+      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls Squeak*image | head -1)" "$args"
    fi
 }
 
@@ -51,15 +62,20 @@ function update {
    echo "Updating to Trunk..."
    update_file="__squeak_update.st"
    echo "MCMcmUpdater updateFromDefaultRepository." > $update_file
-   echo "SmalltalkImage current snapshot: true andQuit: true" >> $update_file
-   run $update_file
+   echo "World color: Preferences defaultWorldColor." >> $update_file
+   echo "SystemWindow subclasses collect: [:k | k allInstances] thenDo: [:iary | iary do: [:each | each delete]]." >> $update_file
+   echo "SmalltalkImage current snapshot: true andQuit: true." >> $update_file   
+   run $1 $update_file
    rm $update_file
 }
 
 if [ "$1" == "download" ]; then
    download
    update
+else if [ "$2" == "download" ]; then
+   download
+   update $@
 else
    run $@
-fi
+fi fi
 
