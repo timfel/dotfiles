@@ -72,6 +72,7 @@ function environment {
    export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
 
    export RUBYOPT="rubygems"
+   export MAGLEV_OPTS="-rubygems"
 
    export EDITOR=vi
 }
