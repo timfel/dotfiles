@@ -7,10 +7,10 @@ LAPTOP_DISPLAY="DFP-0"
 EXTERNAL_DISPLAY="DFP-1"
 
 function toggle_view {
-   CURRENT_RESOLUTION=`xrandr | grep -P "[0-9]+\.[0-9]\*" | awk '{print $1}'`
-   CURRENT_REFRESHRATE=`xrandr | grep -P "[0-9]+\.[0-9]\*" | awk '{print $2}'`
-   NVOUTPUT=`nv-control-dpy --dynamic-twinview`
-   NVOUTPUT=`nv-control-dpy --add-metamode $LAPTOP_DISPLAY: nvidia-auto-select +0+0, $EXTERNAL_DISPLAY: nvidia-auto-select +0+0`
+   CURRENT_RESOLUTION=`xrandr 2>&1 | grep -P "[0-9]+\.[0-9]\*" | awk '{print $1}'`
+   CURRENT_REFRESHRATE=`xrandr 2>&1 | grep -P "[0-9]+\.[0-9]\*" | awk '{print $2}'`
+   nv-control-dpy --dynamic-twinview 2>&1 > /dev/null
+   nv-control-dpy --add-metamode "$LAPTOP_DISPLAY: nvidia-auto-select +0+0, $EXTERNAL_DISPLAY: nvidia-auto-select +0+0" > /dev/null 2>&1
 
    nv-control-dpy --probe-dpys | grep $EXTERNAL_DISPLAY > /dev/null 2>&1
    if [ $? -gt 0 ] ; then
@@ -41,7 +41,7 @@ function toggle_view {
 
    # Now activate it!
    notify-send -t 1 "${NOTIFICATION}Switching to $RESOLUTION@$REFRESHID."
-   xrandr -r "$REFRESHID" -s "$RESOLUTION"
+   xrandr -r "$REFRESHID" -s "$RESOLUTION" 2>&1 > /dev/null
 }
 
 # We need to build the modepool for all displays, if this has not been done already
