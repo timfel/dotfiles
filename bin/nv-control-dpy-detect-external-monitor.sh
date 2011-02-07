@@ -7,38 +7,41 @@ LAPTOP_DISPLAY="DFP-0"
 EXTERNAL_DISPLAY="DFP-1"
 
 function toggle_view {
+   CURRENT_RESOLUTION=`xrandr | grep -P "[0-9]+\.[0-9]\*" | awk '{print $1}'`
+   CURRENT_REFRESHRATE=`xrandr | grep -P "[0-9]+\.[0-9]\*" | awk '{print $2}'`
    NVOUTPUT=`nv-control-dpy --dynamic-twinview`
+   NVOUTPUT=`nv-control-dpy --add-metamode $LAPTOP_DISPLAY: nvidia-auto-select +0+0, $EXTERNAL_DISPLAY: nvidia-auto-select +0+0`
 
+   nv-control-dpy --probe-dpys | grep $EXTERNAL_DISPLAY > /dev/null 2>&1
    if [ $? -gt 0 ] ; then
-      nv-control-dpy --probe-dpys | grep $EXTERNAL_DISPLAY > /dev/null 2>&1
-      if [ $? -gt 0 ] ; then
-	 NOTIFICATION="Could not discover the display '$EXTERNAL_DISPLAY'. "
-	 # Get the modeline that has only a single nvidia-auto-select for the laptop
-	 modeline=`nv-control-dpy --print-metamodes | grep -m1 -P "$LAPTOP_DISPLAY: nvidia-auto-select[^(nvidia-auto-select)]*$"`
-      else
-	 # Get the modeline that has only two nvidia-auto-select for the laptop and external display
-	 modeline=`nv-control-dpy --print-metamodes | grep -m1 -P "$LAPTOP_DISPLAY: nvidia-auto-select.*, $EXTERNAL_DISPLAY: nvidia-auto-select"`
-      fi
-      if [[ -z $modeline ]]; then
-	 NOTIFICATION="${NOTIFICATION}Could retrieve a valid modeline. "
-	 exit 1
-      fi
-      # The output from nv-control-dpy includes the refresh rate of the new mode.
-      # This acts as a kind of unique id for the entry
-      REFRESHID=`expr "$modeline" : ".*id=\([0-9]*\)"`
+      # Get the modeline that has only a single nvidia-auto-select for the laptop
+      NOTIFICATION="Could not discover the display '$EXTERNAL_DISPLAY'. "
+      first_display="$LAPTOP_DISPLAY: nvidia-auto-select.*, "
+      second_display="$EXTERNAL_DISPLAY: NULL"
    else
-      REFRESHID=`expr "$NVOUTPUT" : ".*id.*is \([0-9]*\);.*"`
+      # Get the modeline that has only nvidia-auto-select for the laptop and external display, and doesn't have the currently used id
+      first_display="^\s+id=(?!${CURRENT_REFRESHRATE}).*$LAPTOP_DISPLAY: nvidia-auto-select.*, "
+      second_display="$EXTERNAL_DISPLAY: nvidia-auto-select"
+      modeline=`nv-control-dpy --print-metamodes | grep -m1 -P "''"`
    fi
-
+   grepline="$first_display$second_display"
+   modeline=`nv-control-dpy --print-metamodes | grep -m1 -P "$grepline"`
+   if [[ -z $modeline ]]; then
+      NOTIFICATION="${NOTIFICATION}Could retrieve a valid modeline. "
+      exit 1
+   fi
+   # The output from nv-control-dpy includes the refresh rate of the new mode.
+   # This acts as a kind of unique id for the entry
+   REFRESHID=`expr "$modeline" : ".*id=\([0-9]*\)"`
 
    # Now we have the id, we just need to get the list of available modes from xrandr
    # and extract the new resolution of all of the enabled displays which can be identified alongside the refresh rate 
    MODES=`xrandr 2>&1`
-   RESOLUTION=`expr "$MODES" : ".* \([0-9]*x[0-9]*\)[ ]*$REFRESHID.0"`
+   RESOLUTION=`expr "$MODES" : ".* \([0-9]*x[0-9]*\)[ 0-9\.0]*$REFRESHID\.0"`
 
    # Now activate it!
    notify-send -t 1 "${NOTIFICATION}Switching to $RESOLUTION@$REFRESHID."
-   xrandr -s "$RESOLUTION@$REFRESHID"
+   xrandr -r "$REFRESHID" -s "$RESOLUTION"
 }
 
 # We need to build the modepool for all displays, if this has not been done already
