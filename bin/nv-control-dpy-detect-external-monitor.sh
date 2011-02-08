@@ -4,7 +4,7 @@
 # I am interested in a CRT monitor being attached, but this could be TV-0 or something
 
 LAPTOP_DISPLAY="DFP-0"
-EXTERNAL_DISPLAY="DFP-1"
+EXTERNAL_DISPLAY="DFP-[1|2]"
 
 function toggle_view {
    CURRENT_RESOLUTION=`xrandr 2>&1 | grep -P "[0-9]+\.[0-9]\*" | awk '{print $1}'`
