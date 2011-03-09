@@ -246,7 +246,7 @@ function system_tweaks {
 
       # Better desktop responsiveness. See http://www.webupd8.org/2010/11/alternative-to-200-lines-kernel-patch.html
       if [ "$PS1" ] ; then  
-	 mkdir -p -m 0700 /dev/cgroup/cpu/user/$$ > /dev/null 2>&1
+	 mkdir -p -m 0700 /dev/cgroup/cpu/user/$$ # > /dev/null 2>&1
 	 echo $$ > /dev/cgroup/cpu/user/$$/tasks
 	 echo "1" > /dev/cgroup/cpu/user/$$/notify_on_release
       fi
