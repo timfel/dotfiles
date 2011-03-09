@@ -1,0 +1,39 @@
+#!/bin/bash
+# Gets the screen names as arguments from the daemon
+
+if test -z "$XDG_CONFIG_HOME" ; then
+    config_dir="${HOME}/.config/nv-dpy-daemon"
+else
+    config_dir="${XDG_CONFIG_HOME}/nv-dpy-daemon"
+fi
+
+function log() {
+    echo $1 >> "${config_dir}/log"
+}
+
+screen_file_extension='.screen'
+bash_file_extension='.sh'
+screen_file=$(echo "$@" | tr -d '[ /]')
+
+# create config dir as neccessary
+if [ ! -d "$config_dir" ]; then
+    mkdir -p "$config_dir"
+fi
+old_screens=$(cat "${config_dir}/current_screens" 2> /dev/null)
+
+if [ ! "${old_screens}" == "${screen_file}" ]; then
+    echo "${screen_file}" > "${config_dir}/current_screens"
+    if [ -e "${config_dir}/${screen_file}${screen_file_extension}" ]; then
+        cat "${config_dir}/${screen_file}${screen_file_extension}" | disper --import
+        log "Using the following configuration for ${screen_file}:"
+        log "$(cat ${config_dir}/${screen_file}${screen_file_extension} | sed 's/^/  /')"
+    else if [ -e "${config_dir}/${screen_file}${bash_file_extension}" ]; then
+        bash -c "${config_dir}/${screen_file}${bash_file_extension}"
+        log "Using the following configuration for ${screen_file}:"
+        log "$(cat ${config_dir}/${screen_file}${bash_file_extension} | sed 's/^/  /')"
+    else
+        log "Using single monitor for ${config_dir}/${screen_file}${screen_file_extension}"
+        disper -e
+    fi fi
+fi
+
