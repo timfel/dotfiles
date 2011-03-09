@@ -1,0 +1,49 @@
+#!/bin/bash
+function __maglev_head_enable_maglev {
+   export MAGLEV_HOME="$HOME/Devel/projects/maglev"
+   export PATH="$MAGLEV_HOME/bin:$PATH"
+}
+
+function __maglev_head_disable_maglev {
+   if [ "$MAGLEV_HOME" != "" ]; then
+      first="${PATH%%:*}"
+      rest="$PATH"
+      while [ first != "" ]; do
+	 rest="${rest#*:}"
+	 if [ "$first" != "$MAGLEV_HOME/bin" ]; then
+	    new_path="$new_path:$first"
+	 else
+	    new_path="$new_path:$rest"
+	    break
+	 fi
+	 first="${rest%%:*}"
+	 if [ "$rest" == "${rest/:/}" ]; then
+	    break
+	 fi
+      done
+      export PATH="${new_path:1}"
+      unset MAGLEV_HOME
+      unset first
+      unset rest
+      unset new_path
+   else
+      echo "MAGLEV_HOME not defined, skipping."
+   fi
+}
+
+if [ $# -ne 1 ]; then
+   echo "Supply enable or disable as argument"
+else
+   if [ $1 == "enable" ]; then
+      if [ "$MAGLEV_HOME" != "" ]; then
+	 __maglev_head_disable_maglev
+      fi
+      __maglev_head_enable_maglev
+   else if [ $1 == "disable" ]; then
+      __maglev_head_disable_maglev
+   else
+      echo "Supply enable or disable as argument"
+   fi fi
+fi
+
+
