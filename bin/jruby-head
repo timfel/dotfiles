@@ -1,0 +1,49 @@
+#!/bin/bash
+function __jruby_head_enable_jruby {
+   export JRUBY_HOME="$HOME/Devel/projects/jruby"
+   export PATH="$JRUBY_HOME/bin:$PATH"
+}
+
+function __jruby_head_disable_jruby {
+   if [ "$JRUBY_HOME" != "" ]; then
+      first="${PATH%%:*}"
+      rest="$PATH"
+      while [ first != "" ]; do
+	 rest="${rest#*:}"
+	 if [ "$first" != "$JRUBY_HOME/bin" ]; then
+	    new_path="$new_path:$first"
+	 else
+	    new_path="$new_path:$rest"
+	    break
+	 fi
+	 first="${rest%%:*}"
+	 if [ "$rest" == "${rest/:/}" ]; then
+	    break
+	 fi
+      done
+      export PATH="${new_path:1}"
+      unset JRUBY_HOME
+      unset first
+      unset rest
+      unset new_path
+   else
+      echo "JRUBY_HOME not defined, skipping."
+   fi
+}
+
+if [ $# -ne 1 ]; then
+   echo "Supply enable or disable as argument"
+else
+   if [ $1 == "enable" ]; then
+      if [ "$JRUBY_HOME" != "" ]; then
+	 __jruby_head_disable_jruby
+      fi
+      __jruby_head_enable_jruby
+   else if [ $1 == "disable" ]; then
+      __jruby_head_disable_jruby
+   else
+      echo "Supply enable or disable as argument"
+   fi fi
+fi
+
+

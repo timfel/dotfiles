@@ -222,6 +222,7 @@ function bin_options {
    # Work shortcuts
    alias swa_hiwi="cd ~/Documents/HPI/SWA-HiWi"
    alias maglevh=". maglev-head"
+   alias jrubyh=". jruby-head"
 }
 
 function rvm_env {
