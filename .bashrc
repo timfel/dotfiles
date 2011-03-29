@@ -74,7 +74,10 @@ function environment {
    export RUBYOPT="rubygems"
    export MAGLEV_OPTS="-rubygems"
 
-   export EDITOR=vi
+   export EDITOR="emacsclient -f ${HOME}/.emacs.d/server/server -c"
+   export ALTERNATE_EDITOR=""
+   alias vi=$EDITOR
+   alias emacs=$EDITOR
 }
 
 function bash_options {
@@ -201,7 +204,7 @@ function bin_options {
    alias l='ls -CF'
    alias pdflatex='pdflatex -shell-escape'
    alias sudo='sudo -E'
-   alias vi='RUBYOPTS="$RUBYOPTS -W0" vim'
+   # alias vi='RUBYOPTS="$RUBYOPTS -W0" vim'
    alias sshx='ssh -X -C -c blowfish-cbc'
    alias gitpp="git pull && git push"
    alias sc="env RAILSCONSOLE=1 script/console"
