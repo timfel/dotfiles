@@ -68,7 +68,6 @@ function environment {
    # ... and ignore same sucessive entries.
    export HISTCONTROL=ignoreboth
 
-   # export EDITOR="vim"
    export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
 
    export RUBYOPT="rubygems"
