@@ -30,4 +30,6 @@
    project = 25090
 [diff]
    ignoreSubmodules = untracked
+[merge]
+   conflictstyle = diff3
 
