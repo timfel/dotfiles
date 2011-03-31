@@ -1,7 +1,7 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
 # If not running interactively, don't do anything
-if [[ -n $PS1 ]]; then 
+if [[ -n $PS1 ]]; then
 
 #define all colors
 if [ $(uname) != "SunOS" ] && [ "$TERM" != "dumb" ]; then
@@ -99,9 +99,9 @@ function bash_options {
 function prompt {
 
    # Show last commands exit-code by smiley
-   if [ $? = 0 ]; then 
+   if [ $? = 0 ]; then
       EXITCODE="${COLOR_GREEN_BOLD}✔"
-   else 
+   else
       EXITCODE="${COLOR_RED_BOLD}✘"
    fi
    EXITCODE=$EXITCODE${COLOR_NONE}
@@ -120,22 +120,22 @@ function prompt {
    if [ -n "$SSH_TTY" ]; then
       # set user and host
       if [ $USER == "root" ]; then
-	 MACHINE="${COLOR_RED_BOLD}"
+         MACHINE="${COLOR_RED_BOLD}"
       else
-	 MACHINE="${COLOR_GREEN_BOLD}"
+         MACHINE="${COLOR_GREEN_BOLD}"
       fi
       if [ "$USER" == "tim" ]; then
-	 MACHINE="${MACHINE}➔"
+         MACHINE="${MACHINE}➔"
       else if [ "$USER" == "timfel" ]; then
-	 MACHINE="${MACHINE}➔"
+         MACHINE="${MACHINE}➔"
       else if [ "$USER" == "tim.felgentreff" ]; then
-	 MACHINE="${MACHINE}➔"
+         MACHINE="${MACHINE}➔"
       else if [ "$USER" == "timfelgentreff" ]; then
-	 MACHINE="${MACHINE}➔"
+         MACHINE="${MACHINE}➔"
       else if [ "$USER" == "timme" ]; then
-	 MACHINE="${MACHINE}➔"
+         MACHINE="${MACHINE}➔"
       else
-	 MACHINE="${MACHINE}${USER}@"
+         MACHINE="${MACHINE}${USER}@"
       fi fi fi fi fi
       MACHINE="${MACHINE}${HOSTNAME}${COLOR_NONE}:"
    else
@@ -145,15 +145,15 @@ function prompt {
    # Have a fancy coloured prompt
    color_prompt=yes
    if [ "$color_prompt" = yes ]; then
-       if [ $(whoami) = root ]; then 
-	   PS1="${MACHINE}${COLOR_RED_BOLD}\w${COLOR_NONE}"
+       if [ $(whoami) = root ]; then
+           PS1="${MACHINE}${COLOR_RED_BOLD}\w${COLOR_NONE}"
        else
-	   PS1="${MACHINE}${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
+           PS1="${MACHINE}${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
        fi
    else
        PS1='${debian_chroot:+($debian_chroot)}$MACHINE:\w '
    fi
-   unset color_prompt 
+   unset color_prompt
 
    # SHOW RUBY VERSION
    PS1="$PS1 \$(~/.rvm/bin/rvm-prompt u)"
@@ -161,7 +161,7 @@ function prompt {
    # Show the current branch
    source "$HOME"/bin/bash_vcs.sh
    VCS=`echo -e $(__prompt_command)`
-   if [ -z "$VCS" ]; then  
+   if [ -z "$VCS" ]; then
       EXITCODE=" ${EXITCODE}"
    else
       VCS=" ❰${VCS}❱ "
@@ -180,21 +180,21 @@ function bin_options {
            eval "`dircolors -b`"
        fi
        if [ $(uname) != "Darwin" ]; then
-	  alias ls='ls --color=auto'
-	  alias dir='ls --color=auto --format=vertical'
-	  alias vdir='ls --color=auto --format=long'
+          alias ls='ls --color=auto'
+          alias dir='ls --color=auto --format=vertical'
+          alias vdir='ls --color=auto --format=long'
 
-	  alias grep='grep --color=auto'
-	  alias fgrep='fgrep --color=auto'
-	  alias egrep='egrep --color=auto'
+          alias grep='grep --color=auto'
+          alias fgrep='fgrep --color=auto'
+          alias egrep='egrep --color=auto'
        else
-	  alias ls='ls -G'
-	  alias dir='ls -G'
-	  alias vdir='ls -G -l'
+          alias ls='ls -G'
+          alias dir='ls -G'
+          alias vdir='ls -G -l'
 
-	  alias grep='grep --color=auto'
-	  alias fgrep='fgrep --color=auto'
-	  alias egrep='egrep --color=auto'
+          alias grep='grep --color=auto'
+          alias fgrep='fgrep --color=auto'
+          alias egrep='egrep --color=auto'
        fi
    fi
 
@@ -249,10 +249,10 @@ function system_tweaks {
       fi
 
       # Better desktop responsiveness. See http://www.webupd8.org/2010/11/alternative-to-200-lines-kernel-patch.html
-      if [ "$PS1" ] ; then  
-	 mkdir -p -m 0700 /dev/cgroup/cpu/user/$$ # > /dev/null 2>&1
-	 echo $$ > /dev/cgroup/cpu/user/$$/tasks
-	 echo "1" > /dev/cgroup/cpu/user/$$/notify_on_release
+      if [ "$PS1" ] ; then
+         mkdir -p -m 0700 /dev/cgroup/cpu/user/$$ # > /dev/null 2>&1
+         echo $$ > /dev/cgroup/cpu/user/$$/tasks
+         echo "1" > /dev/cgroup/cpu/user/$$/notify_on_release
       fi
    fi
 }
