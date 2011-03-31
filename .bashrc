@@ -77,6 +77,7 @@ function environment {
    export ALTERNATE_EDITOR=""
    alias vi=$EDITOR
    alias emacs=$EDITOR
+   alias em="$EDITOR -n"
 }
 
 function bash_options {
