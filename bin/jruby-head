@@ -2,6 +2,7 @@
 function __jruby_head_enable_jruby {
    export JRUBY_HOME="$HOME/Devel/projects/jruby"
    export PATH="$JRUBY_HOME/bin:$PATH"
+   alias jruby_debug="jruby -J-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=4000 -J-Xdebug"
 }
 
 function __jruby_head_disable_jruby {
@@ -9,20 +10,21 @@ function __jruby_head_disable_jruby {
       first="${PATH%%:*}"
       rest="$PATH"
       while [ first != "" ]; do
-	 rest="${rest#*:}"
-	 if [ "$first" != "$JRUBY_HOME/bin" ]; then
-	    new_path="$new_path:$first"
-	 else
-	    new_path="$new_path:$rest"
-	    break
-	 fi
-	 first="${rest%%:*}"
-	 if [ "$rest" == "${rest/:/}" ]; then
-	    break
-	 fi
+         rest="${rest#*:}"
+         if [ "$first" != "$JRUBY_HOME/bin" ]; then
+            new_path="$new_path:$first"
+         else
+            new_path="$new_path:$rest"
+            break
+         fi
+         first="${rest%%:*}"
+         if [ "$rest" == "${rest/:/}" ]; then
+            break
+         fi
       done
       export PATH="${new_path:1}"
       unset JRUBY_HOME
+      unalias jruby_debug
       unset first
       unset rest
       unset new_path
