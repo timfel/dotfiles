@@ -38,7 +38,7 @@ if [ $# -ne 1 ]; then
 else
    if [ $1 == "enable" ]; then
       if [ "$JRUBY_HOME" != "" ]; then
-	 __jruby_head_disable_jruby
+         __jruby_head_disable_jruby
       fi
       __jruby_head_enable_jruby
    else if [ $1 == "disable" ]; then
