@@ -18,6 +18,9 @@ if [ $(uname) != "SunOS" ] && [ "$TERM" != "dumb" ]; then
    COLOR_MAGENTA_BOLD="\[\033[35;1m\]"
    COLOR_CYAN_BOLD="\[\033[36;1m\]"
    COLOR_NONE="\[\033[0m\]"
+   if [ "$TERM" == "xterm" ]; then
+      export TERM="xterm-256color"
+   fi
 fi
 
 function titlebar {
