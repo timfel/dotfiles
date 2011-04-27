@@ -76,11 +76,11 @@ function environment {
    export RUBYOPT="rubygems"
    export MAGLEV_OPTS="-rubygems"
 
-   export EDITOR="emacsclient -f ${HOME}/.emacs.d/server/server -c"
+   export EMACS="emacsclient -f ${HOME}/.emacs.d/server/server -c"
+   export EDITOR="$EMACS -t"
    export ALTERNATE_EDITOR=""
    alias vi=$EDITOR
-   alias emacs=$EDITOR
-   alias em="$EDITOR -n"
+   alias em="$EMACS -n"
 }
 
 function bash_options {
