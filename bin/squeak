@@ -2,13 +2,13 @@
 
 function run {
    if [[ "$1" == "oldvm" ]]; then
-      version="4.0.3-2202"
+      version="squeakvm"
       image_arg="$2"
       args=${@:2}
       echo "Using old VM"
       echo "Remaining arguments are $args"
    else
-      version="3.9-7"
+      version="cog"
       image_arg="$1"
       args=$@
    fi
