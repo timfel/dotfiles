@@ -48,12 +48,13 @@ module MyIRB
       File.exists? bin
     end
   end
-  
+
   def jruby?;    RUBY_ENGINE == "jruby";    end
   def mri?;      RUBY_ENGINE == "ruby";     end
   def rbx?;      RUBY_ENGINE == "rbx";      end
   def ironruby?; RUBY_ENGINE == "ironruby"; end
   def macruby?;  RUBY_ENGINE == "macruby";  end
+  def maglev?;   RUBY_ENGINE == "maglev";   end
 
   alias rubinius? rbx?
 
@@ -102,5 +103,5 @@ module MyIRB
     require File.join(File.dirname(__FILE__), "engine", RUBY_ENGINE)
   rescue LoadError
   end
-  
+
 end
