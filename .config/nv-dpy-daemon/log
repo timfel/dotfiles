@@ -1,0 +1,299 @@
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDNECLCD1800.screen
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCD.screen
+Using the following configuration:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +0+1024, DFP-2: 1280x1024 @1280x1024 +0+0 scaling: stretched, stretched
+Using the following configuration:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +0+1024, DFP-2: 1280x1024 @1280x1024 +0+0 scaling: stretched, stretched
+Using the following configuration:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDBenQG2200W.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDBenQG2200W:
+backend: nvidia associated displays: DFP-0, DFP-1 metamode: DFP-0: 1280x800 @1280x800 +0+1050, DFP-1: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEizoL671.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDEizoL671:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +0+480, DFP-2: 640x480 @640x480 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDEizoL671:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +0+1024, DFP-2: 1280x1024 @1280x1024 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDEizoL671:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +0+1024, DFP-2: 1280x1024 @1280x1024 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDEizoL671:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +0+1024, DFP-2: 1280x1024 @1280x1024 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDEizoL671:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +0+1024, DFP-2: 1280x1024 @1280x1024 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDSamsungSyncMaster.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-2: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDEizoL671:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +0+1024, DFP-2: 1280x1024 @1280x1024 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDOPTiOptomaHD20.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDOPTiOptomaHD20.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDOPTiOptomaHD20.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDProjectiondesignASSX+DLP.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-2: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-2: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-2: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-2: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-2: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-2: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-2: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-2: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-2 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-1: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-1 metamode: DFP-0: 1280x800 @1280x800 +400+1050, DFP-1: 1680x1050 @1680x1050 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDSamsungSyncMaster:
+backend: nvidia associated displays: DFP-0, DFP-1 metamode: DFP-0: 1280x800 @1280x800 +0+1152, DFP-1: 2048x1152 @2048x1152 +0+0 scaling: stretched, stretched
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDOPTiOptomaHD20.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDDFP-2.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using the following configuration for AppleColorLCDNECLCD1800:
+#!/bin/bash disper -e -t top
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDBenQW1000.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched
+Using single monitor for /home/tim/.config/nv-dpy-daemon/AppleColorLCDEMAV700.screen
+Using the following configuration for AppleColorLCD:
+backend: nvidia associated displays: DFP-0 metamode: DFP-0: 1280x800 @1280x800 +0+0 scaling: stretched

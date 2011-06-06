@@ -1,0 +1,4 @@
+backend: nvidia
+associated displays: DFP-0, DFP-1
+metamode: DFP-0: 1280x800 @1280x800 +0+1152, DFP-1: 2048x1152 @2048x1152 +0+0
+scaling: stretched, stretched
