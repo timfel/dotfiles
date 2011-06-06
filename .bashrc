@@ -182,6 +182,9 @@ function bin_options {
        if [ -x /usr/bin/dircolors ]; then
            eval "`dircolors -b`"
        fi
+       if [ -e ~/.dircolors ]; then
+	   eval "`dircolors ~/.dircolors`"
+       fi
        if [ $(uname) != "Darwin" ]; then
           alias ls='ls --color=auto'
           alias dir='ls --color=auto --format=vertical'
