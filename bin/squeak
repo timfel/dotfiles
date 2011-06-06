@@ -61,10 +61,28 @@ function download {
 function update {
    echo "Updating to Trunk..."
    update_file="__squeak_update.st"
-   echo "MCMcmUpdater updateFromDefaultRepository." > $update_file
-   echo "World color: Preferences defaultWorldColor." >> $update_file
-   echo "SystemWindow subclasses collect: [:k | k allInstances] thenDo: [:iary | iary do: [:each | each delete]]." >> $update_file
-   echo "SmalltalkImage current snapshot: true andQuit: true." >> $update_file   
+   cat <<EOF> $update_file
+   MCMcmUpdater updateFromDefaultRepository.
+   World color: Preferences defaultWorldColor.
+   (UIManager default confirm: 'Install OB and MetacelloBrowser?')
+      ifTrue: [
+         Installer ss
+            project: 'MetacelloBrowser';
+            install: 'ConfigurationOfMetacelloBrowser'.
+         Installer ss
+            project: 'MetacelloRepository';
+            install: 'ConfigurationOfOmniBrowser'.
+
+         ((Smalltalk at: #ConfigurationOfOmniBrowser) project
+            perform: #stableVersion)
+               perform: #load: with: #(Dev).
+         ((Smalltalk at: #ConfigurationOfMetacelloBrowser) project
+            perform: #stableVersion)
+               perform: #load
+      ].
+   SystemWindow subclasses collect: [:k | k allInstances] thenDo: [:iary | iary do: [:each | each delete]].   
+   SmalltalkImage current snapshot: true andQuit: true.
+EOF
    run $1 $update_file
    rm $update_file
 }
