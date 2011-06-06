@@ -8,8 +8,7 @@ if [[ -e "${homedir}/welcome.sh" ]]; then
 fi
 
 function welcome_sync_projects {
-   echo "Pull from all repositories in $devdir"
-   cd "$devdir"
+   echo "Pull from all repositories in $pwd"
    for i in *; do
       if [[ -d "$i" ]]; then
 	 cd "$i"
@@ -18,7 +17,6 @@ function welcome_sync_projects {
 	 cd ..
       fi
    done
-   cd "$homedir"
 }
 
 function welcome_update_homebrew {
