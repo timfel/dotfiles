@@ -239,6 +239,7 @@ function rvm_env {
       if [ "Linux" == `uname` ]; then
          if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then source "$HOME"/.rvm/scripts/rvm ; fi
       else
+	 export rvm_path=/usr/local/rvm/
          if [[ -s "/usr/local/lib/rvm" ]] ; then source "/usr/local/lib/rvm" ; fi
       fi
       rvm use ree
