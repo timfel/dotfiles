@@ -1,8 +1,0 @@
-#!/bin/bash
-if [ ! "`which firefox-bin 2>/dev/null`" ]; then
-    if [ "`which firefox-trunk 2>/dev/null`" ]; then
-        firefox-trunk $@
-    fi
-else
-    exec firefox-bin $@
-fi
