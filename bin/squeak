@@ -7,11 +7,17 @@ function run {
       args=${@:2}
       echo "Using old VM"
       echo "Remaining arguments are $args"
+   else if [[ "$1" == "x86_64" ]]; then
+      version="squeakvm64bit"
+      image_arg="$2"
+      args=${@:2}
+      echo "Using 64bit VM"
+      echo "Remaining arguments are $args"
    else
       version="cog"
       image_arg="$1"
       args=$@
-   fi
+   fi fi
    BIN=`/usr/bin/dirname "$0"`/lib/squeak/$version
    if [[ -e "$image_arg" ]]; then
       if [[ -n $(echo "$image_arg" | grep "\.image$") ]]; then
@@ -80,7 +86,7 @@ function update {
             perform: #stableVersion)
                perform: #load
       ].
-   SystemWindow subclasses collect: [:k | k allInstances] thenDo: [:iary | iary do: [:each | each delete]].   
+   SystemWindow subclasses collect: [:k | k allInstances] thenDo: [:iary | iary do: [:each | each delete]].
    SmalltalkImage current snapshot: true andQuit: true.
 EOF
    run $1 $update_file
