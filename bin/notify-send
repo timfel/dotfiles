@@ -1,1 +1,2 @@
-notify-send --hint=int:transient:1 $@
+#!/bin/bash
+/usr/bin/notify-send --hint=int:transient:1 $@
