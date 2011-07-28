@@ -58,6 +58,9 @@ function path {
    if [[ -e "$HOME/Devel/projects/git-hg/bin" ]]; then
       export PATH=$PATH:$HOME/Devel/projects/git-hg/bin
    fi
+   if [[ -e "$HOME/homebrew/bin" ]]; then
+      export PATH=$HOME/homebrew/bin:$PATH
+   fi
 }
 
 function environment {
