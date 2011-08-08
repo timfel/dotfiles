@@ -8,7 +8,7 @@ module SSHTunnel
     attr_reader :connections, :local_ports
 
     @@log = Logger.new(STDOUT)
-    @@log.level = Logger::DEBUG 
+    @@log.level = Logger::DEBUG
 
     def initialize
       @connections = {}
