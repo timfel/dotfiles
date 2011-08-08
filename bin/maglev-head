@@ -1,7 +1,11 @@
 #!/bin/bash
 function __maglev_head_enable_maglev {
    export MAGLEV_HOME="$HOME/Devel/projects/maglev"
+   export GEMSTONE_GLOBAL_DIR=$MAGLEV_HOME
    export PATH="$MAGLEV_HOME/bin:$PATH"
+   export GEMSTONE="$MAGLEV_HOME/gemstone"
+   export GEM_OPTS="--no-ri --no-rdoc"
+   . "$MAGLEV_HOME/gemstone/bin/gemsetup.sh"
 }
 
 function __maglev_head_disable_maglev {
@@ -9,17 +13,14 @@ function __maglev_head_disable_maglev {
       first="${PATH%%:*}"
       rest="$PATH"
       while [ first != "" ]; do
-	 rest="${rest#*:}"
-	 if [ "$first" != "$MAGLEV_HOME/bin" ]; then
-	    new_path="$new_path:$first"
-	 else
-	    new_path="$new_path:$rest"
-	    break
-	 fi
-	 first="${rest%%:*}"
-	 if [ "$rest" == "${rest/:/}" ]; then
-	    break
-	 fi
+         rest="${rest#*:}"
+         if [ "$first" != "$MAGLEV_HOME/bin" ]; then
+             new_path="$new_path:$first"
+         fi
+         first="${rest%%:*}"
+         if [ "$rest" == "${rest/:/}" ]; then
+            break
+         fi
       done
       export PATH="${new_path:1}"
       unset MAGLEV_HOME
@@ -36,7 +37,7 @@ if [ $# -ne 1 ]; then
 else
    if [ $1 == "enable" ]; then
       if [ "$MAGLEV_HOME" != "" ]; then
-	 __maglev_head_disable_maglev
+         __maglev_head_disable_maglev
       fi
       __maglev_head_enable_maglev
    else if [ $1 == "disable" ]; then
