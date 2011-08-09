@@ -176,6 +176,15 @@ function prompt {
    fi
    PS1="$PS1$VCS"
    PS1="$PS1$EXITCODE "
+
+   # Finally, see if there's a timEnv file and source it, if we haven't already
+   if [ -e timEnv ]; then
+       if [[ ! "$ACTIVE_TIM_ENVS" =~ .*:"$pwd".* ]]; then
+          echo "Sourcing timEnv"
+          export ACTIVE_TIM_ENVS="$ACTIVE_TIM_ENVS:$(pwd)"
+          source timEnv
+       fi
+   fi
 }
 
 function bin_options {
