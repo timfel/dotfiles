@@ -162,7 +162,7 @@ function prompt {
    unset color_prompt
 
    # SHOW RUBY VERSION
-   if which rvm-prompt; then
+   if (which rvm-prompt 2>&1 > /dev/null); then
       PS1="$PS1 \$(rvm-prompt u)"
    fi
 
