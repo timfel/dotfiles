@@ -6,6 +6,7 @@
    merge = merge --no-ff
    pull = pull --no-ff
    news = !git lg $(git log --author='Tim Felgentreff' --pretty=format:%H -n1)..
+   rb = rebase --stat --ignore-whitespace
 [user]
    name = Tim Felgentreff
    email = "timfelgentreff@gmail.com"
