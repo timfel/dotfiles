@@ -233,8 +233,8 @@ function bin_options {
 
    # Work shortcuts
    alias swa_hiwi="cd ~/Documents/HPI/SWA-HiWi"
-   alias maglevh=". maglev-head"
-   alias jrubyh=". jruby-head"
+   alias maglevh="source ~/bin/maglev-head"
+   alias jrubyh="source ~/bin/jruby-head"
 }
 
 function rvm_env {
