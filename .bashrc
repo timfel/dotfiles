@@ -162,7 +162,9 @@ function prompt {
    unset color_prompt
 
    # SHOW RUBY VERSION
-   PS1="$PS1 \$(~/.rvm/bin/rvm-prompt u)"
+   if (which rvm-prompt 2>&1 > /dev/null); then
+      PS1="$PS1 \$(rvm-prompt u)"
+   fi
 
    # Show the current branch
    source "$HOME"/bin/bash_vcs.sh
@@ -174,6 +176,15 @@ function prompt {
    fi
    PS1="$PS1$VCS"
    PS1="$PS1$EXITCODE "
+
+   # Finally, see if there's a timEnv file and source it, if we haven't already
+   if [ -e timEnv ]; then
+       if [[ ! "$ACTIVE_TIM_ENVS" =~ .*:"$pwd".* ]]; then
+          echo "Sourcing timEnv"
+          export ACTIVE_TIM_ENVS="$ACTIVE_TIM_ENVS:$(pwd)"
+          source timEnv
+       fi
+   fi
 }
 
 function bin_options {
@@ -243,8 +254,10 @@ function rvm_env {
       echo "No rvm"
    else
       if [ "Linux" == `uname` ]; then
-         if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then source "$HOME"/.rvm/scripts/rvm ; fi
-         rvm use ree
+         if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then
+	    source "$HOME"/.rvm/scripts/rvm
+            rvm use ree
+	 fi
       else
 	 echo
          # if [[ -s "/usr/local/lib/rvm" ]] ; then source "/usr/local/lib/rvm" ; fi
@@ -255,7 +268,9 @@ function rvm_env {
 function system_tweaks {
    if [ "Linux" == `uname` ]; then
       if [[ -n "$DISPLAY" ]]; then
-         xcalib /etc/xcalib/Color\ LCD-00000610-0000-9CC7-0000-0000042731C0.icc
+	 if which xcalib; then
+            xcalib /etc/xcalib/Color\ LCD-00000610-0000-9CC7-0000-0000042731C0.icc
+	 fi
       fi
 
       # Better desktop responsiveness. See http://www.webupd8.org/2010/11/alternative-to-200-lines-kernel-patch.html
