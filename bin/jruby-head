@@ -3,6 +3,7 @@ function __jruby_head_enable_jruby {
    export JRUBY_HOME="$HOME/Devel/projects/jruby"
    export PATH="$JRUBY_HOME/bin:$PATH"
    alias jruby_debug="jruby -J-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=4000 -J-Xdebug"
+   alias jruby_gdb="gdb --args java -client -Djruby.memory.max=500m -Djruby.stack.max=2048k -Xmx500m -Xss2048k -Djffi.boot.library.path=/home/tim/Devel/projects/jruby/lib/native/i386-Linux:/home/tim/Devel/projects/jruby/lib/native/ppc-Linux:/home/tim/Devel/projects/jruby/lib/native/s390x-Linux:/home/tim/Devel/projects/jruby/lib/native/x86_64-Linux -Xbootclasspath/a:/home/tim/Devel/projects/jruby/lib/jruby.jar -classpath : -Djruby.home=/home/tim/Devel/projects/jruby -Djruby.lib=/home/tim/Devel/projects/jruby/lib -Djruby.script=jruby -Djruby.shell=/bin/sh org.jruby.Main -v"
 }
 
 function __jruby_head_disable_jruby {
