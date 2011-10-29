@@ -76,8 +76,8 @@ function environment {
 
    export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
 
-   export RUBYOPT="rubygems"
-   export MAGLEV_OPTS="-rubygems"
+   # export RUBYOPT="rubygems"
+   # export MAGLEV_OPTS="-rubygems"
 
    export EMACS="emacsclient -f ${HOME}/.emacs.d/server/server -c"
    export EDITOR="$EMACS -t"
