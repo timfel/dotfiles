@@ -20,7 +20,15 @@ module MyIRB
     RUBY_ENGINE.freeze
   end
 
-  ::RUBY_ENGINE_VERSION = Object.const_get("#{RUBY_ENGINE.upcase}_VERSION")
+  begin
+    ::RUBY_ENGINE_VERSION = Object.const_get("#{RUBY_ENGINE.upcase}_VERSION")
+  rescue NameError => e
+    if RUBY_ENGINE =~ /rubinius|rbx/
+      ::RUBY_ENGINE_VERSION = Rubinius::VERSION
+    else
+      raise e
+    end
+  end
 
   unless defined? RUBY_DESCRIPTION
     ::RUBY_DESCRIPTION = "#{RUBY_ENGINE} #{RUBY_ENGINE_VERSION} "
