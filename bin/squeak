@@ -47,7 +47,7 @@ function download {
       echo "Downloading current trunk image"
       TRUNK="ftp://ftp.squeak.org/trunk/"
       SOURCES="ftp://ftp.squeak.org/sources_files/"
-      SQUEAK_IMAGE_FILES=$(curl ${TRUNK} | grep "Squeak.*zip" | tail -1 | awk '{print $NF}')
+      SQUEAK_IMAGE_FILES=$(curl ${TRUNK} | grep "Squeak.*zip" | grep -v "SqueakCore" | tail -1 | awk '{print $NF}')
       SQUEAK_SOURCES_FILE=$(curl ${SOURCES} | grep "sources.gz" | tail -1 | awk '{print $NF}')
       wget "${SOURCES}${SQUEAK_SOURCES_FILE}"
       wget "${TRUNK}${SQUEAK_IMAGE_FILES}"
