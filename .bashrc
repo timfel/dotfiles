@@ -304,9 +304,9 @@ function rbenv_setup {
 function system_tweaks {
    if [ "Linux" == `uname` ]; then
       if [[ -n "$DISPLAY" ]]; then
-	 if ( which xcalib 2>&1 > /dev/null ); then
-            xcalib /etc/xcalib/Color\ LCD-00000610-0000-9CC7-0000-0000042731C0.icc
-	 fi
+         if ( which xcalib 2>&1 > /dev/null ); then
+            xcalib $HOME/.ColorLCD.icc
+         fi
       fi
 
       # Better desktop responsiveness. See http://www.webupd8.org/2010/11/alternative-to-200-lines-kernel-patch.html
