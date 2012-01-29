@@ -1,73 +1,82 @@
 #!/bin/bash
 
 function run {
-   if [[ "$1" == "oldvm" ]]; then
-      version="squeakvm"
-      image_arg="$2"
-      args=${@:2}
-      echo "Using old VM"
-      echo "Remaining arguments are $args"
-   else if [[ "$1" == "x86_64" ]]; then
-      version="squeakvm64bit"
-      image_arg="$2"
-      args=${@:2}
-      echo "Using 64bit VM"
-      echo "Remaining arguments are $args"
-   else
-      version="cog"
-      image_arg="$1"
-      args=$@
-   fi fi
-   BIN=`/usr/bin/dirname "$0"`/lib/squeak/$version
-   if [[ -e "$image_arg" ]]; then
-      if [[ -n $(echo "$image_arg" | grep "\.image$") ]]; then
-         IMAGE="$image_arg" # If the file exists and ends with image, use it
-      fi
-   fi
-   if [[ -e "${image_arg}.image" ]]; then
-      IMAGE="${image_arg}.image" # If an image file with that prefix exists, use it
-   fi
+    if [[ "$1" == "oldvm" ]]; then
+	version="squeakvm"
+	image_arg="$2"
+	args=${@:2}
+	echo "Using old VM"
+	echo "Remaining arguments are $args"
+    else if [[ "$1" == "x86_64" ]]; then
+	version="squeakvm64bit"
+	image_arg="$2"
+	args=${@:2}
+	echo "Using 64bit VM"
+	echo "Remaining arguments are $args"
+    else
+	version="cog"
+	image_arg="$1"
+	args=$@
+    fi fi
+    BIN=`/usr/bin/dirname "$0"`/lib/squeak/$version
+    if [[ -e "$image_arg" ]]; then
+	if [[ -n $(echo "$image_arg" | grep "\.image$") ]]; then
+            IMAGE="$image_arg" # If the file exists and ends with image, use it
+	fi
+    fi
+    if [[ -e "${image_arg}.image" ]]; then
+	IMAGE="${image_arg}.image" # If an image file with that prefix exists, use it
+    fi
 
    # At least on linux LD_LIBRARY_PATH's components must be absolute path names
-   case "$BIN" in
-      /*) PLUGINS="$BIN";;
-      *) PLUGINS="`pwd`/$BIN"
-   esac
+    case "$BIN" in
+	/*) PLUGINS="$BIN";;
+	*) PLUGINS="`pwd`/$BIN"
+    esac
    # prepending is less flexible but safer because it ensures we find the plugins
    # in the same directory as the VM.
-   if [[ -n $IMAGE ]]; then
-      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$args"
-   else
-      LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls Squeak*image | head -1)" "$args"
-   fi
+    if [[ -n $IMAGE ]]; then
+	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$args"
+    else
+	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls Squeak*image | head -1)" "$args"
+    fi
 }
 
-function download {
-   if [[ -z $(ls | grep "Squeak[^\.]*\.sources") ]]; then
-      echo "Downloading current trunk image"
-      TRUNK="ftp://ftp.squeak.org/trunk/"
-      SOURCES="ftp://ftp.squeak.org/sources_files/"
-      SQUEAK_IMAGE_FILES=$(curl ${TRUNK} | grep "Squeak.*zip" | grep -v "SqueakCore" | tail -1 | awk '{print $NF}')
-      SQUEAK_SOURCES_FILE=$(curl ${SOURCES} | grep "sources.gz" | tail -1 | awk '{print $NF}')
-      wget "${SOURCES}${SQUEAK_SOURCES_FILE}"
-      wget "${TRUNK}${SQUEAK_IMAGE_FILES}"
-      unzip Squeak*zip
-      gunzip Squeak*sources.gz
-      rm Squeak*zip
-      if [[ -z $(ls | grep Squeak.*image) ]]; then
-         possible_squeak_dir="$(ls --group-directories-first | grep -m1 Squeak)"
-         if [[ -d $possible_squeak_dir ]]; then
-            mv "$possible_squeak_dir"/* .
-            rmdir "$possible_squeak_dir"
-         fi
-      fi
-   fi
+function download_squeak {
+    if [[ -z $(ls | grep "Squeak[^\.]*\.sources") ]]; then
+	echo "Downloading current trunk image"
+	TRUNK="ftp://ftp.squeak.org/trunk/"
+	SOURCES="ftp://ftp.squeak.org/sources_files/"
+	SQUEAK_IMAGE_FILES=$(curl ${TRUNK} | grep "Squeak.*zip" | grep -v "SqueakCore" | tail -1 | awk '{print $NF}')
+	SQUEAK_SOURCES_FILE=$(curl ${SOURCES} | grep "sources.gz" | tail -1 | awk '{print $NF}')
+	wget "${SOURCES}${SQUEAK_SOURCES_FILE}"
+	wget "${TRUNK}${SQUEAK_IMAGE_FILES}"
+	unzip Squeak*zip
+	gunzip Squeak*sources.gz
+	rm Squeak*zip
+	if [[ -z $(ls | grep Squeak.*image) ]]; then
+            possible_squeak_dir="$(ls --group-directories-first | grep -m1 Squeak)"
+            if [[ -d $possible_squeak_dir ]]; then
+		mv "$possible_squeak_dir"/* .
+		rmdir "$possible_squeak_dir"
+            fi
+	fi
+    fi
+}
+
+function download_pharo {
+    VERSION="1.4"
+    wget "https://ci.lille.inria.fr/pharo/job/Pharo%20${VERSION}/lastSuccessfulBuild/artifact/Pharo-${VERSION}.zip"
+    unzip Pharo*.zip
+    rm Pharo*.zip
+    mv Pharo*/* .
+    rmdir Pharo*
 }
 
 function update {
-   echo "Updating to Trunk..."
-   update_file="__squeak_update.st"
-   cat <<EOF> $update_file
+    echo "Updating to Trunk..."
+    update_file="__squeak_update.st"
+    cat <<EOF> $update_file
    MCMcmUpdater updateFromDefaultRepository.
    World color: Preferences defaultWorldColor.
    (UIManager default confirm: 'Install OB and MetacelloBrowser?')
@@ -89,17 +98,19 @@ function update {
    SystemWindow subclasses collect: [:k | k allInstances] thenDo: [:iary | iary do: [:each | each delete]].
    SmalltalkImage current snapshot: true andQuit: true.
 EOF
-   run $1 $update_file
-   rm $update_file
+    run $1 $update_file
+    rm $update_file
 }
 
 if [ "$1" == "download" ]; then
-   download
-   update
+    download_squeak
+    update
+else if [ "$1" == "pharo" ]; then
+    download_pharo
 else if [ "$2" == "download" ]; then
-   download
-   update $@
+    download
+    update $@
 else
-   run $@
-fi fi
+    run $@
+fi fi fi
 
