@@ -166,7 +166,7 @@ function prompt {
        PS1="$PS1 \$(rvm-prompt u)"
    else
        if (which rbenv 2>&1 > /dev/null); then
-	   PS1="$PS1 \$(rbenv version-name)"
+           PS1="$PS1 \$(rbenv version-name)"
        fi
    fi
 
@@ -201,7 +201,7 @@ function bin_options {
            eval "`dircolors -b`"
        fi
        if [ -e ~/.dircolors ]; then
-	   eval "`dircolors ~/.dircolors`"
+           eval "`dircolors ~/.dircolors`"
        fi
        if [ $(uname) != "Darwin" ]; then
           alias ls='ls --color=auto'
@@ -255,49 +255,49 @@ function bin_options {
 function rvm_env {
     # rvm-install added line:
     if [[ -n $NORVM ]]; then
-	echo "No rvm"
+        echo "No rvm"
     else
-	if [ "Linux" == `uname` ]; then
-	    if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then
-		source "$HOME"/.rvm/scripts/rvm
-		rvm use ree
-	    fi
-	else
-	    echo
-	 # if [[ -s "/usr/local/lib/rvm" ]] ; then source "/usr/local/lib/rvm" ; fi
-	fi
+        if [ "Linux" == `uname` ]; then
+            if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then
+                source "$HOME"/.rvm/scripts/rvm
+                rvm use ree
+            fi
+        else
+            echo
+         # if [[ -s "/usr/local/lib/rvm" ]] ; then source "/usr/local/lib/rvm" ; fi
+        fi
     fi
 }
 
 function rbenv_setup {
     if [ ! -e "$HOME/.rbenv" ]; then
-	print "Install rbenv? (Y/n)"
-	read answer
-	if [ $answer == "y" -o $answer == "Y" ]; then
-	    git clone https://github.com/sstephenson/rbenv.git "$HOME/.rbenv"
-	    git clone https://github.com/sstephenson/ruby-build.git "$HOME/.ruby-build"
-	else
-	    touch "$HOME/.rbenv"
-	fi
-	unset answer
+        print "Install rbenv? (Y/n)"
+        read answer
+        if [ $answer == "y" -o $answer == "Y" ]; then
+            git clone https://github.com/sstephenson/rbenv.git "$HOME/.rbenv"
+            git clone https://github.com/sstephenson/ruby-build.git "$HOME/.ruby-build"
+        else
+            touch "$HOME/.rbenv"
+        fi
+        unset answer
     fi
 
     if [ -d "$HOME/.rbenv/bin" ]; then
-	export PATH="$HOME"/.rbenv/bin:"$HOME"/.rbenv/shims:"$HOME"/.ruby-build/bin:$PATH
-	source ~/.rbenv/completions/rbenv.bash
-	rbenv rehash
+        export PATH="$HOME"/.rbenv/bin:"$HOME"/.rbenv/shims:"$HOME"/.ruby-build/bin:$PATH
+        source ~/.rbenv/completions/rbenv.bash
+        rbenv rehash
 
-	function use {
-	    export RBENV_VERSION=$1
-	}
+        function use {
+            export RBENV_VERSION=$1
+        }
 
-	function __use-ruby-completion {
-	    COMPREPLY=()
-	    local word="${COMP_WORDS[COMP_CWORD]}"
-	    COMPREPLY=( $(compgen -W "$(ls ~/.rbenv/versions/)" -- "$word") )
-	}
+        function __use-ruby-completion {
+            COMPREPLY=()
+            local word="${COMP_WORDS[COMP_CWORD]}"
+            COMPREPLY=( $(compgen -W "$(ls ~/.rbenv/versions/)" -- "$word") )
+        }
 
-	complete -F __use-ruby-completion use
+        complete -F __use-ruby-completion use
     fi
 }
 
