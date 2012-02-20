@@ -250,6 +250,8 @@ function bin_options {
    alias swa_hiwi="cd ~/Documents/HPI/SWA-HiWi"
    alias maglevh="source ~/bin/maglev-head"
    alias jrubyh="source ~/bin/jruby-head"
+
+   alias dia="dia --integrated"
 }
 
 function rvm_env {
@@ -302,6 +304,10 @@ function rbenv_setup {
 }
 
 function system_tweaks {
+   function dbus_reload {
+      export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
+   }
+
    if [ "Linux" == `uname` ]; then
       if [[ -n "$DISPLAY" ]]; then
          if ( which xcalib 2>&1 > /dev/null ); then
