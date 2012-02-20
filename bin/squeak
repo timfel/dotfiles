@@ -36,9 +36,9 @@ function run {
    # prepending is less flexible but safer because it ensures we find the plugins
    # in the same directory as the VM.
     if [[ -n $IMAGE ]]; then
-	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$args"
+	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" $args
     else
-	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls Squeak*image | head -1)" "$args"
+	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls Squeak*image | head -1)" $args
     fi
 }
 
