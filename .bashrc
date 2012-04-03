@@ -311,7 +311,8 @@ function system_tweaks {
    if [ "Linux" == `uname` ]; then
       if [[ -n "$DISPLAY" ]]; then
          if ( which xcalib 2>&1 > /dev/null ); then
-            xcalib $HOME/.ColorLCD.icc
+           true 
+           # xcalib $HOME/.ColorLCD.icc
          fi
       fi
 
