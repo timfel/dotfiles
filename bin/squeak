@@ -1,5 +1,9 @@
 #!/bin/bash
 
+SQUEAK_SERVER="http://ftp.squeak.org"
+SOURCE_FOLDER="sources_files"
+SQUEAK_WILDCARD="4."
+
 function run {
     if [[ "$1" == "oldvm" ]]; then
 	version="squeakvm"
@@ -44,16 +48,31 @@ function run {
 
 function download_squeak {
     if [[ -z $(ls | grep "Squeak[^\.]*\.sources") ]]; then
-	echo "Downloading current trunk image"
-	TRUNK="ftp://ftp.squeak.org/trunk/"
-	SOURCES="ftp://ftp.squeak.org/sources_files/"
-	SQUEAK_IMAGE_FILES=$(curl ${TRUNK} | grep "Squeak.*zip" | grep -v "SqueakCore" | tail -1 | awk '{print $NF}')
-	SQUEAK_SOURCES_FILE=$(curl ${SOURCES} | grep "sources.gz" | tail -1 | awk '{print $NF}')
-	wget "${SOURCES}${SQUEAK_SOURCES_FILE}"
-	wget "${TRUNK}${SQUEAK_IMAGE_FILES}"
-	unzip Squeak*zip
-	gunzip Squeak*sources.gz
-	rm Squeak*zip
+	declare -a IMAGES
+	declare -a IMAGE_FOLDERS
+	idx=1
+	for i in $(curl -s $SQUEAK_SERVER | grep DIR | grep -o "href=\".*\"" | grep "$SQUEAK_WILDCARD"); do
+	    i=${i#*=}
+	    i=${i#\"}
+	    i=${i%%\"}
+	    for j in $(curl -s $SQUEAK_SERVER/$i/ | grep -o "href=\"Squeak.*zip\""); do
+		j=${j#*=}
+		j=${j#\"}
+		j=${j%%\"}
+		IMAGE_FOLDERS[idx]=$i
+		IMAGES[idx]=$j
+		idx=$[idx + 1]
+	    done
+	done
+
+	for i in `seq 1 $[idx - 1]`; do echo "[$i] ${IMAGES[i]}"; done
+	printf "Choose: "
+	read idx
+	echo "Chosen $SQUEAK_SERVER/${IMAGE_FOLDERS[idx]}${IMAGES[idx]}"
+	curl -O "$SQUEAK_SERVER/${IMAGE_FOLDERS[idx]}${IMAGES[idx]}"
+	unzip ${IMAGES[idx]}
+	rm ${IMAGES[idx]}
+	# Pull Squeak out of subdirectory
 	if [[ -z $(ls | grep Squeak.*image) ]]; then
             possible_squeak_dir="$(ls --group-directories-first | grep -m1 Squeak)"
             if [[ -d $possible_squeak_dir ]]; then
@@ -61,6 +80,22 @@ function download_squeak {
 		rmdir "$possible_squeak_dir"
             fi
 	fi
+
+	idx=1
+	declare -a SOURCES
+	for j in $(curl -s $SQUEAK_SERVER/$SOURCE_FOLDER/ | grep -o "href=\".*gz\""); do
+	    j=${j#*=}
+	    j=${j#\"}
+	    j=${j%%\"}
+	    SOURCES[idx]=$j
+	    idx=$[idx + 1]
+	done
+
+	for i in `seq 1 $[idx - 1]`; do echo "[$i] ${SOURCES[i]}"; done
+	printf "Choose Sources: "
+	read idx
+	curl -O "$SQUEAK_SERVER/$SOURCE_FOLDER/${SOURCES[idx]}"
+	gunzip ${SOURCES[idx]}
     fi
 }
 
@@ -77,19 +112,32 @@ function update {
     echo "Updating to Trunk..."
     update_file="__squeak_update.st"
     cat <<EOF> $update_file
-   Smalltalk processHasThreadIdInstVar: true.
    Installer ss3
    	 project: 'timfelgentreff';
    	 install: 'ConfigurationOfTimFelgentreff'.
    (Smalltalk at: #ConfigurationOfTimFelgentreff) install.
    SystemWindow subclasses collect: [:k | k allInstances] thenDo: [:iary | iary do: [:each | each delete]].
+   SmalltalkImage current snapshot: true andQuit: false.
+   Smalltalk processHasThreadIdInstVar: true.
 EOF
     run $1 $update_file
     rm $update_file
 }
 
+function update_to_trunk {
+    update_file="__squeak_update.st"
+    cat <<EOF> $update_file
+   MCMcmUpdater updateFromDefaultRepository.
+   SmalltalkImage current snapshot: true andQuit: true.
+EOF
+}
+
 if [ "$1" == "download" ]; then
     download_squeak
+    update
+else if [ "$1" == "trunk" ]; then
+    download_squeak
+    update_to_trunk
     update
 else if [ "$1" == "pharo" ]; then
     download_pharo
@@ -98,5 +146,5 @@ else if [ "$2" == "download" ]; then
     update $@
 else
     run $@
-fi fi fi
+fi fi fi fi
 
