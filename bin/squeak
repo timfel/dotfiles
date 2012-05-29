@@ -120,7 +120,7 @@ function update {
    SmalltalkImage current snapshot: true andQuit: false.
    Smalltalk processHasThreadIdInstVar: true.
 EOF
-    run $1 $update_file
+    run oldvm $update_file
     rm $update_file
 }
 
@@ -130,6 +130,8 @@ function update_to_trunk {
    MCMcmUpdater updateFromDefaultRepository.
    SmalltalkImage current snapshot: true andQuit: true.
 EOF
+    run oldvm $update_file
+    rm $update_file
 }
 
 if [ "$1" == "download" ]; then
