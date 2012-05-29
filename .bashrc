@@ -80,7 +80,7 @@ function environment {
    # export MAGLEV_OPTS="-rubygems"
 
    export EMACS="emacsclient -f ${HOME}/.emacs.d/server/server -c"
-   export EDITOR="$EMACS -t"
+   export EDITOR="$EMACS"
    export ALTERNATE_EDITOR=""
    alias vi=$EDITOR
    alias em="$EMACS -n"
