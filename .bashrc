@@ -74,7 +74,7 @@ function environment {
    # ... and ignore same sucessive entries.
    export HISTCONTROL=ignoreboth
 
-   export BIBINPUTS=".:~/texmf/bibliography/:$BIBINPUTS"
+   export BIBINPUTS=".:~/texmf/bibliography/:~/Dropbox/Papers/:$BIBINPUTS"
 
    # export RUBYOPT="rubygems"
    # export MAGLEV_OPTS="-rubygems"
