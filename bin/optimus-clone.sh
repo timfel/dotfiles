@@ -5,7 +5,7 @@ TMPFILE="/tmp/$(date +%s)_nvidia_clone.sh"
 echo "
 xset -display :8 s off      # disable screen blanking
 xset -display :8 dpms 0 0 0 # disable screen power saving
-nvidia-settings -c :8       # nvidia to set physical resolution
+DISPLAY=:8 xrandr
 
 xrandr
 printf 'Choose VIRTUAL monitor resolution: '
