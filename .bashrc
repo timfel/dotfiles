@@ -86,7 +86,7 @@ function environment {
    alias em="$EMACS -n"
 
    if [ -n $TMUX ]; then
-       export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
+       refresh-dbus
    fi
 }
 
@@ -172,6 +172,11 @@ function prompt {
        if (which rbenv 2>&1 > /dev/null); then
            PS1="$PS1 \$(rbenv version-name)"
        fi
+   fi
+
+   # SHOW VIRTUALENV
+   if test -n "$VIRTUALENV"; then
+       PS1="$PS1 ⟆${VIRTUAL_ENV#$HOME/.virtualenvs/}"
    fi
 
    # Show the current branch
@@ -329,6 +334,17 @@ function system_tweaks {
    fi
 }
 
+function python_virtualenv_setup {
+    # startup virtualenv-burrito
+    if [ -f $HOME/.venvburrito/startup.sh ]; then
+	. $HOME/.venvburrito/startup.sh
+    fi
+}
+
+function refresh-dbus {
+    export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
+}
+
 path
 environment
 bash_options
@@ -338,6 +354,7 @@ if [ -d "$HOME/.rvm" ]; then
 else
     rbenv_setup
 fi
+python_virtualenv_setup
 system_tweaks
 PROMPT_COMMAND=prompt
 
