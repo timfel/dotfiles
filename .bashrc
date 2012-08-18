@@ -3,6 +3,14 @@
 # If not running interactively, don't do anything
 if [[ -n $PS1 ]]; then
 
+# Start tmux
+if [[ $TERM != screen* ]]; then
+    if which tmux 2>&1 >/dev/null; then
+        # if no session is started, start a new session
+	test -z ${TMUX} && (tmux attach || tmux new-session)
+    fi
+fi
+
 #define all colors
 if [ $(uname) != "SunOS" ] && [ "$TERM" != "dumb" ]; then
    COLOR_RED="\[\033[31;40m\]"
