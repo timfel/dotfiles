@@ -1,0 +1,26 @@
+
+Section "Screen"
+	Identifier	"Default Screen"
+	DefaultDepth	24
+	Option "NoVirtualSizeCheck"
+	# Option "UseEdid" "FALSE"
+	# Option "UseEdidDpi" "FALSE"
+EndSection
+
+Section "Module"
+	Load	"glx"
+	Load	"dri"
+	Load	"GLcore"
+EndSection
+
+Section "Device"
+	Identifier	"Default Device"
+	Driver	"nvidia"
+	Option "Coolbits" "1"
+	Option "OnDemandVBlankInterrupts" "True"
+	Option "RegistryDwords" "PowerMizerEnable=0x1; PerfLevelSrc=0x2233; PowerMizerDefault=0x3"
+	Option "ModeValidation" "NoDFPNativeResolutionCheck,NoVirtualSizeCheck,NoMaxPClkCheck,NoHorizSyncCheck,NoVertRefreshCheck,NoWidthAlignmentCheck,NoExtendedGpuCapabilitiesCheck"
+	# Option "UseEdidDpi" "FALSE"
+	# Option "UseEdid" "FALSE"
+EndSection
+
