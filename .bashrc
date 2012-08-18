@@ -337,6 +337,8 @@ function system_tweaks {
 function python_virtualenv_setup {
     # startup virtualenv-burrito
     if [ -f $HOME/.venvburrito/startup.sh ]; then
+	VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenvs
+	VIRTUALENVWRAPPER_LOG_DIR=$HOME/.virtualenvs
 	. $HOME/.venvburrito/startup.sh
     fi
 }
