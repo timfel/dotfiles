@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ $(basename "$0") == "pharo" ]; then
+    PHARO=1
+    VM_PATH="pharo"
+else
+    VM_PATH="squeak"
+fi
+
 SQUEAK_SERVER="http://ftp.squeak.org"
 SOURCE_FOLDER="sources_files"
 SQUEAK_WILDCARD="4."
@@ -22,7 +29,7 @@ function run {
 	image_arg="$1"
 	args=$@
     fi fi
-    BIN=`/usr/bin/dirname "$0"`/lib/squeak/$version
+    BIN=`/usr/bin/dirname "$0"`/lib/$VM_PATH/$version
     if [[ -e "$image_arg" ]]; then
 	if [[ -n $(echo "$image_arg" | grep "\.image$") ]]; then
             IMAGE="$image_arg" # If the file exists and ends with image, use it
@@ -42,7 +49,7 @@ function run {
     if [[ -n $IMAGE ]]; then
 	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" $args
     else
-	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls Squeak*image | head -1)" $args
+	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls *.image | head -1)" $args
     fi
 }
 
@@ -135,18 +142,15 @@ EOF
 }
 
 if [ "$1" == "download" ]; then
-    download_squeak
-    update
-else if [ "$1" == "trunk" ]; then
-    download_squeak
-    update_to_trunk
-    update
-else if [ "$1" == "pharo" ]; then
-    download_pharo
-else if [ "$2" == "download" ]; then
-    download
-    update $@
+    if [ -z $PHARO ]; then
+	download_squeak
+	if [ "$2" == "trunk" ]; then
+	    update_to_trunk
+	fi
+	update
+    else
+	download_pharo
+    fi
 else
     run $@
-fi fi fi fi
-
+fi
