@@ -1,6 +1,6 @@
 #!/bin/bash
 function __maglev_head_enable_maglev {
-   export MAGLEV_HOME="$HOME/Devel/projects/maglev"
+   export MAGLEV_HOME="$HOME/Devel/vmware/maglev"
    export GEMSTONE_GLOBAL_DIR=$MAGLEV_HOME
    export PATH="$MAGLEV_HOME/bin:$PATH"
    export GEMSTONE="$MAGLEV_HOME/gemstone"

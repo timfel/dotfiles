@@ -3,8 +3,10 @@
 if [ $(basename "$0") == "pharo" ]; then
     PHARO=1
     VM_PATH="pharo"
+    IMAGE_GLOB="Pharo*.image"
 else
     VM_PATH="squeak"
+    IMAGE_GLOB="Squeak*.image"
 fi
 
 SQUEAK_SERVER="http://ftp.squeak.org"
@@ -49,7 +51,7 @@ function run {
     if [[ -n $IMAGE ]]; then
 	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" $args
     else
-	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls *.image | head -1)" $args
+	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls $IMAGE_GLOB | head -1)" $args
     fi
 }
 
@@ -108,7 +110,7 @@ function download_squeak {
 
 function download_pharo {
     VERSION="1.4"
-    wget "https://ci.lille.inria.fr/pharo/job/Pharo%20${VERSION}/lastSuccessfulBuild/artifact/Pharo-${VERSION}.zip"
+    wget -c "https://ci.lille.inria.fr/pharo/job/Pharo%20${VERSION}/lastSuccessfulBuild/artifact/Pharo-${VERSION}.zip"
     unzip Pharo*.zip
     rm Pharo*.zip
     mv Pharo*/* .

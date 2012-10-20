@@ -96,6 +96,8 @@ function environment {
    if [ -n $TMUX ]; then
        refresh-dbus
    fi
+
+   export VISUALWORKS=/media/Data/Applications/vw79public
 }
 
 function bash_options {
