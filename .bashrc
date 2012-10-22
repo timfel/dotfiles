@@ -290,7 +290,7 @@ function rvm_env {
 
 function rbenv_setup {
     if [ ! -e "$HOME/.rbenv" ]; then
-        print "Install rbenv? (Y/n)"
+        printf "Install rbenv? (Y/n)"
         read answer
         if [ $answer == "y" -o $answer == "Y" ]; then
             git clone https://github.com/sstephenson/rbenv.git "$HOME/.rbenv"
@@ -321,11 +321,12 @@ function rbenv_setup {
 }
 
 function system_tweaks {
-   function dbus_reload {
-      export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
-   }
-
    if [ "Linux" == `uname` ]; then
+      function dbus_reload {
+        export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
+      }
+      alias refresh-dbus=dbus_reload
+
       if [[ -n "$DISPLAY" ]]; then
          if ( which xcalib 2>&1 > /dev/null ); then
            true 
@@ -339,6 +340,10 @@ function system_tweaks {
       #    echo $$ > /dev/cgroup/cpu/user/$$/tasks
       #    echo "1" > /dev/cgroup/cpu/user/$$/notify_on_release
       # fi
+   else
+      function refresh-dbus {
+          true
+      }
    fi
 }
 
@@ -351,11 +356,7 @@ function python_virtualenv_setup {
     fi
 }
 
-function refresh-dbus {
-    export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
-}
-alias refresh-dbus=refresh-dbus
-
+system_tweaks
 path
 environment
 bash_options
@@ -366,7 +367,6 @@ else
     rbenv_setup
 fi
 python_virtualenv_setup
-system_tweaks
 PROMPT_COMMAND=prompt
 
 fi # closing fi if not run in interactive mode
