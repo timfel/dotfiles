@@ -10,7 +10,7 @@ echo '[b]ottom'
 echo '[c]lone'
 printf 'Choose position: '
 read position
-case \$position in
+case $position in
     l)
 	position='--left-of LVDS1'
 	;;
@@ -31,6 +31,6 @@ case \$position in
 	exit 1
 esac
 
-xrandr --output LVDS1 --auto --output VIRTUAL --mode \$answer \$position
+xrandr --output LVDS1 --auto --output VIRTUAL --mode $answer $position
 x11vnc -clip xinerama1 -viewonly -wf -wcr always -scr always -nopw -solid -cursor some -ncache -wait_ui 4 -display $DISPLAY
 xrandr --output VIRTUAL --off
