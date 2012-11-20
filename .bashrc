@@ -357,6 +357,27 @@ function python_virtualenv_setup {
 function maglev_setup {
     export MAGLEV_HOME="$HOME/.rbenv/versions/maglev"
     if [ -d "$MAGLEV_HOME" ]; then
+
+	function gss {
+	    if [ $# -eq 0 ]; then
+		echo $GEMSTONE
+	    else
+		export GEMSTONE=`cd "$1" ; pwd`
+	    fi
+	}
+
+        function __use-gss-completion {
+	    releasevms="$(find $MAGLEV_HOME/../ -maxdepth 1 -executable -name "GemStone-*")"
+	    buildvms="$(find $MAGLEV_HOME/../ -mindepth 3 -maxdepth 3 -executable -name "product")"
+	    vms="$buildvms $releasevms"
+
+            COMPREPLY=()
+            local word="${COMP_WORDS[COMP_CWORD]}"
+            COMPREPLY=( $(compgen -W "$vms" -- "$word") )
+        }
+
+        complete -F __use-gss-completion gss
+
         function gemstone {
 	    if [ $# -eq 0 ]; then
 		echo $MAGLEV_OPTS
