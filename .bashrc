@@ -354,6 +354,28 @@ function python_virtualenv_setup {
     fi
 }
 
+function maglev_setup {
+    export MAGLEV_HOME="$HOME/.rbenv/versions/maglev"
+    if [ -d "$MAGLEV_HOME" ]; then
+        function gemstone {
+	    if [ $# -eq 0 ]; then
+		echo $MAGLEV_OPTS
+	    else
+		nostone=`echo "$MAGLEV_OPTS" | sed 's/--stone [^ ]*//'`
+		export MAGLEV_OPTS="$nostone --stone $1"
+	    fi
+        }
+
+        function __use-gemstone-completion {
+            COMPREPLY=()
+            local word="${COMP_WORDS[COMP_CWORD]}"
+            COMPREPLY=( $(compgen -W "$(ls $MAGLEV_HOME/etc/conf.d | sed 's/.conf//')" -- "$word") )
+        }
+
+        complete -F __use-gemstone-completion gemstone
+    fi
+}
+
 system_tweaks
 path
 environment
@@ -364,6 +386,7 @@ if [ -d "$HOME/.rvm" ]; then
 else
     rbenv_setup
 fi
+maglev_setup
 python_virtualenv_setup
 PROMPT_COMMAND=prompt
 
