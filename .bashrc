@@ -93,10 +93,6 @@ function environment {
    alias vi=$EDITOR
    alias em="$EMACS -n"
 
-   if [ -n $TMUX ]; then
-       refresh-dbus
-   fi
-
    export VISUALWORKS=/media/Data/Applications/vw79public
 }
 
