@@ -3,8 +3,8 @@
 
 source ~/bin/git-completion.sh
 
-_bold=$(tput bold)
-_normal=$(tput sgr0)
+_bold=
+_normal=
 
 __prompt_command() {
    if [ -z $NOPROMPT ]; then
@@ -18,13 +18,23 @@ __prompt_command() {
 	}
 
 	git_dir() {
-	   	ref=$(echo -e $(__git_ps1))
-		if [ -z $ref ]; then return 1; fi
-		vcs="git"
-		alias pull="git pull"
-		alias commit="git commit -v -a"
-		alias push="commit ; git push"
-		alias revert="git checkout"
+	        # Old version at bottom. New one doesn't spawn a new process
+                p="."
+                for i in ${PWD//\// }; do
+                    if [ -d "${p}/.git" ]; then
+			vcs="git"
+			alias pull="git pull"
+			alias commit="git commit -v -a"
+			alias push="commit ; git push"
+			alias revert="git checkout"
+			ref=$(echo -e $(__git_ps1))
+			break
+		    fi
+		    p="${p}/.."
+		done
+		unset p
+	   	# ref=$(echo -e $(__git_ps1))
+		# if [ -z $ref ]; then return 1; fi
 	}
 
 	svn_dir() {

@@ -5,9 +5,18 @@ if [[ -n $PS1 ]]; then
 
 # Start tmux
 if [[ $TERM != screen* ]]; then
-    if which tmux 2>&1 >/dev/null; then
-        # if no session is started, start a new session
-	test -z ${TMUX} && (tmux attach || tmux new-session)
+    if [ "$OS" == "Windows_NT" ]; then
+	CYGWIN=1
+	if where /Q screen; then
+	    screen -xR
+	fi
+    else
+        if which tmux 2>&1 >/dev/null; then
+            # if no session is started, start a new session
+	    test -z ${TMUX} && (tmux attach || tmux new-session)
+	else if which screen 2>&1 >/dev/null; then
+	    screen -xR
+	fi fi
     fi
 fi
 
@@ -122,63 +131,69 @@ function prompt {
    fi
    EXITCODE=$EXITCODE${COLOR_NONE}
 
-   # set variable identifying the chroot you work in (used in the prompt below)
-   if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-       debian_chroot=$(cat /etc/debian_chroot)
-   fi
-
-   PS1="${debian_chroot:+($debian_chroot)}"
-
-   USER=$(whoami)
-   if [ -z $HOSTNAME ]; then
-      export HOSTNAME=`hostname -s`
-   fi
-   if [ -n "$SSH_TTY" ]; then
-      # set user and host
-      if [ $USER == "root" ]; then
-         MACHINE="${COLOR_RED_BOLD}"
-      else
-         MACHINE="${COLOR_GREEN_BOLD}"
-      fi
-      if [ "$USER" == "tim" ]; then
-         MACHINE="${MACHINE}➔"
-      else if [ "$USER" == "timfel" ]; then
-         MACHINE="${MACHINE}➔"
-      else if [ "$USER" == "tim.felgentreff" ]; then
-         MACHINE="${MACHINE}➔"
-      else if [ "$USER" == "timfelgentreff" ]; then
-         MACHINE="${MACHINE}➔"
-      else if [ "$USER" == "timme" ]; then
-         MACHINE="${MACHINE}➔"
-      else
-         MACHINE="${MACHINE}${USER}@"
-      fi fi fi fi fi
-      MACHINE="${MACHINE}${HOSTNAME}${COLOR_NONE}:"
-   else
-      MACHINE=""
-   fi
-
-   # Have a fancy coloured prompt
-   color_prompt=yes
-   if [ "$color_prompt" = yes ]; then
-       if [ $(whoami) = root ]; then
-           PS1="${MACHINE}${COLOR_RED_BOLD}\w${COLOR_NONE}"
-       else
-           PS1="${MACHINE}${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
+   if test -z "$CYGWIN"; then
+       # set variable identifying the chroot you work in (used in the prompt below)
+       if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+           debian_chroot=$(cat /etc/debian_chroot)
        fi
-   else
-       PS1='${debian_chroot:+($debian_chroot)}$MACHINE:\w '
-   fi
-   unset color_prompt
+    
+       PS1="${debian_chroot:+($debian_chroot)}"
+    
+       USER=$(whoami)
+       if [ -z $HOSTNAME ]; then
+          export HOSTNAME=`hostname -s`
+       fi
+       if [ -n "$SSH_TTY" ]; then
+          # set user and host
+          if [ $USER == "root" ]; then
+             MACHINE="${COLOR_RED_BOLD}"
+          else
+             MACHINE="${COLOR_GREEN_BOLD}"
+          fi
+          if [ "$USER" == "tim" ]; then
+             MACHINE="${MACHINE}➔"
+          else if [ "$USER" == "timfel" ]; then
+             MACHINE="${MACHINE}➔"
+          else if [ "$USER" == "tim.felgentreff" ]; then
+             MACHINE="${MACHINE}➔"
+          else if [ "$USER" == "timfelgentreff" ]; then
+             MACHINE="${MACHINE}➔"
+          else if [ "$USER" == "timme" ]; then
+             MACHINE="${MACHINE}➔"
+          else
+             MACHINE="${MACHINE}${USER}@"
+          fi fi fi fi fi
+          MACHINE="${MACHINE}${HOSTNAME}${COLOR_NONE}:"
+       else
+          MACHINE=""
+       fi
+    
+       # Have a fancy coloured prompt
+       color_prompt=yes
+       if [ "$color_prompt" = yes ]; then
+           if [ $(whoami) = root ]; then
+               PS1="${MACHINE}${COLOR_RED_BOLD}\w${COLOR_NONE}"
+           else
+               PS1="${MACHINE}${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
+           fi
+       else
+           PS1='${debian_chroot:+($debian_chroot)}$MACHINE:\w '
+       fi
+       unset color_prompt
+    else
+       PS1="${COLOR_BLUE_BOLD}\$(spwd)${COLOR_NONE}"
+    fi
 
    # SHOW RUBY VERSION
-   if (which rvm-prompt 2>&1 > /dev/null); then
-       PS1="$PS1 \$(rvm-prompt u)"
-   else
-       if (which rbenv 2>&1 > /dev/null); then
-           PS1="$PS1 \$(rbenv version-name)"
+   if test -z "$CYGWIN"; then
+       if (which rvm-prompt 2>&1 > /dev/null); then
+           PS1="$PS1 \$(rvm-prompt u)"
+       else
+           PS1="$PS1 ${RBENV_VERSION:-system}"
        fi
-   fi
+    else
+       PS1="$PS1 ${RBENV_VERSION:-system}"
+    fi
 
    # SHOW VIRTUALENV
    if test -n "$VIRTUALENV"; then
@@ -186,7 +201,6 @@ function prompt {
    fi
 
    # Show the current branch
-   source "$HOME"/bin/bash_vcs.sh
    VCS=`echo -e $(__prompt_command)`
    if [ -z "$VCS" ]; then
       EXITCODE=" ${EXITCODE}"
@@ -195,15 +209,6 @@ function prompt {
    fi
    PS1="$PS1$VCS"
    PS1="$PS1$EXITCODE "
-
-   # Finally, see if there's a timEnv file and source it, if we haven't already
-   if [ -e timEnv ]; then
-       if [[ ! "$ACTIVE_TIM_ENVS" =~ .*:"$pwd".* ]]; then
-          echo "Sourcing timEnv"
-          export ACTIVE_TIM_ENVS="$ACTIVE_TIM_ENVS:$(pwd)"
-          source timEnv
-       fi
-   fi
 }
 
 function bin_options {
@@ -408,7 +413,8 @@ else
     rbenv_setup
 fi
 maglev_setup
-python_virtualenv_setup
+
+source "$HOME"/bin/bash_vcs.sh
 PROMPT_COMMAND=prompt
 
 fi # closing fi if not run in interactive mode

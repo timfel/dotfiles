@@ -15,6 +15,11 @@ SQUEAK_WILDCARD="4."
 
 function run {
     if [[ "$1" == "oldvm" ]]; then
+       	if [ "$(uname -o)" == "Cygwin" ]; then
+	    binary="Squeak.exe"
+	else
+	    binary="squeak"
+	fi
 	version="squeakvm"
 	image_arg="$2"
 	args=${@:2}
@@ -27,11 +32,17 @@ function run {
 	echo "Using 64bit VM"
 	echo "Remaining arguments are $args"
     else
+       	if [ "$(uname -o)" == "Cygwin" ]; then
+	    binary="Croquet.exe"
+	else
+	    binary="squeak"
+        fi
 	version="cog"
 	image_arg="$1"
 	args=$@
     fi fi
     BIN=`/usr/bin/dirname "$0"`/lib/$VM_PATH/$version
+    BIN="$BIN/$binary"
     if [[ -e "$image_arg" ]]; then
 	if [[ -n $(echo "$image_arg" | grep "\.image$") ]]; then
             IMAGE="$image_arg" # If the file exists and ends with image, use it
@@ -49,9 +60,17 @@ function run {
    # prepending is less flexible but safer because it ensures we find the plugins
    # in the same directory as the VM.
     if [[ -n $IMAGE ]]; then
-	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" $args
+       	if [ "$(uname -o)" == "Cygwin" ]; then
+	    exec "$BIN" $args
+	else
+	    LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN" $args
+        fi
     else
-	LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN/squeak" "$(ls $IMAGE_GLOB | head -1)" $args
+       	if [ "$(uname -o)" == "Cygwin" ]; then
+	    exec "$BIN" "$(ls $IMAGE_GLOB | head -1)" $args
+	else
+	    LD_LIBRARY_PATH=$PLUGINS${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} exec "$BIN" "$(ls $IMAGE_GLOB | head -1)" $args
+	fi
     fi
 }
 

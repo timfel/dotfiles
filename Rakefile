@@ -28,7 +28,7 @@ namespace :install do
   _install :irb, ".irbrc", ".config/irb/*.rb"
   _install :dot, ".bash_profile", ".bashrc", ".gemrc", ".vimrc", ".vim",
            ".gitignore", ".gitconfig", ".ssh/config", ".config/nv-*", ".Color*.icc",
-           ".tmux.conf", ".tmux.bashrc", ".topazini"
+           ".tmux.conf", ".tmux.bashrc", ".topazini", ".Xresources", ".screenrc"
   _install :bin, "bin/*"
 
   desc "installs the custom texmf folder"
