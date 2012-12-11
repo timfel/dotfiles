@@ -3,10 +3,13 @@
 # If not running interactively, don't do anything
 if [[ -n $PS1 ]]; then
 
+if [ "$OS" == "Windows_NT" ]; then
+   CYGWIN=1
+fi
+
 # Start tmux
 if [[ $TERM != screen* ]]; then
-    if [ "$OS" == "Windows_NT" ]; then
-	CYGWIN=1
+    if [ -n "$CYGWIN" ]; then
 	if where /Q screen; then
 	    screen -xR
 	fi
@@ -402,6 +405,12 @@ function maglev_setup {
     fi
 }
 
+function rupypy_setup {
+    rupypy=$(readlink -f "$HOME/.rbenv/versions/rupypy")
+    rupypy_parent=$(cd $rupypy ; cd .. ; pwd)
+    export PYTHONPATH=$rupypy_parent/pypy:$rupypy_parent/pypy/pypy:$rupypy_parent/rply:$rupypy_parent/rupypy:$PYTHONPATH
+}
+
 system_tweaks
 path
 environment
@@ -412,6 +421,7 @@ if [ -d "$HOME/.rvm" ]; then
 else
     rbenv_setup
 fi
+rupypy_setup
 maglev_setup
 
 source "$HOME"/bin/bash_vcs.sh
