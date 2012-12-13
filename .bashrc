@@ -411,6 +411,13 @@ function rupypy_setup {
     export PYTHONPATH=$rupypy_parent/pypy:$rupypy_parent/pypy/pypy:$rupypy_parent/rply:$rupypy_parent/rupypy:$PYTHONPATH
 }
 
+function win_java_setup {
+    export JAVA_HOME="C:/Program Files/Java/jdk1.7.0_09/"
+    export PATH="`cygpath -a "$JAVA_HOME"`/bin:${PATH}"
+    export ANT_HOME="/opt/apache-ant-1.8.4/"
+    export PATH=$ANT_HOME/bin:$PATH
+}
+
 system_tweaks
 path
 environment
@@ -423,6 +430,10 @@ else
 fi
 rupypy_setup
 maglev_setup
+
+if [ -n "$CYGWIN" ]; then
+    win_java_setup
+fi
 
 source "$HOME"/bin/bash_vcs.sh
 PROMPT_COMMAND=prompt
