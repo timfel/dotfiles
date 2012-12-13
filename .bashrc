@@ -305,7 +305,11 @@ function rbenv_setup {
         rbenv rehash
 
         function use {
-            export RBENV_VERSION=$1
+	    if [ $# -eq 0 ]; then
+		echo $RBENV_VERSION
+	    else
+		export RBENV_VERSION=$1
+	    fi
         }
 
         function __use-ruby-completion {
@@ -356,6 +360,8 @@ function python_virtualenv_setup {
 
 function maglev_setup {
     export MAGLEV_HOME="$HOME/.rbenv/versions/maglev"
+    export GEMSTONE_GLOBAL_DIR="$MAGLEV_HOME"
+
     if [ -d "$MAGLEV_HOME" ]; then
 
 	function gss {
@@ -380,9 +386,11 @@ function maglev_setup {
 
         function gemstone {
 	    if [ $# -eq 0 ]; then
+		echo $STONENAME
 		echo $MAGLEV_OPTS
 	    else
 		nostone=`echo "$MAGLEV_OPTS" | sed 's/--stone [^ ]*//'`
+		export STONENAME="$1"
 		export MAGLEV_OPTS="$nostone --stone $1"
 	    fi
         }
