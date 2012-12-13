@@ -114,10 +114,10 @@ __git_ps1 ()
 		if [ -n "$1" ]; then
 			printf "$1" "${b##refs/heads/}$r"
 		else
-		   	if [ -n "$(git status | grep mod)" ]; then
-				printf "%s" "${COLOR_RED_BOLD}${b##refs/heads/}${r}⚡${COLOR_NONE}"
+		   	if git diff-index --quiet HEAD ; then
+			        printf "%s" "${b##refs/heads/}$r"
 			else
-				printf "%s" "${b##refs/heads/}$r"
+				printf "%s" "${COLOR_RED_BOLD}${b##refs/heads/}${r}⚡${COLOR_NONE}"
 			fi
 		fi
 	fi
