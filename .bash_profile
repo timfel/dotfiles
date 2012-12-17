@@ -73,8 +73,6 @@ function environment {
     export EMACS="emacsclient -f ${HOME}/.emacs.d/server/server -c"
     export EDITOR="$EMACS"
     export ALTERNATE_EDITOR=""
-    alias vi=$EDITOR
-    alias em="$EMACS -n"
 
     export VISUALWORKS=/media/Data/Applications/vw79public
 }
@@ -105,69 +103,6 @@ function prepare_prompt_variables {
     fi
 }
 
-function bin_options {
-   # make less more friendly for non-text input files, see lesspipe(1)
-   [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
-
-   # enable color support of ls and also add handy aliases
-   if [ -n "$SOLARIS" ] && [ "$TERM" != "dumb" ]; then
-       if [ -x /usr/bin/dircolors ]; then
-           eval "`dircolors -b`"
-       fi
-       if [ -e ~/.dircolors ]; then
-           eval "`dircolors ~/.dircolors`"
-       fi
-       if [ -z "$DARWIN" ]; then
-          alias ls='ls --color=auto'
-          alias dir='ls --color=auto --format=vertical'
-          alias vdir='ls --color=auto --format=long'
-
-          alias grep='grep --color=auto'
-          alias fgrep='fgrep --color=auto'
-          alias egrep='egrep --color=auto'
-       else
-          alias ls='ls -G'
-          alias dir='ls -G'
-          alias vdir='ls -G -l'
-
-          alias grep='grep --color=auto'
-          alias fgrep='fgrep --color=auto'
-          alias egrep='egrep --color=auto'
-       fi
-   fi
-
-   # some more ls aliases
-   alias ll='ls -l'
-   alias la='ls -A'
-   alias l='ls -CF'
-   alias pdflatex='pdflatex -shell-escape'
-   alias sudo='sudo -E'
-   # alias vi='RUBYOPTS="$RUBYOPTS -W0" vim'
-   alias sshx='ssh -X -C -c blowfish-cbc'
-   alias gitpp="git pull && git push"
-   alias sc="env RAILSCONSOLE=1 script/console"
-   alias ss="script/server"
-   alias rb_uses="grep -h -o 'rb_[^ )(,]*' *.cpp *.c *.h | grep -v 'rb_.*\.[hc]' | sort | uniq"
-
-   # Git aliases
-   alias gitss="git submodule init && git submodule sync && git submodule update"
-   alias gitcp="git cherry-pick"
-   alias gitrb="git rebase -i"
-   alias gitap="git add --patch"
-   alias gitciam="git commit --amend -m"
-   alias gitcim="git commit -m"
-
-   # RVM shortcuts
-   alias rvm_isolate="rvm gemset create \$(basename \`pwd\`); echo 'rvm gemset use \$(basename \`pwd\`)' >> .rvmrc; cd ../\$(basename \`pwd\`)"
-
-   # Work shortcuts
-   alias swa_hiwi="cd ~/Documents/HPI/SWA-HiWi"
-   alias maglevh="source ~/bin/maglev-head"
-   alias jrubyh="source ~/bin/jruby-head"
-
-   alias dia="dia --integrated"
-}
-
 function rupypy_setup {
     rupypy=$(readlink -f "$HOME/.rbenv/versions/rupypy")
     rupypy_parent=$(cd $rupypy ; cd .. ; pwd)
@@ -175,7 +110,8 @@ function rupypy_setup {
 }
 
 function win_java_setup {
-    export JAVA_HOME="C:/Program Files/Java/jdk1.7.0_09/"
+    JAVA_FOLDER="$(ls /cygdrive/c/Program\ Files/Java/ | sort -r | grep -m 1 jdk)"
+    export JAVA_HOME="C:/Program Files/Java/$JAVA_FOLDER"
     export PATH="`cygpath -a "$JAVA_HOME"`/bin:${PATH}"
     export ANT_HOME="/opt/apache-ant-1.8.4/"
     export PATH=$ANT_HOME/bin:$PATH
@@ -188,7 +124,6 @@ export_colors
 path
 environment
 bash_options
-bin_options
 rupypy_setup
 
 if [ -n "$CYGWIN" ]; then
