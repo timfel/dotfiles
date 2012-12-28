@@ -264,7 +264,7 @@ function bin_options {
    [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
 
    # enable color support of ls and also add handy aliases
-   if [ -n "$SOLARIS" ] && [ "$TERM" != "dumb" ]; then
+   if [ -z "$SOLARIS" ] && [ "$TERM" != "dumb" ]; then
        if [ -x /usr/bin/dircolors ]; then
            eval "`dircolors -b`"
        fi
