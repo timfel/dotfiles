@@ -42,3 +42,5 @@ hardstatus string '%{= gW}%-Lw%{= yW}%50>%n%f* %t%{= gW}%+Lw%< %{= gW}%-=%D %d %
 bindkey ^[[1;2D prev
 bindkey ^[[1;2C next
 
+# 5000 lines scrollbackbuffer should be good
+defscrollback 5000
