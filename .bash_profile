@@ -56,7 +56,7 @@ function path {
     if [ -n "$SOLARIS" ]; then
 	export PATH=/opt/csw/bin:/opt/sfw/bin:$PATH
     fi
-    if [ -n "$WINDOWS" ]; then
+    if [ -n "$CYGWIN" ]; then
 	export PATH=/opt/emacs/bin:$PATH
     fi
     if [[ -e "$HOME/Devel/projects/git-hg/bin" ]]; then
@@ -73,7 +73,7 @@ function environment {
     # export RUBYOPT="rubygems"
     # export MAGLEV_OPTS="-rubygems"
 
-    if [ -n "$WINDOWS" ]; then
+    if [ -n "$CYGWIN" ]; then
         export EMACS="emacsclient -f $(cygpath -m ${HOME}/.emacs.d/server/server) -c"
     else
         export EMACS="emacsclient -f ${HOME}/.emacs.d/server/server -c"
