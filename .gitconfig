@@ -35,3 +35,9 @@
 [merge]
    conflictstyle = diff3
 
+[giggle]
+	main-window-maximized = true
+	main-window-geometry = 700x550+23+62
+	history-view-vpane-position = 560
+[include]
+   path = ~/.gitconfig.secrets
