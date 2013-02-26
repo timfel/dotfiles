@@ -33,8 +33,25 @@ __prompt_command() {
 		    p="${p}/.."
 		done
 		unset p
-	   	# ref=$(echo -e $(__git_ps1))
-		# if [ -z $ref ]; then return 1; fi
+		if [ -z "$ref" ]; then return 1; fi
+	}
+
+	hg_dir() {
+                p="."
+                for i in ${PWD//\// }; do
+                    if [ -d "${p}/.hg" ]; then
+			vcs="hg"
+			alias pull="hg pull -u"
+			alias commit="hg commit"
+			alias push="commit ; hg push"
+			alias revert="hg revert"
+			ref="$(hg sum | head -1)"
+			break
+		    fi
+		    p="${p}/.."
+		done
+		unset p
+		if [ -z "$ref" ]; then return 1; fi
 	}
 
 	svn_dir() {
@@ -72,7 +89,7 @@ __prompt_command() {
 	}
 	
 
-	git_dir || svn_dir || cvs_dir
+	git_dir || hg_dir || svn_dir || cvs_dir
 
 	if [ -n "$vcs" ]; then
 		alias st="$vcs status"

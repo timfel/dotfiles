@@ -1,6 +1,7 @@
 [ui]
 username = Tim Felgentreff <timfelgentreff@gmail.com>
 verbose = True
+style = compact
 [bookmarks]
 track.current = True
 [extensions]
@@ -9,6 +10,12 @@ bookmarks =
 rebase =
 record =
 pager =
+color =
+graphlog = 
+progress =
 [web]
 cacerts =
-
+[pager]
+pager = LESS='FRX' less
+[alias]
+lg = log -G --pager always --color always --template '\033[0;31m{node|short} \033[0;34m({author|person}) - \033[0;33m{tags} \033[0m{desc|firstline|strip} \033[0;32m({date|age})\033[0m'
