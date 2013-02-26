@@ -23,11 +23,9 @@ function download() {
     pushd ~/bin/
     curl -O "http://buildbot.pypy.org/nightly/trunk/$url" || exit 1
     $cmd $url
-    if [ -e pypy ]; then
-	rm -rf pypy
-    fi
     rm $url
-    mv pypy-c-jit* ~/bin/pypy/
+    rsync -a pypy-c-jit* ~/bin/pypy/
+    rm -rf pypy-c-jit*
     popd
 }
 
@@ -39,7 +37,7 @@ if [ $# -eq 1 ]; then
     fi
 fi
 
-if [ ! -e "~/bin/pypy/bin/pypy" ]; then
+if [ ! -x ~/bin/pypy/bin/pypy ]; then
     download
 fi
 
