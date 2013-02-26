@@ -26,7 +26,7 @@ namespace :install do
   end
 
   _install :irb, ".irbrc", ".config/irb/*.rb"
-  _install :dot, ".bash_profile", ".bashrc", ".gemrc", ".vimrc", ".vim",
+  _install :dot, ".bash_profile", ".bashrc", ".gemrc", ".vimrc", ".vim", ".hgrc",
            ".gitignore", ".gitconfig", ".ssh/config", ".config/nv-*", ".Color*.icc",
            ".tmux.conf", ".tmux.bashrc", ".topazini", ".Xresources", ".screenrc"
   _install :bin, "bin/*"

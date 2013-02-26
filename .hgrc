@@ -1,0 +1,14 @@
+[ui]
+username = Tim Felgentreff <timfelgentreff@gmail.com>
+verbose = True
+[bookmarks]
+track.current = True
+[extensions]
+mq = 
+bookmarks =
+rebase =
+record =
+pager =
+[web]
+cacerts =
+
