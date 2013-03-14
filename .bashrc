@@ -3,6 +3,17 @@
 # If not running interactively, don't do anything
 test "$PS1" || return 0
 
+# If bash_profile wasn't loaded, load it This is an optimization, as
+# Cygwin loads bash_profile once, and then only runs through bashrc
+# for new terminals and screens. Because fork is slow on Cygwin, we do
+# most of the forking in bash_profile, making creating new terminals
+# fast on Cygwin. On some Linux systems, each new screen gets a fresh
+# environment and thus has to reload bash_profile
+if test -z "$BASH_PROFILE_LOADED"; then
+    source ~/.bash_profile
+    return 0
+fi
+
 if [ -n "${TERM#screen*}" ]; then
     $PROF_SCREEN_CMD
 fi

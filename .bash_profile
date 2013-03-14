@@ -1,3 +1,5 @@
+export BASH_PROFILE_LOADED=1
+
 function determine_os {
     case "$(uname)" in
 	CYGWIN*)
