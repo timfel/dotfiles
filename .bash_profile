@@ -113,9 +113,11 @@ function prepare_prompt_variables {
 }
 
 function rupypy_setup {
-    rupypy=$(readlink -f "$HOME/.rbenv/versions/rupypy")
-    rupypy_parent=$(cd $rupypy ; cd .. ; pwd)
-    export PYTHONPATH=$rupypy_parent/pypy:$rupypy_parent/pypy/pypy:$rupypy_parent/rply:$rupypy_parent/rupypy:$PYTHONPATH
+    if [ -e "$HOME/.rbenv/versions/rupypy" ]; then
+        rupypy=$(readlink -f "$HOME/.rbenv/versions/rupypy")
+        rupypy_parent=$(cd $rupypy ; cd .. ; pwd)
+        export PYTHONPATH=$rupypy_parent/pypy:$rupypy_parent/pypy/pypy:$rupypy_parent/rply:$rupypy_parent/rupypy:$PYTHONPATH
+    fi
 }
 
 function win_java_setup {
