@@ -69,6 +69,10 @@ function path {
     if [[ -e "$HOME/homebrew/bin" ]]; then
 	export PATH=$HOME/homebrew/bin:$PATH
     fi
+
+    if [[ -e "/usr/local/heroku" ]]; then
+	export PATH="/usr/local/heroku/bin:$PATH"
+    fi
 }
 
 function environment {
