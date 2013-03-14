@@ -25,12 +25,14 @@ function screen_select {
 	    export PROF_SCREEN_CMD="screen -xR"
 	fi
     else
-	if which tmux 2>&1 >/dev/null; then
+	# if which tmux 2>&1 >/dev/null; then
         # if no session is started, start a new session
-	    export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux attach || tmux new-session)"
-	else if which screen 2>&1 >/dev/null; then
+	#     export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux attach || tmux new-session)"
+	# else if which screen 2>&1 >/dev/null; then
+	if which screen 2>&1 >/dev/null; then
 	    export PROF_SCREEN_CMD="screen -xR"
-	fi fi
+	# fi fi
+        fi
     fi
 }
 
