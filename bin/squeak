@@ -25,6 +25,14 @@ function run {
 	args=${@:2}
 	echo "Using old VM"
 	echo "Remaining arguments are $args"
+    elif [[ "$1" == "3.7" ]]; then
+	binary="squeak"
+	version="squeakvm3.7"
+	image_arg="$2"
+	args=${@:2}
+	args="-plugins $HOME/bin/lib/squeak/squeakvm3.7/ ${args[@]}"
+	echo "Using 3.7 VM"
+	echo "Remaining arguments are $args"
     else if [[ "$1" == "x86_64" ]]; then
 	version="squeakvm64bit"
 	image_arg="$2"
