@@ -196,10 +196,16 @@ function rbenv_setup {
 
 function system_tweaks {
    if [ -n "$LINUX" ]; then
-      function dbus_reload {
+      function session_reload {
         export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
+
+	export GNOME_KEYRING_CONTROL=/run/usr/$(whoami)/$(ls -c /run/user/$(whoami)/ | grep keyring- | head -1)
+        export GNOME_KEYRING_PID=$(ps x | grep /usr/bin/gnome-keyring | grep -v grep | cut -f 1 -d' ')
+
+	new_ICE_session=$(ls -c /tmp/.ICE-unix/ | head -1)
+	export SESSION_MANAGER=$(echo $SESSION_MANAGER | sed "s#.ICE-unix/[0-9]*#.ICE-unix/${new_ICE_session}#g")
+	unset new_ICE_session
       }
-      alias refresh-dbus=dbus_reload
 
       if [[ -n "$DISPLAY" ]]; then
          if ( which xcalib 2>&1 > /dev/null ); then
