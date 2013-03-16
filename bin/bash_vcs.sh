@@ -45,7 +45,15 @@ __prompt_command() {
 			alias commit="hg commit"
 			alias push="commit ; hg push"
 			alias revert="hg revert"
-			ref="$(hg sum | head -1)"
+			__info="$(hg sum)"
+			tip="${info%tip*}"
+			__info="${__info##*branch:}"
+			branch="${__info%commit*}"
+			__info="${__info##*commit:}"
+			status="${__info%update*}"
+			status="${status/unknown/}"
+			status="${status/(clean)/}"
+			ref="$branch $status"
 			break
 		    fi
 		    p="${p}/.."
