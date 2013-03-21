@@ -116,12 +116,14 @@ function rupypy_setup {
     export PYTHONPATH=$rupypy_parent/pypy:$rupypy_parent/pypy/pypy:$rupypy_parent/rply:$rupypy_parent/rupypy:$PYTHONPATH
 }
 
-function win_java_setup {
+function win_path_setup {
     JAVA_FOLDER="$(ls /cygdrive/c/Program\ Files/Java/ | sort -r | grep -m 1 jdk)"
     export JAVA_HOME="C:/Program Files/Java/$JAVA_FOLDER"
     export PATH="`cygpath -a "$JAVA_HOME"`/bin:${PATH}"
     export ANT_HOME="/opt/apache-ant-1.8.4/"
     export PATH=$ANT_HOME/bin:$PATH
+
+    export PATH=$PATH:/opt/mplayer
 }
 
 determine_os
@@ -134,7 +136,7 @@ bash_options
 rupypy_setup
 
 if [ -n "$CYGWIN" ]; then
-    win_java_setup
+    win_path_setup
 fi
 
 source ~/.bashrc
