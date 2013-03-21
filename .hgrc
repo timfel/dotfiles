@@ -26,6 +26,7 @@ pull = pull -u
 co = hg update -c
 reset = hg revert -a
 chp = graft
+shortlog = !hg log --template "{author|person}\n" | sort | uniq -c | sort -nr
 [extdiff]
 cmd.kdiff3 =
 [merge-tools]
