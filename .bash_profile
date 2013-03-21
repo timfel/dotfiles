@@ -1,3 +1,5 @@
+export BASH_PROFILE_LOADED=1
+
 function determine_os {
     case "$(uname)" in
 	CYGWIN*)
@@ -23,12 +25,14 @@ function screen_select {
 	    export PROF_SCREEN_CMD="screen -xR"
 	fi
     else
-	if which tmux 2>&1 >/dev/null; then
+	# if which tmux 2>&1 >/dev/null; then
         # if no session is started, start a new session
-	    export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux attach || tmux new-session)"
-	else if which screen 2>&1 >/dev/null; then
+	#     export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux attach || tmux new-session)"
+	# else if which screen 2>&1 >/dev/null; then
+	if which screen 2>&1 >/dev/null; then
 	    export PROF_SCREEN_CMD="screen -xR"
-	fi fi
+	# fi fi
+        fi
     fi
 }
 
@@ -64,6 +68,10 @@ function path {
     fi
     if [[ -e "$HOME/homebrew/bin" ]]; then
 	export PATH=$HOME/homebrew/bin:$PATH
+    fi
+
+    if [[ -e "/usr/local/heroku" ]]; then
+	export PATH="/usr/local/heroku/bin:$PATH"
     fi
 }
 
@@ -111,9 +119,11 @@ function prepare_prompt_variables {
 }
 
 function rupypy_setup {
-    rupypy=$(readlink -f "$HOME/.rbenv/versions/rupypy")
-    rupypy_parent=$(cd $rupypy ; cd .. ; pwd)
-    export PYTHONPATH=$rupypy_parent/pypy:$rupypy_parent/pypy/pypy:$rupypy_parent/rply:$rupypy_parent/rupypy:$PYTHONPATH
+    if [ -e "$HOME/.rbenv/versions/rupypy" ]; then
+        rupypy=$(readlink -f "$HOME/.rbenv/versions/rupypy")
+        rupypy_parent=$(cd $rupypy ; cd .. ; pwd)
+        export PYTHONPATH=$rupypy_parent/pypy:$rupypy_parent/pypy/pypy:$rupypy_parent/rply:$rupypy_parent/rupypy:$PYTHONPATH
+    fi
 }
 
 function win_path_setup {

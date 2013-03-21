@@ -3,6 +3,17 @@
 # If not running interactively, don't do anything
 test "$PS1" || return 0
 
+# If bash_profile wasn't loaded, load it This is an optimization, as
+# Cygwin loads bash_profile once, and then only runs through bashrc
+# for new terminals and screens. Because fork is slow on Cygwin, we do
+# most of the forking in bash_profile, making creating new terminals
+# fast on Cygwin. On some Linux systems, each new screen gets a fresh
+# environment and thus has to reload bash_profile
+if test -z "$BASH_PROFILE_LOADED"; then
+    source ~/.bash_profile
+    return 0
+fi
+
 if [ -n "${TERM#screen*}" ]; then
     $PROF_SCREEN_CMD
 fi
@@ -185,10 +196,16 @@ function rbenv_setup {
 
 function system_tweaks {
    if [ -n "$LINUX" ]; then
-      function dbus_reload {
+      function session_reload {
         export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
+
+	export GNOME_KEYRING_CONTROL=/run/usr/$(whoami)/$(ls -c /run/user/$(whoami)/ | grep keyring- | head -1)
+        export GNOME_KEYRING_PID=$(ps x | grep /usr/bin/gnome-keyring | grep -v grep | cut -f 1 -d' ')
+
+	new_ICE_session=$(ls -c /tmp/.ICE-unix/ | head -1)
+	export SESSION_MANAGER=$(echo $SESSION_MANAGER | sed "s#.ICE-unix/[0-9]*#.ICE-unix/${new_ICE_session}#g")
+	unset new_ICE_session
       }
-      alias refresh-dbus=dbus_reload
 
       if [[ -n "$DISPLAY" ]]; then
          if ( which xcalib 2>&1 > /dev/null ); then
@@ -196,17 +213,6 @@ function system_tweaks {
            # xcalib $HOME/.ColorLCD.icc
          fi
       fi
-
-      # Better desktop responsiveness. See http://www.webupd8.org/2010/11/alternative-to-200-lines-kernel-patch.html
-      # if [ "$PS1" ] ; then
-      #    mkdir -p -m 0700 /dev/cgroup/cpu/user/$$ # > /dev/null 2>&1
-      #    echo $$ > /dev/cgroup/cpu/user/$$/tasks
-      #    echo "1" > /dev/cgroup/cpu/user/$$/notify_on_release
-      # fi
-   else
-      function refresh-dbus {
-          true
-      }
    fi
 }
 
