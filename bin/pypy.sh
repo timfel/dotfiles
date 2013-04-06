@@ -24,8 +24,14 @@ function download() {
     curl -O "http://buildbot.pypy.org/nightly/trunk/$url" || exit 1
     $cmd $url
     rm $url
-    rsync -a pypy-c-jit* ~/bin/pypy/
+    rsync -a pypy-c-jit*/* ~/bin/pypy/
     rm -rf pypy-c-jit*
+    curl -O http://python-distribute.org/distribute_setup.py || exit 1
+    ~/bin/pypy/bin/pypy distribute_setup.py
+    rm -f distribute_setup.py distribute*.tar.gz
+    curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py || exit 1
+    ~/bin/pypy/bin/pypy get-pip.py
+    rm -f get-pip.py
     popd
 }
 
