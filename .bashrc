@@ -138,7 +138,11 @@ function prompt {
       VCS=" ❰${VCS}❱ "
    fi
    PS1="$PS1$VCS"
-   PS1="$PS1$EXITCODE "
+   if [ -n "${TERM#screen*}" ]; then
+      PS1="$PS1$EXITCODE  "
+   else
+      PS1='\[\033k\033\\\]'"$PS1$EXITCODE  "
+   fi
 }
 
 function rvm_env {
