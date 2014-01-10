@@ -9,7 +9,7 @@
    news = !git lg $(git log --author='Tim Felgentreff' --pretty=format:%H -n1)..
    rb = rebase --stat --ignore-whitespace
    lg = log --color --graph --pretty=awesome --date=local --abbrev-commit
-   branches = "!git for-each-ref --sort=-committerdate refs/heads --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|sh"
+   branches = "!git for-each-ref --sort=-committerdate refs/heads --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|head -30|sh"
    branches-origin = "!git for-each-ref --sort=-committerdate refs/remotes/origin --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|sh" 
 [user]
    name = Tim Felgentreff
