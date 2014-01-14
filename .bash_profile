@@ -13,6 +13,10 @@ function determine_os {
 	    ;;
 	Linux)
 	    export LINUX=1
+	    if [ "$(uname -n)" == "speedLinux" ]; then
+		export SPEEDLINUX=1
+		export DISPLAY=192.168.0.1:0.0
+	    fi
 	    ;;
 	*)
 	    ;;
