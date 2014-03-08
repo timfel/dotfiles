@@ -6,4 +6,4 @@
 	url = http://github.com/apenwarr/git-subtree.git
 [submodule "git-hg"]
 	path = git-hg
-	url = git://github.com/offbytwo/git-hg
+url=git://github.com/cosmin/git-hg
