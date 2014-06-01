@@ -1,0 +1,1 @@
+(setf *mouse-focus-policy* :sloppy) ;; :click, :ignore, :sloppy
