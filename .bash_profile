@@ -17,6 +17,18 @@ function determine_os {
 		export SPEEDLINUX=1
 		export DISPLAY=192.168.0.1:0.0
 	    fi
+	    lsmod | grep vboxguest 2>&1 >/dev/null 
+	    if [ $? -eq 0 ]; then
+		ps aux | grep -v grep | grep X 2>&1 >/dev/null
+		if [ $? -eq 1 ]; then
+		    # Virtualbox without X
+		    export DISPLAY=10.0.2.2:0.0
+		else
+		    if [ -z $DISPLAY ]; then
+			export DISPLAY=:0
+		    fi
+		fi
+	    fi
 	    ;;
 	*)
 	    ;;
