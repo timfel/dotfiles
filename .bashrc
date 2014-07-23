@@ -1,7 +1,7 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
 # If not running interactively, don't do anything
-test "$PS1" || return 0
+test "$PS1" || return 1
 
 # If bash_profile wasn't loaded, load it This is an optimization, as
 # Cygwin loads bash_profile once, and then only runs through bashrc
@@ -15,7 +15,10 @@ if test -z "$BASH_PROFILE_LOADED"; then
 fi
 
 if [ -n "${TERM#screen*}" ]; then
-    $PROF_SCREEN_CMD
+    if [ -n "${TERM#dumb*}" ]; then
+        // $PROF_SCREEN_CMD
+        noscreen=1
+    fi
 fi
 
 if [ "$TERM" == "dumb" ]; then
