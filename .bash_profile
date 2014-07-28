@@ -1,3 +1,8 @@
+ps aux | grep -v grep | grep X 2>&1 >/dev/null
+if [ $? -eq 1 ] && [ -z "$DISPLAY" ] && [ $(tty) == /dev/tty2 ]; then
+    exec startx
+fi
+
 export BASH_PROFILE_LOADED=1
 
 function determine_os {
