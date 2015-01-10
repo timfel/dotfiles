@@ -1,7 +1,7 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
 # If not running interactively, don't do anything
-test "$PS1" || return 0
+test "$PS1" || return 1
 
 # If bash_profile wasn't loaded, load it This is an optimization, as
 # Cygwin loads bash_profile once, and then only runs through bashrc
@@ -15,7 +15,10 @@ if test -z "$BASH_PROFILE_LOADED"; then
 fi
 
 if [ -n "${TERM#screen*}" ]; then
-    $PROF_SCREEN_CMD
+    if [ -n "${TERM#dumb*}" ]; then
+        // $PROF_SCREEN_CMD
+        noscreen=1
+    fi
 fi
 
 if [ "$TERM" == "dumb" ]; then
@@ -201,6 +204,10 @@ function rbenv_setup {
 function system_tweaks {
    if [ -n "$LINUX" ]; then
       function session_reload {
+      if [ -f /etc/bash_completion ]; then
+        source /etc/bash_completion
+      fi
+
         export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
 
 	export GNOME_KEYRING_CONTROL=/run/usr/$(whoami)/$(ls -c /run/user/$(whoami)/ | grep keyring- | head -1)

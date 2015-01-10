@@ -13,6 +13,22 @@ function determine_os {
 	    ;;
 	Linux)
 	    export LINUX=1
+	    if [ "$(uname -n)" == "speedLinux" ]; then
+		export SPEEDLINUX=1
+		export DISPLAY=192.168.0.1:0.0
+	    fi
+	    lsmod | grep vboxguest 2>&1 >/dev/null 
+	    if [ $? -eq 0 ]; then
+		ps aux | grep -v grep | grep X 2>&1 >/dev/null
+		if [ $? -eq 1 ]; then
+		    # Virtualbox without X
+		    export DISPLAY=10.0.2.2:0.0
+		else
+		    if [ -z $DISPLAY ]; then
+			export DISPLAY=:0
+		    fi
+		fi
+	    fi
 	    ;;
 	*)
 	    ;;
@@ -104,9 +120,9 @@ function bash_options {
     # enable programmable completion features (you don't need to enable
     # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
     # sources /etc/bash.bashrc).
-    # if [ -f /etc/bash_completion ]; then
-    #     . /etc/bash_completion
-    # fi
+    if [ -f /etc/bash_completion ]; then
+        source /etc/bash_completion
+    fi
  
     # One-TAB-Completion
     set show-all-if-ambiguous on
