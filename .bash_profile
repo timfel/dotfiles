@@ -43,7 +43,7 @@ function determine_os {
 function screen_select {
     if [ -n "$CYGWIN" ]; then
 	if where /Q screen; then
-	    export PROF_SCREEN_CMD="screen -xR"
+	    export PROF_SCREEN_CMD="screen -xRR"
 	fi
     else
 	# if which tmux 2>&1 >/dev/null; then
@@ -51,7 +51,7 @@ function screen_select {
 	#     export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux attach || tmux new-session)"
 	# else if which screen 2>&1 >/dev/null; then
 	if which screen 2>&1 >/dev/null; then
-	    export PROF_SCREEN_CMD="screen -xR"
+	    export PROF_SCREEN_CMD="screen -xRR"
 	# fi fi
         fi
     fi
@@ -86,6 +86,9 @@ function path {
     fi
     if [[ -e "$HOME/Devel/projects/git-hg/bin" ]]; then
 	export PATH=$PATH:$HOME/Devel/projects/git-hg/bin
+    fi
+    if [[ -e "/usr/local/texlive/2014/bin/x86_64-linux/" ]]; then
+	export PATH=$PATH:/usr/local/texlive/2014/bin/x86_64-linux/
     fi
     if [[ -e "$HOME/homebrew/bin" ]]; then
 	export PATH=$HOME/homebrew/bin:$PATH

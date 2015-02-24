@@ -16,7 +16,7 @@ fi
 
 if [ -n "${TERM#screen*}" ]; then
     if [ -n "${TERM#dumb*}" ]; then
-        // $PROF_SCREEN_CMD
+        $PROF_SCREEN_CMD
         noscreen=1
     fi
 fi
