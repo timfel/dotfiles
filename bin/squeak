@@ -9,7 +9,7 @@ else
     IMAGE_GLOB="Squeak*.image"
 fi
 
-SQUEAK_SERVER="http://ftp.squeak.org"
+SQUEAK_SERVER="http://ftp.squeak.org/"
 SOURCE_FOLDER="sources_files"
 SQUEAK_WILDCARD="4."
 
@@ -34,6 +34,7 @@ function run {
 	echo "Using 3.7 VM"
 	echo "Remaining arguments are $args"
     else if [[ "$1" == "x86_64" ]]; then
+	binary="squeak"
 	version="squeakvm64bit"
 	image_arg="$2"
 	args=${@:2}
@@ -87,7 +88,7 @@ function download_squeak {
 	declare -a IMAGES
 	declare -a IMAGE_FOLDERS
 	idx=1
-	for i in $(curl -s $SQUEAK_SERVER | grep DIR | grep -o "href=\".*\"" | grep "$SQUEAK_WILDCARD"); do
+	for i in $(curl -s $SQUEAK_SERVER | grep "/</a>" | grep -o "href=\".*\"" | grep "$SQUEAK_WILDCARD"); do
 	    i=${i#*=}
 	    i=${i#\"}
 	    i=${i%%\"}
@@ -156,7 +157,7 @@ function update {
    SmalltalkImage current snapshot: true andQuit: false.
    Smalltalk processHasThreadIdInstVar: true.
 EOF
-    run oldvm $update_file
+    run $2 $update_file
     rm $update_file
 }
 
@@ -166,7 +167,7 @@ function update_to_trunk {
    MCMcmUpdater updateFromDefaultRepository.
    SmalltalkImage current snapshot: true andQuit: true.
 EOF
-    run oldvm $update_file
+    run $2 $update_file
     rm $update_file
 }
 
