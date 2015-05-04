@@ -200,10 +200,6 @@ function rbenv_setup {
 function system_tweaks {
    if [ -n "$LINUX" ]; then
       function session_reload {
-      if [ -f /etc/bash_completion ]; then
-        source /etc/bash_completion
-      fi
-
         export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
 
 	export GNOME_KEYRING_CONTROL=/run/usr/$(whoami)/$(ls -c /run/user/$(whoami)/ | grep keyring- | head -1)
@@ -356,4 +352,7 @@ maglev_setup
 bin_options
 
 source "$HOME"/bin/bash_vcs.sh
+if [ -f /etc/bash_completion ]; then
+    source /etc/bash_completion
+fi
 PROMPT_COMMAND=prompt
