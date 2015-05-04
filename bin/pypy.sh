@@ -1,10 +1,11 @@
 #!/bin/bash
+set -e
 
 function download() {
     os="$(uname)"
     case $os in
 	Linux)
-	    url="pypy-c-jit-latest-linux64.tar.bz2"
+	    url="pypy-c-jit-latest-linux.tar.bz2"
 	    cmd="tar xjf"
 	    ;;
 	Darwin)
@@ -21,15 +22,12 @@ function download() {
     esac
 
     pushd ~/bin/
-    curl -O "http://buildbot.pypy.org/nightly/trunk/$url" || exit 1
+    curl -L -O "http://buildbot.pypy.org/nightly/trunk/$url"
     $cmd $url
     rm $url
     rsync -a pypy-c-jit*/* ~/bin/pypy/
     rm -rf pypy-c-jit*
-    curl -O http://python-distribute.org/distribute_setup.py || exit 1
-    ~/bin/pypy/bin/pypy distribute_setup.py
-    rm -f distribute_setup.py distribute*.tar.gz
-    curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py || exit 1
+    curl -L -O https://bootstrap.pypa.io/get-pip.py
     ~/bin/pypy/bin/pypy get-pip.py
     rm -f get-pip.py
     popd
