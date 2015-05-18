@@ -36,7 +36,9 @@ escape ^Bb
 #change the hardstatus settings to give an window list at the bottom of the
 #screen, with the time and date and with the current window highlighted
 hardstatus alwayslastline 
-hardstatus string '%{= gW}%-Lw%{= yW}%50>%n%f* %t%{= gW}%+Lw%< %{= gW}%-=%D %d %M %Y %c:%s%{-}'
+hardstatus string '%H %{= gW}%-Lw%{= yW}%50>%n%f* %t%{= gW}%+Lw%< %{= gW}%-=%D %d %M %Y %c:%s%{-}'
+
+shelltitle '  |bash'
 
 # bind Shift+left/right to go to previous and next window
 bindkey ^[[1;2D prev
@@ -44,3 +46,4 @@ bindkey ^[[1;2C next
 
 # 5000 lines scrollbackbuffer should be good
 defscrollback 5000
+

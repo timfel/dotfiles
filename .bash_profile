@@ -119,7 +119,7 @@ function environment {
 function bash_options {
     # don't put duplicate lines in the history. See bash(2) for more options
     # ... and ignore same sucessive entries.
-    export HISTCONTROL="ignoredups;ignoreboth"
+    export HISTCONTROL="ignoreboth"
 
     # check the window size after each command and, if necessary,
     # update the values of LINES and COLUMNS.

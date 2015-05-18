@@ -10,7 +10,7 @@
    rb = rebase --stat --ignore-whitespace
    lg = log --color --graph --pretty=awesome --date=local --abbrev-commit
    paper = "!echo $1; git clone --single-branch --branch $1 git@github.com:timfel/papers.git $1; cd $1; git config --local --replace-all remote.origin.fetch +refs/heads/${1}:refs/remotes/origin/${1}"
-   branches = "!git for-each-ref --sort=-committerdate refs/heads --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|sh"
+   branches = "!git for-each-ref --sort=-committerdate refs/heads --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|head -30|sh"
    branches-origin = "!git for-each-ref --sort=-committerdate refs/remotes/origin --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|sh" 
 [user]
    name = Tim Felgentreff
