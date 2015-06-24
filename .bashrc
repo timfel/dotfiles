@@ -146,6 +146,8 @@ function prompt {
    else
       PS1='\[\033k\033\\\]'"$PS1$EXITCODE  "
    fi
+
+   history -a
 }
 
 function rvm_env {
