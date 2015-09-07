@@ -318,8 +318,8 @@
  endfunction
 
  " Enable overlength highlighting
- highlight OverLength ctermbg=red ctermfg=white guibg=#592929
- match OverLength /\%81v.*/
+" highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+" match OverLength /\%81v.*/
 
  " Some printing logic
  command! -nargs=* Hardcopy call DoPrint("<args>")
