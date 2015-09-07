@@ -1,0 +1,6 @@
+#!/bin/bash
+
+this=$(dirname $0)
+PATH=${PATH%$this/*}${PATH#*$this/}
+google-chrome || chromium-browser
+
