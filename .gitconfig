@@ -31,10 +31,6 @@
    mergetool = meld
 [gc]
    auto = 0
-[lighthouse]
-   account = redcar
-   token = 4a93ef05ea961b24cb7c30890ea3caf0629b1223
-   project = 25090
 [diff]
    ignoreSubmodules = untracked
 [merge]
