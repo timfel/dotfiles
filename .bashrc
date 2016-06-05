@@ -160,7 +160,6 @@ function rvm_env {
         if [ -n "$LINUX" ]; then
             if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then
                 source "$HOME"/.rvm/scripts/rvm
-                rvm use ree
             fi
         else
             echo
