@@ -18,11 +18,13 @@ function determine_os {
 	    ;;
 	Linux)
 	    export LINUX=1
+	    export WSL=0
 	    if [ "$(uname -n)" == "speedLinux" ]; then
 		export SPEEDLINUX=1
 		export DISPLAY=192.168.0.1:0.0
 	    fi
 	    if [ -d /mnt/c/Windows ]; then
+		export WSL=1
 		export DISPLAY=:0.0
 		return
 	    fi
@@ -94,10 +96,16 @@ function path {
     if [[ -e "/usr/local/texlive/2014/bin/x86_64-linux/" ]]; then
 	export PATH=$PATH:/usr/local/texlive/2014/bin/x86_64-linux/
     fi
+    if [[ -e "$HOME/.texlive/2015/bin/x86_64-linux/" ]]; then
+	export PATH=$PATH:$HOME/.texlive/2015/bin/x86_64-linux/
+    fi
     if [[ -e "$HOME/homebrew/bin" ]]; then
 	export PATH=$HOME/homebrew/bin:$PATH
     fi
 
+    export PATH="/home/tim/.linuxbrew/bin:$PATH"
+    export MANPATH="/home/tim/.linuxbrew/share/man:$MANPATH"
+    export INFOPATH="/home/tim/.linuxbrew/share/info:$INFOPATH"
     if [[ -e "/usr/local/heroku" ]]; then
 	export PATH="/usr/local/heroku/bin:$PATH"
     fi

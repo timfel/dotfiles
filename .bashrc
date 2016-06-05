@@ -37,7 +37,9 @@ if [ "$TERM" == "dumb" ]; then
     unset COLOR_CYAN_BOLD
     unset COLOR_NONE
 else if [ "$TERM" == "xterm" ]; then
-    export TERM="xterm-256color"
+    if [ $WSL -eq 0 ]; then
+        export TERM="xterm-256color"
+    fi
 fi fi
 
 function spwd {
