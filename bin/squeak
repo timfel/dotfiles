@@ -11,7 +11,7 @@ fi
 
 SQUEAK_SERVER="http://ftp.squeak.org/"
 SOURCE_FOLDER="sources_files"
-SQUEAK_WILDCARD="4."
+SQUEAK_WILDCARD="(4|5)."
 
 function run {
     if [[ "$1" == "oldvm" ]]; then
@@ -96,7 +96,7 @@ function download_squeak {
 	declare -a IMAGES
 	declare -a IMAGE_FOLDERS
 	idx=1
-	for i in $(curl -s $SQUEAK_SERVER | grep "/</a>" | grep -o "href=\".*\"" | grep "$SQUEAK_WILDCARD"); do
+	for i in $(curl -s $SQUEAK_SERVER | grep "/</a>" | grep -o "href=\".*\"" | grep -P "$SQUEAK_WILDCARD"); do
 	    i=${i#*=}
 	    i=${i#\"}
 	    i=${i%%\"}
