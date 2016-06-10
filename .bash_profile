@@ -22,6 +22,10 @@ function determine_os {
 		export SPEEDLINUX=1
 		export DISPLAY=192.168.0.1:0.0
 	    fi
+	    if [ -d /mnt/c/Windows ]; then
+		export DISPLAY=:0.0
+		return
+	    fi
 	    lsmod | grep vboxguest 2>&1 >/dev/null 
 	    if [ $? -eq 0 ]; then
 		ps aux | grep -v grep | grep X 2>&1 >/dev/null
