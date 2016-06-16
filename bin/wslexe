@@ -1,0 +1,41 @@
+#!/bin/bash
+
+WINDOWSUSER=Tim
+
+rawurlencode() {
+    local string="${1}"
+    local strlen=${#string}
+    local encoded=""
+    local pos c o
+
+    for (( pos=0 ; pos<strlen ; pos++ )); do
+	c=${string:$pos:1}
+        case "$c" in
+	    [-_.~a-zA-Z0-9] ) o="${c}" ;;
+	    * )               printf -v o '%%%02x' "'$c"
+	esac
+	encoded+="${o}"
+    done
+    echo "${encoded}"    # You can either set a return variable (FASTER)
+    REPLY="${encoded}"   #+or echo the result (EASIER)... or both... :p
+}
+
+value=""
+for argument in $@; do
+    if [ -e "$argument" ]; then
+	argument=$(readlink -f "$argument")
+	if [[ $argument == /mnt/* ]]; then
+	    argument=$(echo "${argument##/mnt/}" | sed 's/^\([a-z]\)/\1:/' | sed 's#/#\\#g')
+	elif [[ $argument == /home* ]]; then
+	    argument=$(echo "${argument##/home/}" | sed 's#^\([a-zA-Z ][a-zA-Z ]*\)#c:\\Users\\'$WINDOWSUSER'\\AppData\\Local\\lxss\\home\\\1#' | sed 's#/#\\#g')
+	elif [[ $argument == /root* ]]; then
+	    argument=$(echo "${argument}" | sed 's#^#c:\\Users\\'$WINDOWSUSER'\\AppData\\Local\\lxss#' | sed 's#/#\\#g')
+	else
+	    argument=$(echo "${argument}" | sed 's#^#c:\\Users\\'$WINDOWSUSER'\\AppData\\Local\\lxss\\rootfs#' | sed 's#/#\\#g')
+	fi
+    fi
+    value=${value}%20$(rawurlencode "$argument")
+done
+
+curl localhost:9876/$value
+echo
