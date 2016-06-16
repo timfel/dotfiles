@@ -16,8 +16,10 @@ fi
 
 if [ -n "${TERM#screen*}" ]; then
     if [ -n "${TERM#dumb*}" ]; then
-        $PROF_SCREEN_CMD
-        noscreen=1
+        if [ -z "$TMUX" ]; then
+            eval $PROF_SCREEN_CMD
+            noscreen=1
+        fi
     fi
 fi
 
@@ -36,11 +38,9 @@ if [ "$TERM" == "dumb" ]; then
     unset COLOR_MAGENTA_BOLD
     unset COLOR_CYAN_BOLD
     unset COLOR_NONE
-else if [ "$TERM" == "xterm" ]; then
-    if [ $WSL -eq 0 ]; then
-        export TERM="xterm-256color"
-    fi
-fi fi
+elif [ "$TERM" == "xterm" ]; then
+    export TERM="xterm-256color"
+fi
 
 function spwd {
    LENGTH="20"

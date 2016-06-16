@@ -25,7 +25,8 @@ function determine_os {
 	    fi
 	    if [ -d /mnt/c/Windows ]; then
 		export WSL=1
-		export DISPLAY=:0.0
+		export DISPLAY=localhost:0.0
+		export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
 		return
 	    fi
 	    lsmod | grep vboxguest 2>&1 >/dev/null 
@@ -47,7 +48,9 @@ function determine_os {
 }
 
 function screen_select {
-    if [ -n "$CYGWIN" ]; then
+    if [ $WSL -eq 1 ]; then
+       export PROF_SCREEN_CMD="tmux attach || tmux"
+    elif [ -n "$CYGWIN" ]; then
 	if where /Q screen; then
 	    export PROF_SCREEN_CMD="screen -xRR"
 	fi
@@ -96,8 +99,8 @@ function path {
     if [[ -e "/usr/local/texlive/2014/bin/x86_64-linux/" ]]; then
 	export PATH=$PATH:/usr/local/texlive/2014/bin/x86_64-linux/
     fi
-    if [[ -e "$HOME/.texlive/2015/bin/x86_64-linux/" ]]; then
-	export PATH=$PATH:$HOME/.texlive/2015/bin/x86_64-linux/
+    if [[ -e "$HOME/.texlive/2016/bin/x86_64-linux/" ]]; then
+	export PATH=$PATH:$HOME/.texlive/2016/bin/x86_64-linux/
     fi
     if [[ -e "$HOME/homebrew/bin" ]]; then
 	export PATH=$HOME/homebrew/bin:$PATH
