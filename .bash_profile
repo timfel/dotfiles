@@ -175,6 +175,12 @@ function win_path_setup {
     export PATH=$PATH:/opt/mplayer
 }
 
+function tmux_setup {
+    if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+        git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+    fi
+}
+
 determine_os
 screen_select
 export_colors
@@ -183,6 +189,7 @@ path
 environment
 bash_options
 rupypy_setup
+tmux_setup
 
 if [ -n "$CYGWIN" ]; then
     win_path_setup
