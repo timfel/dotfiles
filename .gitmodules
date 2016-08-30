@@ -10,3 +10,6 @@ url=git://github.com/cosmin/git-hg
 [submodule "git-bzr-ng"]
 	path = git-bzr-ng
 	url = https://github.com/termie/git-bzr-ng.git
+[submodule "cbwin"]
+	path = cbwin
+	url = git://github.com/timfel/cbwin

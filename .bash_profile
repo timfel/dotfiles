@@ -1,5 +1,8 @@
 ps aux | grep -v grep | grep X 2>&1 >/dev/null
-if [ $? -eq 1 ] && [ -z "$DISPLAY" ] && [ $(tty) == /dev/tty2 ]; then
+haveX=$?
+if [ -d "/mnt/c/Windows" ] && [[ $(pwd) = /mnt/* ]] ; then
+    PROF_SCREEN_CMD="echo 'no screen'"
+elif [ $haveX -eq 1 ] && [ -z "$DISPLAY" ] && [ $(tty) == /dev/tty2 ]; then
     exec startx
 fi
 
@@ -27,7 +30,6 @@ function determine_os {
 		export WSL=1
 		export DISPLAY=localhost:0.0
 		export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
-		return
 	    fi
 	    lsmod | grep vboxguest 2>&1 >/dev/null 
 	    if [ $? -eq 0 ]; then
@@ -48,7 +50,9 @@ function determine_os {
 }
 
 function screen_select {
-    if [ $WSL -eq 1 ]; then
+    if [ -n "$PROF_SCREEN_CMD" ]; then
+	return
+    elif [ $WSL -eq 1 ]; then
        export PROF_SCREEN_CMD="tmux attach || tmux"
     elif [ -n "$CYGWIN" ]; then
 	if where /Q screen; then
