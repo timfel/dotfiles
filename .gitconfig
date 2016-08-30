@@ -1,6 +1,7 @@
 [pretty]
    awesome = %Cred%h%Creset %Cblue(%aN)%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset
 [alias]
+   ap = add --patch
    chp = cherry-pick
    st = status
    co = checkout
@@ -11,7 +12,8 @@
    lg = log --color --graph --pretty=awesome --date=local --abbrev-commit
    paper = "!echo $1; git clone --single-branch --branch $1 git@github.com:timfel/papers.git $1; cd $1; git config --local --replace-all remote.origin.fetch +refs/heads/${1}:refs/remotes/origin/${1}"
    branches = "!git for-each-ref --sort=-committerdate refs/heads --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|head -30|sh"
-   branches-origin = "!git for-each-ref --sort=-committerdate refs/remotes/origin --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|sh" 
+   branches-origin = "!git for-each-ref --sort=-committerdate refs/remotes/origin --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|sh"
+   reset-permissions = "!git diff -p -R --no-color | grep -E '^(diff|(old|new) mode)' --color=never | git apply"
 [user]
    name = Tim Felgentreff
    email = "timfelgentreff@gmail.com"
