@@ -5,7 +5,8 @@ function download() {
     os="$(uname)"
     case $os in
 	Linux)
-	    url="pypy-c-jit-latest-linux.tar.bz2"
+	    url="pypy-c-jit-latest-linux64.tar.bz2"
+	    # url="pypy-c-jit-85044-0513b4a90c28-linux64.tar.bz2
 	    cmd="tar xjf"
 	    ;;
 	Darwin)
@@ -22,6 +23,7 @@ function download() {
     esac
 
     pushd ~/bin/
+    echo "http://buildbot.pypy.org/nightly/trunk/$url"
     curl -L -O "http://buildbot.pypy.org/nightly/trunk/$url"
     $cmd $url
     rm $url
