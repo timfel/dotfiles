@@ -204,6 +204,27 @@ function rbenv_setup {
     fi
 }
 
+function nvm_setup {
+    if [ ! -e "$HOME/.nvm" ]; then
+        printf "Install nvm? (Y/n)"
+        read answer
+        if [ $answer == "y" -o $answer == "Y" ]; then
+	    git clone https://github.com/creationix/nvm.git ~/.nvm
+	    pushd ~/.nvm
+	    git checkout `git describe --abbrev=0 --tags`
+	    popd
+        else
+            touch "$HOME/.nvm"
+        fi
+        unset answer
+    fi
+    export NVM_DIR="/home/tim/.nvm"
+    if [ -s "$NVM_DIR/nvm.sh" ]; then
+       alias node="unalias npm && unalias node && source $NVM_DIR/nvm.sh && node"
+       alias npm="unalias npm && unalias node && source $NVM_DIR/nvm.sh && npm"
+    fi
+}
+
 function system_tweaks {
    if [ -n "$LINUX" ]; then
       function session_reload {
@@ -355,6 +376,7 @@ if [ -d "$HOME/.rvm" ]; then
 else
     rbenv_setup
 fi
+nvm_setup
 maglev_setup
 bin_options
 
