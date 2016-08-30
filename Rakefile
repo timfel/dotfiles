@@ -2,6 +2,14 @@ desc "installs everything"
 task :install => "install:all"
 namespace :install do
 
+  task :cbwin do
+    sh "git submodule init && git submodule update"
+    sh "cd cbwin/caller/ && ./build.sh"
+    %w[wrun wstart wcmd].each { |s| sh "ln -sf ../cbwin/caller/#{s} bin/#{s}" }
+  end
+
+  task :all => :cbwin
+
   def _install name, *files
     desc "installs #{name} configuration"
     task(name) do
@@ -34,10 +42,11 @@ namespace :install do
 
   desc "installs the custom texmf folder"
   task :texmf do
-    system "git submodule init && git submodule update"
+    sh "git submodule init && git submodule update"
     _install :texmf_folder, "texmf"
     Rake::Task[:texmf_folder].invoke
   end
 
   task :all => :texmf
+
 end
