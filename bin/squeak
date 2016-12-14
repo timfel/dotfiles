@@ -2,10 +2,8 @@
 
 if [ $(basename "$0") == "pharo" ]; then
     PHARO=1
-    VM_PATH="pharo"
     IMAGE_GLOB="Pharo*.image"
 else
-    VM_PATH="squeak"
     IMAGE_GLOB="Squeak*.image"
 fi
 
@@ -14,52 +12,31 @@ SOURCE_FOLDER="sources_files"
 SQUEAK_WILDCARD="(4|5)."
 
 function run {
-    if [[ "$1" == "oldvm" ]]; then
-       	if [ "$(uname -o)" == "Cygwin" ]; then
-	    binary="Squeak.exe"
-	else
-	    binary="squeak"
-	fi
-	version="squeakvm"
-	image_arg="$2"
-	args=${@:2}
-	echo "Using old VM"
-	echo "Remaining arguments are $args"
-    elif [[ "$1" == "3.7" ]]; then
-	binary="squeak"
-	version="squeakvm3.7"
-	image_arg="$2"
-	args=${@:2}
-	args="-plugins $HOME/bin/lib/squeak/squeakvm3.7/ ${args[@]}"
-	echo "Using 3.7 VM"
-	echo "Remaining arguments are $args"
-    elif [[ "$1" == "3.0" ]]; then
-	binary="squeak"
-	version="squeakvm3.0"
-	image_arg="$2"
-	args=${@:2}
-	# args="-plugins $HOME/bin/lib/squeak/squeakvm3.0/ ${args[@]}"
-	echo "Using 3.0 VM"
-	echo "Remaining arguments are $args"
-    else if [[ "$1" == "x86_64" ]]; then
-	binary="squeak"
-	version="squeakvm64bit"
-	image_arg="$2"
-	args=${@:2}
-	echo "Using 64bit VM"
-	echo "Remaining arguments are $args"
+    case "$1" in
+	"64"|"oldvm"|"3.7"|"3.0"|"cog"|"spur")
+	    version="squeak$1"
+	    image_arg="$2"
+	    args=${@:2}
+	    ;;
+	*)
+	    version="squeakspur"
+	    image_arg="$1"
+	    ;;
+    esac
+    if [ "$(uname -o)" == "Cygwin" ]; then
+	binary="squeak.exe"
+    elif [ -n "$WSL" ]; then
+	binary="squeak.exe"
     else
-       	if [ "$(uname -o)" == "Cygwin" ]; then
-	    binary="Croquet.exe"
-	else
-	    binary="squeak"
-        fi
-	version="cog"
-	image_arg="$1"
-	args=$@
-    fi fi
-    BIN=`/usr/bin/dirname "$0"`/lib/$VM_PATH/$version
-    BIN="$BIN/$binary"
+	args="-plugins $HOME/bin/lib/squeak/${version}/ ${args[@]}"
+	binary="squeak"
+    fi
+
+    BIN=`/usr/bin/dirname "$0"`/lib/squeak/$version
+    BIN=`readlink -f "$BIN/$binary"`
+
+    echo "Running $BIN with $image_arg"
+
     if [[ -e "$image_arg" ]]; then
 	if [[ -n $(echo "$image_arg" | grep "\.image$") ]]; then
             IMAGE="$image_arg" # If the file exists and ends with image, use it
@@ -69,13 +46,13 @@ function run {
 	IMAGE="${image_arg}.image" # If an image file with that prefix exists, use it
     fi
 
-   # At least on linux LD_LIBRARY_PATH's components must be absolute path names
+    # At least on linux LD_LIBRARY_PATH's components must be absolute path names
     case "$BIN" in
 	/*) PLUGINS="$BIN";;
 	*) PLUGINS="`pwd`/$BIN"
     esac
-   # prepending is less flexible but safer because it ensures we find the plugins
-   # in the same directory as the VM.
+    # prepending is less flexible but safer because it ensures we find the plugins
+    # in the same directory as the VM.
     if [[ -n $IMAGE ]]; then
        	if [ "$(uname -o)" == "Cygwin" ]; then
 	    exec "$BIN" $args

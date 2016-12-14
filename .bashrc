@@ -356,8 +356,8 @@ function bin_options {
    alias gitciam="git commit --amend -m"
    alias gitcim="git commit -m"
 
-   alias vi="$EDITOR"
-   alias em="$EMACS -n"
+   # alias vi="$EDITOR"
+   # alias em="$EMACS -n"
 
    # RVM shortcuts
    alias rvm_isolate="rvm gemset create \$(basename \`pwd\`); echo 'rvm gemset use \$(basename \`pwd\`)' >> .rvmrc; cd ../\$(basename \`pwd\`)"

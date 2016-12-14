@@ -34,8 +34,9 @@ for argument in $@; do
 	    argument=$(echo "${argument}" | sed 's#^#c:\\Users\\'$WINDOWSUSER'\\AppData\\Local\\lxss\\rootfs#' | sed 's#/#\\#g')
 	fi
     fi
-    value=${value}%20$(rawurlencode "$argument")
+    value="${value} ${argument}"
 done
 
-curl localhost:9876/$value
+echo $value
+wrun : $value
 echo

@@ -30,18 +30,19 @@ function determine_os {
 		export WSL=1
 		export DISPLAY=localhost:0.0
 		export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
-	    fi
-	    lsmod | grep vboxguest 2>&1 >/dev/null 
-	    if [ $? -eq 0 ]; then
-		ps aux | grep -v grep | grep X 2>&1 >/dev/null
-		if [ $? -eq 1 ]; then
-		    # Virtualbox without X
-		    export DISPLAY=10.0.2.2:0.0
-		else
-		    if [ -z $DISPLAY ]; then
-			export DISPLAY=:0
-		    fi
-		fi
+            else
+                lsmod | grep vboxguest 2>&1 >/dev/null 
+	       if [ $? -eq 0 ]; then
+		   ps aux | grep -v grep | grep X 2>&1 >/dev/null
+		   if [ $? -eq 1 ]; then
+		       # Virtualbox without X
+		       export DISPLAY=10.0.2.2:0.0
+		   else
+		       if [ -z $DISPLAY ]; then
+			   export DISPLAY=:0
+		       fi
+		   fi
+	       fi
 	    fi
 	    ;;
 	*)
@@ -124,13 +125,13 @@ function environment {
     # export RUBYOPT="rubygems"
     # export MAGLEV_OPTS="-rubygems"
 
-    if [ -n "$CYGWIN" ]; then
-        export EMACS="emacsclient -f $(cygpath -m ${HOME}/.emacs.d/server/server) -c"
-    else
-        export EMACS="emacsclient -f ${HOME}/.emacs.d/server/server -c"
-    fi
-    export EDITOR="$EMACS"
-    export ALTERNATE_EDITOR=""
+    # if [ -n "$CYGWIN" ]; then
+    #     export EMACS="emacsclient -f $(cygpath -m ${HOME}/.emacs.d/server/server) -c"
+    # else
+    #     export EMACS="emacsclient -f ${HOME}/.emacs.d/server/server -c"
+    # fi
+    # export EDITOR="$EMACS"
+    # export ALTERNATE_EDITOR=""
 
     export VISUALWORKS=/media/Data/Applications/vw79public
 }
@@ -200,3 +201,8 @@ if [ -n "$CYGWIN" ]; then
 fi
 
 source ~/.bashrc
+
+# startup virtualenv-burrito
+if [ -f $HOME/.venvburrito/startup.sh ]; then
+    . $HOME/.venvburrito/startup.sh
+fi
