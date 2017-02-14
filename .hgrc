@@ -16,7 +16,6 @@ color =
 graphlog = 
 progress =
 hgext.convert=
-hggit=
 hgext.hbisect=
 [web]
 cacerts =
