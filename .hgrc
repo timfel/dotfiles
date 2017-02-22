@@ -13,6 +13,7 @@ rebase =
 record =
 pager =
 color =
+purge =
 graphlog = 
 progress =
 hgext.convert=

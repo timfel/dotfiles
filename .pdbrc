@@ -1,0 +1,5 @@
+import pdb
+
+class Config(pdb.DefaultConfig):
+    use_terminal256formatter = True
+    sticky = True
