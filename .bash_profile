@@ -193,7 +193,9 @@ function graalenv_setup {
     if [ ! -d "$HOME/.graalenv" ]; then
 	git clone https://github.com/timfel/graalenv $HOME/.graalenv
     fi
+    DEFAULT_DYNAMIC_IMPORTS="/compiler"
     source ~/.graalenv/graalenv
+    graalenv use latest
 }
 
 determine_os
