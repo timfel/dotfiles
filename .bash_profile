@@ -189,6 +189,13 @@ function tmux_setup {
     fi
 }
 
+function graalenv_setup {
+    if [ ! -d "$HOME/.graalenv" ]; then
+	git clone https://github.com/timfel/graalenv $HOME/.graalenv
+    fi
+    source ~/.graalenv/graalenv
+}
+
 determine_os
 screen_select
 export_colors
@@ -198,6 +205,7 @@ environment
 bash_options
 rupypy_setup
 tmux_setup
+graalenv_setup
 
 if [ -n "$CYGWIN" ]; then
     win_path_setup

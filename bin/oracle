@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Start communication apps
+cmd.exe /C start ciscoim:/local
+cmd.exe /C start skypeuwp:/
+cmd.exe /C start outlookmail:/
+cmd.exe /C start outlookcal:/
+cmd.exe /C start onenote-cmd:/
+cmd.exe /C start https://my.oracle.com
+
+# Find and start Cisco AnyConnect VPN
+VPNCLIENTPATH=`find /mnt/c/ProgramData/Microsoft/Windows/Start\ Menu/Programs/ -iname "*cisco anyconnect*client*.lnk"`
+VPNCLIENTDIR=`dirname "$VPNCLIENTPATH"`
+VPNCLIENTBASENAME=`basename "$VPNCLIENTPATH"`
+pushd "$VPNCLIENTDIR"
+cmd.exe /C "$VPNCLIENTBASENAME"
+popd
+
+# Start development tools
+emacs24-lucid &
+netbeans &
+cmd.exe /C bash ~
