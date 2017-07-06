@@ -1,6 +1,7 @@
 [pretty]
    awesome = %Cred%h%Creset %Cblue(%aN)%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset
 [alias]
+   addnw=!sh -c 'git diff -U0 -w --no-color "$@" | git apply --cached --ignore-whitespace --unidiff-zero -'
    ap = add --patch
    chp = cherry-pick
    st = status
