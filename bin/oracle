@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 
 # Start communication apps
 cmd.exe /C start ciscoim:/local
@@ -18,7 +18,7 @@ popd
 
 # Start development tools
 function start_if_not_running() {
-    if ps -eo "%a" | grep $1 > /dev/null; then
+    if ps -eo "%a" | grep -v grep | grep $1 > /dev/null; then
 	echo "$1 already running"
     else
 	$1 &
@@ -31,3 +31,4 @@ start_if_not_running netbeans
 unset -f start_if_not_running
 
 cmd.exe /C start cmd.exe /C bash -il -c "tmux attach || tmux"
+wait
