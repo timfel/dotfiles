@@ -17,6 +17,17 @@ cmd.exe /C "$VPNCLIENTBASENAME"
 popd
 
 # Start development tools
-emacs24-lucid &
-netbeans &
-cmd.exe /C bash ~
+function start_if_not_running() {
+    if ps -eo "%a" | grep $1 > /dev/null; then
+	echo "$1 already running"
+    else
+	$1 &
+    fi
+}
+
+start_if_not_running emacs24-lucid
+start_if_not_running netbeans
+
+unset -f start_if_not_running
+
+cmd.exe /C start cmd.exe /C bash -il -c "tmux attach || tmux"
