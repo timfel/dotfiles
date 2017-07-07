@@ -61,11 +61,11 @@ function spwd {
 function prompt {
    # Show last commands exit-code by smiley
    if [ $? = 0 ]; then
-      EXITCODE="${COLOR_GREEN_BOLD}✔"
+      EXITCODE="${COLOR_GREEN_BOLD}"
    else
-      EXITCODE="${COLOR_RED_BOLD}✘"
+      EXITCODE="${COLOR_RED_BOLD}"
    fi
-   EXITCODE=$EXITCODE${COLOR_NONE}
+   EXITCODE="${EXITCODE}>${COLOR_NONE}"
 
    if test -z "$CYGWIN"; then
        # set variable identifying the chroot you work in (used in the prompt below)
@@ -92,7 +92,7 @@ function prompt {
           else if [ "$USER" == "timfelgentreff" ]; then
              MACHINE="${MACHINE}➔"
           else if [ "$USER" == "timme" ]; then
-             MACHINE="${MACHINE}➔"
+             MACHINE="${MACHINE}->"
           else
              MACHINE="${MACHINE}${USER}@"
           fi fi fi fi fi
@@ -121,13 +121,13 @@ function prompt {
 
    # SHOW RUBY VERSION
    if test -z "$CYGWIN"; then
-       if (which rvm-prompt 2>&1 > /dev/null); then
+       if [ -d "$HOME/.rvm" ]; then
            PS1="$PS1 \$(rvm-prompt u)"
-       else
-           PS1="$PS1 ${RBENV_VERSION:-system}"
+       elif [ -n "${RBENV_VERSION}" ]; then
+           PS1="$PS1 ${RBENV_VERSION:-ruby}"
        fi
-    else
-       PS1="$PS1 ${RBENV_VERSION:-system}"
+    elif [ -n "${RBENV_VERSION}" ]; then
+       PS1="$PS1 ${RBENV_VERSION}"
     fi
 
    # SHOW VIRTUALENV
@@ -140,13 +140,13 @@ function prompt {
    if [ -z "$VCS" ]; then
       EXITCODE=" ${EXITCODE}"
    else
-      VCS=" ❰${VCS}❱ "
+      VCS=" [${VCS}] "
    fi
    PS1="$PS1$VCS"
    if [ -n "${TERM#screen*}" ]; then
-      PS1="$PS1$EXITCODE  "
+      PS1="$PS1$EXITCODE "
    else
-      PS1='\[\033k\033\\\]'"$PS1$EXITCODE  "
+      PS1='\[\033k\033\\\]'"$PS1$EXITCODE "
    fi
 
    history -a

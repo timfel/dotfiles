@@ -77,30 +77,30 @@ __git_ps1 ()
 		then
 			if test -f "$g/rebase-apply/rebasing"
 			then
-				r="|₨"
+				r="|rebasing"
 			elif test -f "$g/rebase-apply/applying"
 			then
-				r="|✉"
+				r="|am"
 			else
-				r="|✉/₨"
+				r="|am/rebasing"
 			fi
 			b="$(git symbolic-ref HEAD 2>/dev/null)"
 		elif [ -f "$g/rebase-merge/interactive" ]
 		then
-			r="|₨-¡"
+			r="|rebasing-interactive"
 			b="$(cat "$g/rebase-merge/head-name")"
 		elif [ -d "$g/rebase-merge" ]
 		then
-			r="|₨-₥"
+			r="|rebasing-merge"
 			b="$(cat "$g/rebase-merge/head-name")"
 		elif [ -f "$g/MERGE_HEAD" ]
 		then
-			r="|₥"
+			r="|merging"
 			b="$(git symbolic-ref HEAD 2>/dev/null)"
 		else
 			if [ -f "$g/BISECT_LOG" ]
 			then
-				r="|฿"
+				r="|bisecting"
 			fi
 			if ! b="$(git symbolic-ref HEAD 2>/dev/null)"
 			then
@@ -117,7 +117,7 @@ __git_ps1 ()
 		   	if git diff-index --quiet HEAD ; then
 			        printf "%s" "${b##refs/heads/}$r"
 			else
-				printf "%s" "${COLOR_RED_BOLD}${b##refs/heads/}${r}⚡${COLOR_NONE}"
+				printf "%s" "${COLOR_RED_BOLD}${b##refs/heads/}${r}${COLOR_NONE}"
 			fi
 		fi
 	fi
