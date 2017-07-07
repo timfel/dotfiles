@@ -184,7 +184,6 @@ function rbenv_setup {
     if [ -d "$HOME/.rbenv/bin" ]; then
         export PATH="$HOME"/.rbenv/bin:"$HOME"/.rbenv/shims:"$HOME"/.ruby-build/bin:$PATH
         source ~/.rbenv/completions/rbenv.bash
-        rbenv rehash
 
         function use {
 	    if [ $# -eq 0 ]; then
@@ -381,7 +380,7 @@ maglev_setup
 bin_options
 
 source "$HOME"/bin/bash_vcs.sh
-if [ -f /etc/bash_completion ]; then
-    source /etc/bash_completion
-fi
 PROMPT_COMMAND=prompt
+
+# added by travis gem
+[ -f /home/tim/.travis/travis.sh ] && source /home/tim/.travis/travis.sh
