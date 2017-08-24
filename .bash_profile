@@ -93,6 +93,7 @@ function export_colors {
 }
 
 function path {
+    export PATH=$PATH:$HOME/.local/bin
     export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin
     export PATH="$HOME"/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
     if [ -n "$SOLARIS" ]; then
