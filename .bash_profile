@@ -94,22 +94,19 @@ function export_colors {
 
 function path {
     export PATH=$PATH:$HOME/.local/bin
-    export PATH=$PATH:/usr/GNUstep/System/Tools:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin
-    export PATH="$HOME"/bin/:/var/lib/gems/1.8/bin/:/opt/bin/:/sbin/:$PATH
+    export PATH=$PATH:/usr/local/bin:/usr/local/sbin:/usr/local/share/npm/bin
+    export PATH="$HOME"/bin/:/opt/bin/:/sbin/:$PATH
     if [ -n "$SOLARIS" ]; then
 	export PATH=/opt/csw/bin:/opt/sfw/bin:$PATH
     fi
     if [ -n "$CYGWIN" ]; then
 	export PATH=/opt/emacs/bin:$PATH
     fi
-    if [[ -e "$HOME/Devel/projects/git-hg/bin" ]]; then
-	export PATH=$PATH:$HOME/Devel/projects/git-hg/bin
-    fi
-    if [[ -e "/usr/local/texlive/2014/bin/x86_64-linux/" ]]; then
-	export PATH=$PATH:/usr/local/texlive/2014/bin/x86_64-linux/
-    fi
     if [[ -e "$HOME/.texlive/2016/bin/x86_64-linux/" ]]; then
 	export PATH=$PATH:$HOME/.texlive/2016/bin/x86_64-linux/
+    fi
+    if [[ -e "$HOME/.texlive/2017/bin/x86_64-linux/" ]]; then
+	export PATH=$PATH:$HOME/.texlive/2017/bin/x86_64-linux/
     fi
     if [[ -e "$HOME/homebrew/bin" ]]; then
 	export PATH=$HOME/homebrew/bin:$PATH
@@ -155,6 +152,9 @@ function bash_options {
     if [ -f /etc/bash_completion ]; then
         source /etc/bash_completion
     fi
+    if [ -f /usr/share/bash-completion/bash_completion ]; then
+        source /usr/share/bash-completion/bash_completion
+    fi
  
     # One-TAB-Completion
     set show-all-if-ambiguous on
@@ -190,13 +190,41 @@ function tmux_setup {
     fi
 }
 
-function graalenv_setup {
-    if [ ! -d "$HOME/.graalenv" ]; then
-	git clone https://github.com/timfel/graalenv $HOME/.graalenv
+function emacs_setup {
+    if [ ! -d "$HOME/.emacs.d" ]; then
+	git clone https://github.com/timfel/my_emacs_for_rails.git $HOME/.emacs.d
+        pushd $HOME/.emacs.d
+        git remote set-url origin git@github.com:timfel/my_emacs_for_rails.git
+        popd
+        # Workaround helm issue
+        mkdir -p $HOME/.emacs.d/elpa/
+        ln -s $HOME/.emacs.d/el-get/emacs-async $HOME/.emacs.d/elpa/async-0
     fi
-    export DEFAULT_DYNAMIC_IMPORTS="/truffle,/sdk,/compiler"
-    source ~/.graalenv/graalenv
-    graalenv use latest
+}
+
+function ubuntu_setup {
+    if [ ! -e "$HOME/.ubuntu_dev_installed" ]; then
+        touch "$HOME/.ubuntu_dev_installed"
+        if [[ `lsb_release -i` = *Ubuntu ]]; then
+            printf "Setup Ubuntu dev system (Skype/Eclipse/Emacs/LLVM)? (Y/n)"
+            read answer
+            if [ $answer == "y" -o $answer == "Y" ]; then
+                sudo add-apt-repository ppa:webupd8team/java
+                sudo add-apt-repository ppa:mmk2410/eclipse-ide-java
+                sudo add-apt-repository ppa:openconnect/daily
+                sudo su –c 'echo "deb [arch=amd64] https://repo.skype.com/deb stable main" > /etc/apt/sources.list.d"'
+                sudo apt update
+                sudo apt install emacs texinfo cvs git-svn \
+                     xsel git mercurial ruby rake build-essential \
+                     tmux vim htop curl screen clang eclipse-ide-java \
+                     llvm libc++-dev libc++abi-dev \
+                     skypeforlinux openconnect python3-pip \
+                     libffi-dev libz-dev
+                oracle-java8-installer oracle-java8-set-default
+                pip3 install --user https://github.com/dlenski/vpn-slice/archive/master.zip
+            fi
+        fi
+    fi
 }
 
 determine_os
@@ -208,7 +236,7 @@ environment
 bash_options
 rupypy_setup
 tmux_setup
-graalenv_setup
+emacs_setup
 
 if [ -n "$CYGWIN" ]; then
     win_path_setup

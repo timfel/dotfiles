@@ -224,6 +224,18 @@ function nvm_setup {
     fi
 }
 
+function graalenv_setup {
+    if [ ! -d "$HOME/.graalenv" ]; then
+	git clone https://github.com/timfel/graalenv $HOME/.graalenv
+        pushd $HOME/.graalenv
+        git remote set-url origin git@github.com:timfel/graalenv.git
+        popd
+    fi
+    export DEFAULT_DYNAMIC_IMPORTS="/truffle,/sdk,/compiler"
+    source ~/.graalenv/graalenv
+    graalenv use latest
+}
+
 function system_tweaks {
    if [ -n "$LINUX" ]; then
       function session_reload {
@@ -377,6 +389,7 @@ else
 fi
 nvm_setup
 maglev_setup
+graalenv_setup
 bin_options
 
 source "$HOME"/bin/bash_vcs.sh
