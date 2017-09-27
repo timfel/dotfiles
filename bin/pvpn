@@ -1,0 +1,286 @@
+#!/bin/bash
+#
+# Copyright (c) 2012, Henrik Hallberg (henrik@k2h.se)
+# All rights reserved.
+#
+# See LICENSE
+
+VERSION=
+if [[ -d /run ]]; then
+    STATE_DIR=/run/pvpn
+else
+    STATE_DIR=/var/run/pvpn
+fi
+
+usage() {
+    echo "Establish VPN through your run of the mill SSH server (with root SSH access)"
+    echo ""
+    echo "See pvpn(8) for a complete reference, or https://www.github.com/halhen/pvpn"
+    echo ""
+    echo "USAGE"
+    echo "-----"
+    echo "  Start tunnel"
+    echo "    $ pvpn [option] ... [user@]ssh-host [route] ..."
+    echo ""
+    echo "    -t TYPE|--type TYPE"
+    echo "      Type of tunnel. Valid options are"
+    echo "      * ppp (ppp over ssh)"
+    echo "      * ssh-3 (OpenSSH Layer 3)"
+    echo "    -i IP_PAIR|--ip IP_PAIR"
+    echo "      Pair of IP addresses for tunnel"
+    echo "      If no -i is given, 10.b.c.1:10.b.c.2, where b and c are random, is used."
+    echo "    -s HOST|--first-ssh-hop HOST"
+    echo "      IP address or hostname of the first SSH server you connect to. Use if you"
+    echo "      connect through reverse tunnels or intermediate servers with ProxyCommand."
+    echo "    -D|--inherit-dns"
+    echo "      Inherit DNS settings from ssh-host. When disconnecting, the current DNS"
+    echo "      settings will be restored."
+    echo ""
+    echo "  Stop tunnel"
+    echo "    $ pvpn --stop [tunnel]"
+    echo ""
+    echo "    -S TUNNEL|--stop TUNNEL"
+    echo "      Stop tunnel with client device TUNNEL and exit. If no TUNNEL is given, stop"
+    echo "      all tunnels."
+    echo ""
+    echo "EXAMPLES"
+    echo "--------"
+    echo "  Gain access to the 192.168.xxx.yyy network at work"
+    echo "    $ pvpn -i 10.10.0.1:10.10.0.2 root@work 192.168.0.0/16"
+    echo ""
+    echo "  Encrypt all IP traffic, e.g. when on a public wifi, using OpenSSH Layer 3"
+    echo "    $ pvpn -t ssh-3 root@secureproxy default"
+    echo ""
+    echo "  Disconnect tunnel with device ppp0"
+    echo "    $ pvpn -S ppp0"
+    echo ""
+    echo "SEE ALSO"
+    echo "--------"
+    echo "ssh(1), sshd(8), sshd_config(5), pppd(8), ssh-keygen(1), iptables(8)"
+}
+
+
+do_args() {
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+            -h|--help)
+                usage; exit 1;;
+            -v|--version)
+                die "pvpn v. $VERSION";;
+            -d|--debug)
+                set -x;;
+            -t|--type)
+                case "$2" in
+                    ppp)
+                        tunnel_type=ppp;;
+                    ssh-3)
+                        tunnel_type=ssh_layer3;;
+                    *)
+                        die "Unknown tunnel type '$2'";;
+                esac
+                shift;;
+            -i|--ip)
+                ip_pair="$2"
+                shift;;
+            -s|--first-ssh-hop)
+                ssh_ip="$(dig +short $2)"
+                shift;;
+            -D|--inherit-dns)
+                inherit_dns=true;;
+            -S|--stop)
+                disconnect "$2"
+                exit 0;;
+            -*)
+                die "Unknown argument: $1";;
+            *)
+                break;;
+        esac
+        shift
+    done
+
+    ssh_host="$1"
+    [[ -z "$ssh_host" ]] && die "Missing ssh-host, see 'pvpn --help'"
+    shift
+
+    routes=("$@")
+
+    # Fill in defaults
+    tunnel_type=${tunnel_type:-ppp}
+    inherit_dns="${inherit_dns:-false}"
+    ip_pair="${ip_pair:-any:any}"
+    b=$((RANDOM % 256))
+    c=$((RANDOM % 256))
+    if [[ "${ip_pair%:*}" == "any" ]]; then
+        ip_pair="10.$b.$c.1:${ip_pair#*:}"
+    fi
+    if [[ "${ip_pair#*:}" == "any" ]]; then
+        ip_pair="${ip_pair%:*}:10.$b.$c.2"
+    fi
+}
+
+
+connect_ppp() {
+    which pppd &>/dev/null || die "pppd(8) missing, install or consider using '-t ssh-3'"
+
+    pppd_output=$(mktemp)
+    pppd updetach noauth silent nodeflate pty \
+         "/usr/bin/ssh ${SSH_ARGS} -oServerAliveInterval=55 '$ssh_host' sudo pppd nodetach notty noauth" \
+         ipparam vpn "$ip_pair" >"$pppd_output" || \
+            die "pppd failed (exit code $?)"
+    read client_device server_device < \
+            <(awk '/^Connect/ {print $2 " " $4; exit;}' <"$pppd_output")
+    rm "$pppd_output"
+
+    stop_cmd="kill $(< "/var/run/$client_device.pid")"
+}
+
+
+connect_ssh_layer3() {
+    device_pair=$(available_devicepair "$ssh_host" "tun")
+
+    client_ip="${ip_pair%:*}"
+    server_ip="${ip_pair#*:}"
+    client_device="${device_pair%:*}"
+    server_device="${device_pair#*:}"
+    ssh ${SSH_ARGS} -TCf -oServerAliveInterval=55 \
+             -oExitOnForwardFailure=yes \
+             -oTunnel=point-to-point \
+             -w "${client_device#tun}:${server_device#tun}" "$ssh_host" "\
+     ip link set $server_device up; \
+     ip addr add $server_ip/32 peer $client_ip dev $server_device;" || \
+        die "ssh failed (exit code $?)"
+
+    pid=$(ps ax -o"%p %a" | awk '$2 == "ssh" && /ip link set '$server_device' up/ {print $1}')
+    stop_cmd="kill $pid"
+
+    # FIXME: -oExitOnForwardFailure and -f doesn't seem to play along as
+    # nicely as the docs say. Wait a second and fail on the step below instead
+    # if we didn't get a tunnel up
+    sleep 1
+
+    ip link set $client_device up || \
+        die "Failed to set $client_device up"
+    ip addr add $client_ip/32 peer $server_ip dev $client_device || \
+        die "Failed to set $client_ip on $client_device"
+}
+
+
+disconnect() {
+    if [[ -z "$1" ]]; then
+        for filename in $(find "$STATE_DIR" -type f -name '[^.]*'); do
+            disconnect "$(basename "$filename")"
+        done
+        return
+    fi
+
+    filename="$STATE_DIR/$1"
+    source "$filename"
+    eval $stop_cmd
+    rm "$filename"
+    echo "$1 disconnected"
+}
+
+
+route() {
+    gateway="$1"
+    shift
+
+    # No routes to add; return
+    [[ $# -eq 0 ]] && return 0
+
+    [[ -z "$ssh_ip" ]] && \
+        ssh_ip="$(dig +short "${ssh_host#*@}")"
+
+    # Add route to ssh host through current gateway
+    current_default=$(ip route show 0.0.0.0/0 | head -n1 | cut -d' ' -f3)
+    if [[ -z "$ssh_ip" ]]; then
+        echo "IP of the first SSH hop not found. Consider using the -s switch."
+    else
+        echo "Routing $ssh_ip through current default gateway ($current_default)"
+        ip route add "$ssh_ip" via "$current_default"
+    fi
+
+    while [[ "$#" -gt 0 ]]; do
+        route="$1"
+        echo "Routing $route via $gateway"
+        case route in
+            default|*/0)
+                ip route replace default via "$gateway";;
+            *)
+                ip route add "$route" via "$gateway";;
+        esac
+        shift
+    done
+}
+
+
+dns() {
+    if ! $inherit_dns; then
+        return
+    fi
+
+    cp /etc/resolv.conf     "$STATE_DIR/.$client_device.pre.resolv.conf"
+    stop_cmd="$stop_cmd; mv '$STATE_DIR/.$client_device.pre.resolv.conf' /etc/resolv.conf"
+
+    scp -q "$ssh_host":/etc/resolv.conf /etc/resolv.conf
+}
+
+available_devicepair() {
+    local ssh_host="$1"
+    local device_type="$2"
+
+    [[ -z "$ssh_host" ]] && die "available_devicepair(): Missing ssh_host"
+    case "$device_type" in
+        tun|tap) :;;
+        "") die "available_devicepair(): Missing device_type";;
+        *)  die "available_devicepair(): Bad device_type '$device_type'";;
+    esac
+
+    cmd_available_tun_device="echo ${device_type}{0..255} | tr ' ' '\n' | shuf | grep -v -f <(ip tuntap | cut -d: -f1) | head -n1"
+    client_tun_device="$(eval $cmd_available_tun_device)"
+    server_tun_device="$(ssh "$ssh_host" $cmd_available_tun_device)"
+
+    echo "$client_tun_device:$server_tun_device"
+}
+
+
+write_statefile() {
+    filename="$1"
+    [[ -z "$filename" ]] && filename="$STATE_DIR/$client_device"
+    mkdir -p "$(dirname "$filename")"
+
+    : >"$filename"
+    echo "ssh_host=\"$ssh_host\""           >>"$filename"
+    echo "ssh_ip=\"$ssh_ip\""               >>"$filename"
+    echo "stop_cmd=\"$stop_cmd\""           >>"$filename"
+    echo "tunnel_type=\"$tunnel_type\""     >>"$filename"
+    echo "inherit_dns=\"$inherit_dns\""     >>"$filename"
+    echo "ip_pair=\"$ip_pair\""             >>"$filename"
+    echo "client_device=\"$client_device\"" >>"$filename"
+    echo "server_device=\"$server_device\"" >>"$filename"
+    echo "routes=("                         >>"$filename"
+        for r in "${routes[@]}"; do
+            echo "\"$r\""                   >>"$filename"
+        done
+    echo ")"                                >>"$filename"
+}
+
+
+check_root() {
+    [[ $(id -u) -eq 0 ]] || die "Must be root"
+}
+
+
+die() {
+    echo "$@" >&2
+    exit 1
+}
+
+check_root
+mkdir -p "$STATE_DIR"
+do_args "$@"
+connect_$tunnel_type
+route "${ip_pair#*:}" "${routes[@]}"
+dns
+write_statefile
+echo "$client_device connected"

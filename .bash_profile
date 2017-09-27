@@ -63,14 +63,11 @@ function screen_select {
 	    export PROF_SCREEN_CMD="screen -xRR"
 	fi
     else
-	# if which tmux 2>&1 >/dev/null; then
-        # if no session is started, start a new session
-	#     export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux attach || tmux new-session)"
-	# else if which screen 2>&1 >/dev/null; then
-	if which screen 2>&1 >/dev/null; then
+	if which tmux 2>&1 >/dev/null; then
+            export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux attach || tmux new-session)"
+	elif which screen 2>&1 >/dev/null; then
 	    export PROF_SCREEN_CMD="screen -xRR"
-	# fi fi
-        fi
+	fi
     fi
 }
 
@@ -187,6 +184,8 @@ function win_path_setup {
 function tmux_setup {
     if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
         git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+        echo "Reminder: The first time you start tmux, press <prefix keys>+I to install plugins"
+        read
     fi
 }
 
@@ -209,10 +208,12 @@ function ubuntu_setup {
             printf "Setup Ubuntu dev system (Skype/Eclipse/Emacs/LLVM)? (Y/n)"
             read answer
             if [ $answer == "y" -o $answer == "Y" ]; then
+                curl -L https://packagecloud.io/slacktechnologies/slack/gpgkey | sudo apt-key add -
                 sudo add-apt-repository ppa:webupd8team/java
                 sudo add-apt-repository ppa:mmk2410/eclipse-ide-java
                 sudo add-apt-repository ppa:openconnect/daily
-                sudo su –c 'echo "deb [arch=amd64] https://repo.skype.com/deb stable main" > /etc/apt/sources.list.d"'
+                sudo su –c 'echo "deb [arch=amd64] https://repo.skype.com/deb stable main" > /etc/apt/sources.list.d/skype.list"'
+                sudo su –c 'echo "deb https://packagecloud.io/slacktechnologies/slack/debian/ jessie main" > /etc/apt/sources.list.d/slack.list"'
                 sudo apt update
                 sudo apt install emacs texinfo cvs git-svn \
                      xsel git mercurial ruby rake build-essential \

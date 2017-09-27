@@ -12,6 +12,8 @@ test "$PS1" || return 1
 if test -z "$BASH_PROFILE_LOADED"; then
     source ~/.bash_profile
     return 0
+else
+    bash_options
 fi
 
 if [ -n "${TERM#screen*}" ]; then
