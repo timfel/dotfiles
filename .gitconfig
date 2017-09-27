@@ -16,9 +16,10 @@
    branches-origin = "!git for-each-ref --sort=-committerdate refs/remotes/origin --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|sh"
    reset-permissions = "!git diff -p -R --no-color | grep -E '^(diff|(old|new) mode)' --color=never | git apply"
    oclone="!echo $1 && git clone $1 && cd $(basename -s .git $1) && git config --local user.email tim.felgentreff@oracle.com"
+   adopt="!echo Adopting $1; git merge -s ours $(echo adopt $1 as ancestor | git commit-tree HEAD^{tree} -p $1 -p HEAD)"
 [user]
    name = Tim Felgentreff
-   email = "timfelgentreff@gmail.com"
+   email = "tim.felgentreff@oracle.com"
 [color]
    branch = auto
    diff = auto
@@ -37,6 +38,7 @@
    auto = 0
 [diff]
    ignoreSubmodules = untracked
+	renameLimit = 5000
 [merge]
    conflictstyle = diff3
 
