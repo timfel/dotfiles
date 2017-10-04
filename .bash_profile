@@ -134,29 +134,6 @@ function environment {
     export VISUALWORKS=/media/Data/Applications/vw79public
 }
 
-function bash_options {
-    # don't put duplicate lines in the history. See bash(2) for more options
-    # ... and ignore same sucessive entries.
-    export HISTCONTROL="ignoreboth"
-
-    # check the window size after each command and, if necessary,
-    # update the values of LINES and COLUMNS.
-    shopt -s checkwinsize
- 
-    # enable programmable completion features (you don't need to enable
-    # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-    # sources /etc/bash.bashrc).
-    if [ -f /etc/bash_completion ]; then
-        source /etc/bash_completion
-    fi
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        source /usr/share/bash-completion/bash_completion
-    fi
- 
-    # One-TAB-Completion
-    set show-all-if-ambiguous on
-}
-
 function prepare_prompt_variables {
     if [ -z $HOSTNAME ]; then
         export HOSTNAME=`hostname -s`
@@ -234,7 +211,6 @@ export_colors
 
 path
 environment
-bash_options
 rupypy_setup
 tmux_setup
 emacs_setup

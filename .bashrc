@@ -3,17 +3,15 @@
 # If not running interactively, don't do anything
 test "$PS1" || return 1
 
-# If bash_profile wasn't loaded, load it This is an optimization, as
-# Cygwin loads bash_profile once, and then only runs through bashrc
-# for new terminals and screens. Because fork is slow on Cygwin, we do
-# most of the forking in bash_profile, making creating new terminals
-# fast on Cygwin. On some Linux systems, each new screen gets a fresh
-# environment and thus has to reload bash_profile
 if test -z "$BASH_PROFILE_LOADED"; then
+    # If bash_profile wasn't loaded, load it This is an optimization, as
+    # Cygwin loads bash_profile once, and then only runs through bashrc
+    # for new terminals and screens. Because fork is slow on Cygwin, we do
+    # most of the forking in bash_profile, making creating new terminals
+    # fast on Cygwin. On some Linux systems, each new screen gets a fresh
+    # environment and thus has to reload bash_profile
     source ~/.bash_profile
     return 0
-else
-    bash_options
 fi
 
 if [ -n "${TERM#screen*}" ]; then
@@ -316,6 +314,28 @@ function maglev_setup {
     fi
 }
 
+function bash_options {
+    # don't put duplicate lines in the history. See bash(2) for more options
+    # ... and ignore same sucessive entries.
+    export HISTCONTROL="ignoreboth"
+
+    # check the window size after each command and, if necessary,
+    # update the values of LINES and COLUMNS.
+    shopt -s checkwinsize
+ 
+    # enable programmable completion features (you don't need to enable
+    # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+    # sources /etc/bash.bashrc).
+    if [ -f /etc/bash_completion ]; then
+        source /etc/bash_completion
+    fi
+    if [ -f /usr/share/bash-completion/bash_completion ]; then
+        source /usr/share/bash-completion/bash_completion
+    fi
+ 
+    # One-TAB-Completion
+    set show-all-if-ambiguous on
+}
 
 function bin_options {
    # make less more friendly for non-text input files, see lesspipe(1)
@@ -383,6 +403,7 @@ function bin_options {
    alias dia="dia --integrated"
 }
 
+bash_options
 system_tweaks
 if [ -d "$HOME/.rvm" ]; then
     rvm_env
