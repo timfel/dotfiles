@@ -184,6 +184,7 @@ function rbenv_setup {
     if [ -d "$HOME/.rbenv/bin" ]; then
         export PATH="$HOME"/.rbenv/bin:"$HOME"/.rbenv/shims:"$HOME"/.ruby-build/bin:$PATH
         source ~/.rbenv/completions/rbenv.bash
+        export RBENV_VERSION=2.4.1
 
         function use {
 	    if [ $# -eq 0 ]; then
@@ -231,7 +232,6 @@ function graalenv_setup {
         git remote set-url origin git@github.com:timfel/graalenv.git
         popd
     fi
-    export DEFAULT_DYNAMIC_IMPORTS="/truffle,/sdk,/compiler"
     source ~/.graalenv/graalenv
     graalenv use latest
 }
