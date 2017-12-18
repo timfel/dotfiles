@@ -17,6 +17,7 @@
    reset-permissions = "!git diff -p -R --no-color | grep -E '^(diff|(old|new) mode)' --color=never | git apply"
    oclone="!echo $1 && git clone $1 && cd $(basename -s .git $1) && git config --local user.email tim.felgentreff@oracle.com"
    adopt="!echo Adopting $1; git merge -s ours $(echo adopt $1 as ancestor | git commit-tree HEAD^{tree} -p $1 -p HEAD)"
+   clean-merged = "!git branch --merged HEAD | grep -v \"\\*\" | xargs -n 1 git branch -d"
 [user]
    name = Tim Felgentreff
    email = "tim.felgentreff@oracle.com"
