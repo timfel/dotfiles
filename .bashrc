@@ -233,7 +233,7 @@ function graalenv_setup {
         popd
     fi
     source ~/.graalenv/graalenv
-    graalenv use latest
+    graalenv use system
 }
 
 function system_tweaks {
