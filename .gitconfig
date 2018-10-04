@@ -40,8 +40,10 @@
 [diff]
    ignoreSubmodules = untracked
 	renameLimit = 5000
+	tool = meld
 [merge]
    conflictstyle = diff3
+	tool = meld
 
 [giggle]
 	main-window-maximized = true
@@ -49,3 +51,9 @@
 	history-view-vpane-position = 560
 [include]
    path = ~/.gitconfig.secrets
+[cola]
+	spellcheck = false
+	blameviewer = git gui blame
+[gui]
+	editor = vim
+	historybrowser = gitk
