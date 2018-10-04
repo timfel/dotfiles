@@ -234,6 +234,11 @@ function graalenv_setup {
     fi
     source ~/.graalenv/graalenv
     graalenv use system
+
+    if [ -d "$HOME/Dev/graalpython/graalpython" ]; then
+        alias graal.python="mx -p $HOME/Dev/graalpython/graalpython python"
+        alias graal.pythond="mx -d -p $HOME/Dev/graalpython/graalpython python"
+    fi
 }
 
 function system_tweaks {
