@@ -2,3 +2,7 @@
 "~/bin/desktop-pause.sh -a"
   Mod2 + XF86LaunchA
 
+# [Pause Break] FOR ACTIVE WINDOW
+"~/bin/desktop-pause.sh -a"
+  Pause
+
