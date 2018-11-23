@@ -157,4 +157,4 @@ pgrep -P ${PID} \
       echo "INFO: kill -${SIGNAL} ${I}"
     done
 
-echo '1' >> ~/scripts/stats/${0##*/}
+echo '1' >> /tmp/desktop-pause-stats${0##*/}
