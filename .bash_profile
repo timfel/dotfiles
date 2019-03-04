@@ -266,6 +266,21 @@ function darwin_setup {
     fi
 }
 
+function install_slack_term {
+    if [ ! -e "$HOME/bin/slack-term" ]; then
+        printf "Install slack-term? (y/N)"
+        read answer
+        if [ $answer == "y" -o $answer == "Y" ]; then
+            sudo apt-get install golang-go || true
+            GOPATH=/tmp/go go get -u github.com/erroneousboat/slack-term
+            pushd /tmp/go/src/github.com/erroneousboat/slack-term/
+            GOPATH=/tmp/go go install .
+            popd
+            mv /tmp/go/bin/slack-term ${HOME}/bin
+        fi
+    fi
+}
+
 determine_os
 screen_select
 export_colors
@@ -275,6 +290,10 @@ environment
 rupypy_setup
 tmux_setup
 emacs_setup
+
+if [ -n "$LINUX" ]; then
+    install_slack_term
+fi
 
 if [ -n "$CYGWIN" ]; then
     win_path_setup
