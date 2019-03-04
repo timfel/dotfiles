@@ -115,6 +115,10 @@ function path {
     if [[ -e "/usr/local/heroku" ]]; then
 	export PATH="/usr/local/heroku/bin:$PATH"
     fi
+
+    if [ -d "/usr/local/opt/llvm@6" ]; then
+        export PATH="/usr/local/opt/llvm@6/bin:$PATH"
+    fi
 }
 
 function environment {
@@ -242,6 +246,22 @@ function ubuntu_setup {
                 pip3 install --user https://github.com/dlenski/vpn-slice/archive/master.zip
                 install_vista_fonts
             fi
+        fi
+    fi
+}
+
+function darwin_setup {
+    if [ ! -e "$HOME/.ubuntu_dev_installed" ]; then
+        touch "$HOME/.ubuntu_dev_installed"
+        printf "Setup dev system (LLVM, brew)? (Y/n)"
+        read answer
+        if [ $answer == "y" -o $answer == "Y" ]; then
+            xcode-select --install
+            /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+            brew install llvm@6
+            export PATH="/usr/local/opt/llvm@6/bin:$PATH"
+            # install headers
+            open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg
         fi
     fi
 }
