@@ -408,6 +408,20 @@ function bin_options {
    alias dia="dia --integrated"
 }
 
+function sproxy {
+    local proxy=$(gsettings get org.gnome.system.proxy.http host)
+    proxy=$(eval echo ${proxy})
+    if [ -z "$proxy" ]; then
+        echo "Unsetting proxy"
+        unset http_proxy
+        unset https_proxy
+    else
+        echo "Setting $proxy"
+        export http_proxy=${proxy}:80
+        export https_proxy=${proxy}:80
+    fi
+}
+
 bash_options
 system_tweaks
 if [ -d "$HOME/.rvm" ]; then
