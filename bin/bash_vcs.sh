@@ -21,7 +21,7 @@ __prompt_command() {
 	        # Old version at bottom. New one doesn't spawn a new process
                 p="."
                 for i in ${PWD//\// }; do
-                    if [ -d "${p}/.git" ]; then
+                    if [ -e "${p}/.git" ]; then
 			vcs="git"
 			alias pull="git pull"
 			alias commit="git commit -v -a"
