@@ -267,16 +267,21 @@ function darwin_setup {
 }
 
 function install_slack_term {
-    if [ ! -e "$HOME/bin/slack-term" ]; then
+    if [ ! -e "$HOME/bin/slack-term" -o -n "$1" ]; then
         printf "Install slack-term? (y/N)"
         read answer
-        if [ $answer == "y" -o $answer == "Y" ]; then
-            sudo apt-get install golang-go || true
-            GOPATH=/tmp/go go get -u github.com/erroneousboat/slack-term
-            pushd /tmp/go/src/github.com/erroneousboat/slack-term/
-            GOPATH=/tmp/go go install .
+        if [ "$answer" == "y" -o "$answer" == "Y" ]; then
+            which go || sudo apt-get install golang-go || true
+            GOPATH=/tmp/goslkterm go get -u github.com/erroneousboat/slack-term
+            pushd /tmp/goslkterm/src/github.com/erroneousboat/slack-term/
+
+            # jump to unread action
+            # ( git fetch origin pull/156/head && git merge -m "m" FETCH_HEAD ) || true
+
+            GOPATH=/tmp/goslkterm go install .
             popd
-            mv /tmp/go/bin/slack-term ${HOME}/bin
+            mv /tmp/goslkterm/bin/slack-term ${HOME}/bin
+            rm -rf /tmp/goslkterm
         fi
     fi
 }
