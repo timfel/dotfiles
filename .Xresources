@@ -70,14 +70,17 @@ XTerm*color14:                 S_base1
 XTerm*color15:                 S_base3
 
 XTerm*loginShell:              true
-XTerm*faceSize:		       10
-XTerm*faceName:		       "DejaVu Sans Mono"
-XTerm*renderFont:	       true
+XTerm*font:                    -xos4-terminus-medium-r-normal-*-12-*-*-*-*-*-*-*
+! XTerm*faceSize:		       10
+! XTerm*faceName:		       "DejaVu Sans Mono"
+! XTerm*renderFont:	       true
 XTerm*modifyOtherKeys:         true
 XTerm*eightBitInput:           false
 XTerm*locale:                  true
 XTerm*utf8:                    true
 XTerm*selectToClipboard:       true
+
+! Xterm*disallowedWindowOps:     20,21,SetXprop
 
 ! DOSbox colors
 ! xterm*foreground: rgb:a8/a8/a8
