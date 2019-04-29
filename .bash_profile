@@ -272,8 +272,8 @@ function install_slack_term {
         read answer
         if [ "$answer" == "y" -o "$answer" == "Y" ]; then
             which go || sudo apt-get install golang-go || true
-            GOPATH=/tmp/goslkterm go get -u github.com/erroneousboat/slack-term
-            pushd /tmp/goslkterm/src/github.com/erroneousboat/slack-term/
+            GOPATH=/tmp/goslkterm go get -u github.com/timfel/slack-term
+            pushd /tmp/goslkterm/src/github.com/timfel/slack-term/
 
             # jump to unread action
             # ( git fetch origin pull/156/head && git merge -m "m" FETCH_HEAD ) || true
@@ -282,6 +282,8 @@ function install_slack_term {
             popd
             mv /tmp/goslkterm/bin/slack-term ${HOME}/bin
             rm -rf /tmp/goslkterm
+        else
+            touch "$HOME/bin/slack-term"
         fi
     fi
 }
