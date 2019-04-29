@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e
+
+branchname="$1"
+if [ $# -eq 2 ]; then
+    base="origin/master"
+    range="$2"
+elif [ $# eq 3 ]; then
+    base="$2"
+    range="$2"
+else
+    echo "$0 BRANCHNAME [BASE] RANGE"
+fi
+
+git fetch
+current=`git rev-parse HEAD`
+git branch "$branchname" "$base"
+git checkout "$branchname"
+git cherry-pick "$range"
+git push "$branchname"
+git checkout $current
