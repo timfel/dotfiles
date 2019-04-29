@@ -415,10 +415,16 @@ function sproxy {
         echo "Unsetting proxy"
         unset http_proxy
         unset https_proxy
+        for pid in `pgrep tmux | xargs ps --ppid | grep /bin/bash | cut -f1 -d' '`; do
+            sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)unsetenv(\"http_proxy\")" -ex "call (int)unsetenv(\"https_proxy\")" -ex 'detach'
+        done
     else
         echo "Setting $proxy"
         export http_proxy=${proxy}:80
         export https_proxy=${proxy}:80
+        for pid in `pgrep tmux | xargs ps --ppid | grep /bin/bash | cut -f1 -d' '`; do
+            sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)setenv(\"http_proxy\", \"${proxy}:80\", 1)" -ex "call (int)setenv(\"https_proxy\", \"${proxy}:80\", 1)" -ex 'detach'
+        done
     fi
 }
 
