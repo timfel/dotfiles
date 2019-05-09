@@ -410,7 +410,22 @@ function bin_options {
 
 function sproxy {
     local proxy=$(gsettings get org.gnome.system.proxy.http host)
+    local proxy4https="${proxy}"
     proxy=$(eval echo ${proxy})
+    if [ "${proxy}" == "''" ]; then
+        proxy=""
+    fi
+
+    if [ -z "$proxy" ]; then
+        echo "No proxy, checking wpad"
+
+        wpad="$(curl -s wpad)"
+        if [ $? -eq 0 ]; then
+            proxy=`echo ${wpad} | grep -m1 -oP "PROXY \K([\w\-\.:]+)" | head -1`
+            proxy4https=`echo ${wpad} | grep -m1 -oP "PROXY \K([\w\-\.:]+)" | tail -1`
+        fi
+    fi
+
     if [ -z "$proxy" ]; then
         echo "Unsetting proxy"
         unset http_proxy
@@ -419,9 +434,9 @@ function sproxy {
             sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)unsetenv(\"http_proxy\")" -ex "call (int)unsetenv(\"https_proxy\")" -ex 'detach'
         done
     else
-        echo "Setting $proxy"
+        echo "Setting $proxy and $proxy4https"
         export http_proxy=${proxy}:80
-        export https_proxy=${proxy}:80
+        export https_proxy=${proxy4https}:80
         for pid in `pgrep tmux | xargs ps --ppid | grep /bin/bash | cut -f1 -d' '`; do
             sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)setenv(\"http_proxy\", \"${proxy}:80\", 1)" -ex "call (int)setenv(\"https_proxy\", \"${proxy}:80\", 1)" -ex 'detach'
         done
