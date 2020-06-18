@@ -60,3 +60,5 @@
 	historybrowser = gitk
 [credential]
 	helper = cache --timeout=3600
+[status]
+	showUntrackedFiles = all
