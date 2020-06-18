@@ -184,7 +184,7 @@ function rbenv_setup {
     if [ -d "$HOME/.rbenv/bin" ]; then
         export PATH="$HOME"/.rbenv/bin:"$HOME"/.rbenv/shims:"$HOME"/.ruby-build/bin:$PATH
         source ~/.rbenv/completions/rbenv.bash
-        export RBENV_VERSION=2.4.1
+        export RBENV_VERSION=2.6.3
 
         function use {
 	    if [ $# -eq 0 ]; then
@@ -201,6 +201,27 @@ function rbenv_setup {
         }
 
         complete -F __use-ruby-completion use
+    fi
+}
+
+function pyenv_setup {
+    if [ ! -e "$HOME/.pyenv" ]; then
+        printf "Install pyenv? (Y/n)"
+        read answer
+        if [ $answer == "y" -o $answer == "Y" ]; then
+            git clone https://github.com/pyenv/pyenv.git "$HOME/.pyenv"
+        else
+            touch "$HOME/.pyenv"
+        fi
+        unset answer
+    fi
+
+    if [ -d "$HOME/.pyenv/bin" ]; then
+        export PYENV_ROOT="$HOME"/.pyenv
+        export PATH="$PYENV_ROOT"/bin:"$PATH"
+        if command -v pyenv 1>/dev/null 2>&1; then
+            eval "$(pyenv init -)"
+        fi
     fi
 }
 
@@ -239,6 +260,10 @@ function graalenv_setup {
         alias graal.python="mx -p $HOME/Dev/graalpython/graalpython python"
         alias graal.pythond="mx -d -p $HOME/Dev/graalpython/graalpython python"
     fi
+
+    export MX_PYTHON_VERSION=3
+
+    
 }
 
 function system_tweaks {
@@ -259,6 +284,9 @@ function system_tweaks {
            true 
            # xcalib $HOME/.ColorLCD.icc
          fi
+	 if [ -f $HOME/.Xresources ]; then
+           xrdb -merge $HOME/.Xresources
+	 fi
       fi
    fi
 }
@@ -397,6 +425,9 @@ function bin_options {
    # alias vi="$EDITOR"
    # alias em="$EMACS -n"
 
+   alias ac='asciinema play -s 1.5 -i 2'
+   alias srccat="source-highlight -f esc -i"
+
    # RVM shortcuts
    alias rvm_isolate="rvm gemset create \$(basename \`pwd\`); echo 'rvm gemset use \$(basename \`pwd\`)' >> .rvmrc; cd ../\$(basename \`pwd\`)"
 
@@ -406,6 +437,8 @@ function bin_options {
    alias jrubyh="source ~/bin/jruby-head"
 
    alias dia="dia --integrated"
+
+   alias w3m="w3m -o auto_image=TRUE -graph -F"
 }
 
 function sproxy {
@@ -449,15 +482,19 @@ function sproxy {
         echo "Unsetting proxy"
         unset http_proxy
         unset https_proxy
-        for pid in `pgrep tmux | xargs ps --ppid | grep /bin/bash | cut -f1 -d' '`; do
-            sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)unsetenv(\"http_proxy\")" -ex "call (int)unsetenv(\"https_proxy\")" -ex 'detach'
+        for ptmux in `pgrep tmux`; do
+            for pid in `ps --ppid ${ptmux} | grep bash | cut -f1 -d' '`; do
+                sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)unsetenv(\"http_proxy\")" -ex "call (int)unsetenv(\"https_proxy\")" -ex 'detach'
+            done
         done
     else
         echo "Setting http_proxy=${proxy} and https_proxy=${proxy4https}"
         export http_proxy=${proxy}
         export https_proxy=${proxy4https}
-        for pid in `pgrep tmux | xargs ps --ppid | grep /bin/bash | cut -f1 -d' '`; do
-            sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)setenv(\"http_proxy\", \"${proxy}\", 1)" -ex "call (int)setenv(\"https_proxy\", \"${proxy}\", 1)" -ex 'detach'
+        for ptmux in `pgrep tmux`; do
+            for pid in `ps --ppid ${ptmux} | grep bash | cut -f1 -d' '`; do
+                sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)setenv(\"http_proxy\", \"${proxy}\", 1)" -ex "call (int)setenv(\"https_proxy\", \"${proxy}\", 1)" -ex 'detach'
+            done
         done
     fi
 }
@@ -469,6 +506,7 @@ if [ -d "$HOME/.rvm" ]; then
 else
     rbenv_setup
 fi
+pyenv_setup
 nvm_setup
 maglev_setup
 graalenv_setup
