@@ -288,6 +288,12 @@ function install_slack_term {
     fi
 }
 
+function debian_setup {
+    export DEBEMAIL="Tim Felgentreff <timfelgentreff@gmail.com>"
+    export DEBFULLNAME="Tim Felgentreff"
+}
+
+debian_setup
 determine_os
 screen_select
 export_colors
