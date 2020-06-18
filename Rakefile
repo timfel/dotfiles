@@ -37,7 +37,8 @@ namespace :install do
   _install :dot, ".bash_profile", ".bashrc", ".gemrc", ".vimrc", ".vim", ".hgrc",
            ".gitignore", ".gitconfig", ".ssh/config", ".config/nv-*", ".Color*.icc",
            ".tmux.conf", ".tmux.bashrc", ".topazini", ".Xresources", ".screenrc",
-           ".stumpwmrc", ".i3", ".pdbrc", ".xbindkeysrc"
+           ".stumpwmrc", ".i3", ".pdbrc", ".xbindkeysrc", ".pine-passfile", ".pinerc",
+           ".xinitrc"
   _install :bin, "bin/*"
 
   desc "installs the custom texmf folder"
