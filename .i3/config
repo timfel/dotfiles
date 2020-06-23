@@ -9,7 +9,7 @@
 #
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
-set $mod mod1
+set $mod mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below. ISO 10646 = Unicode
@@ -23,33 +23,77 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
+# exec xscreensaver
+exec nm-applet
+
+# default monitor layouts
+exec --no-startup-id xrandr --output DP-2 --primary --left-of eDP-1
+exec --no-startup-id xrandr --output HDMI-1 --primary --above eDP-1
+
+workspace "1:term" output DP-2 eDP-1
+workspace "2:emacs" output DP-2 eDP-1
+workspace "3:web" output DP-2 eDP-1
+workspace "4:chat" output DP-2 eDP-1
+# workspace "4:chat" layout tabbed
+workspace "5:util" output HDMI-1 eDP-1
+
+assign [class="XTerm" instance="xterm"] 1:term
+assign [class="Emacs"] 2:emacs
+assign [class="Firefox"] 3:web
+assign [class="zoom"] 4:chat
+assign [class="discord"] 4:chat
+assign [class="Slack"] 4:chat
+assign [class="Vpnui"] 5:util
+assign [class="KeePass2"] 5:util
+assign [class="XTerm" instance="vpn"] 5:util
+
+exec xrdb -merge ~/.Xresources && exec xterm
+exec emacs
+exec firefox
+exec zoom
+exec discord
+exec slack
+exec /opt/cisco/anyconnect/bin/vpnui
+exec keepass2
+# exec xterm -name "vpn" -e "/home/tim/bin/vpn"
+
 # switch to workspace
-bindsym F1 workspace 1
-bindsym F2 workspace 2
-bindsym F3 workspace 3
-bindsym F4 workspace 4
-bindsym F5 workspace 5
+bindsym F1 workspace 1:term
+bindsym F2 workspace 2:emacs
+bindsym F3 workspace 3:web
+bindsym F4 workspace 4:chat
+bindsym F5 workspace 5:util
 bindsym F6 workspace 6
 bindsym F7 workspace 7
 bindsym F8 workspace 8
 bindsym F9 workspace 9
 
 # move focused container to workspace
-bindsym Shift+F1 move container to workspace 1
-bindsym Shift+F2 move container to workspace 2
-bindsym Shift+F3 move container to workspace 3
-bindsym Shift+F4 move container to workspace 4
-bindsym Shift+F5 move container to workspace 5
+bindsym Shift+F1 move container to workspace 1:term
+bindsym Shift+F2 move container to workspace 2:emacs
+bindsym Shift+F3 move container to workspace 3:web
+bindsym Shift+F4 move container to workspace 4:chat
+bindsym Shift+F5 move container to workspace 5:util
 bindsym Shift+F6 move container to workspace 6
 bindsym Shift+F7 move container to workspace 7
 bindsym Shift+F8 move container to workspace 8
 bindsym Shift+F9 move container to workspace 9
-bindsym Ctrl+t mode "command"
+# bindsym Ctrl+t mode "command"
+bindsym $mod+x mode "command"
+bindsym $mod+r mode "resize"
+
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+bindsym $mod+Tab [urgent=latest] focus
+bindsym $mod+F2 exec --no-startup-id i3-dmenu-desktop; mode "default"
+bindsym $mod+F4 kill; mode "default"
 
 mode "command" {
-     bindsym c exec i3-sensible-terminal; mode "default"
-     bindsym e exec emacs; mode "default"
-     bindsym Shift+k kill; mode "default"
+     # bindsym c exec i3-sensible-terminal; mode "default"
+     # bindsym c exec xterm; mode "default"
+     # bindsym e exec emacs; mode "default"
 
      bindsym Return mode "default"
      bindsym Escape mode "default"
@@ -59,8 +103,8 @@ mode "command" {
      # There also is the (new) i3-dmenu-desktop which only displays applications
      # shipping a .desktop file. It is a wrapper around dmenu, so you need that
      # installed.
-     # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
-     bindsym d exec dmenu_run; mode "default"
+     bindsym $mod+d exec --no-startup-id i3-dmenu-desktop; mode "default"
+     # bindsym d exec dmenu_run; mode "default"
 
      bindsym Tab focus next; mode "default"
 
@@ -98,37 +142,37 @@ mode "command" {
 
      # reload the configuration file
      bindsym Shift+c reload; mode "default"
+}
+
+set $mode_display Ext. Left (l), Ext. Right (r), Ext. Above (u), Ext. Below (d), Ext. Only (e), Internal Only (i)
+mode "$mode_display" {
+     bindsym l exec --no-startup-id xrandr --output DP-2 --primary --left-of eDP-1 || xrandr --output HDMI-1 --primary --left-of eDP-1; mode "default"
+     bindsym d exec --no-startup-id xrandr --output DP-2 --primary --below eDP-1 || xrandr --output HDMI-1 --primary --below eDP-1; mode "default"
+     bindsym u exec --no-startup-id xrandr --output DP-2 --primary --above eDP-1 || xrandr --output HDMI-1 --primary --above eDP-1; mode "default"
+     bindsym r exec --no-startup-id xrandr --output DP-2 --primary --right-of eDP-1 || xrandr --output HDMI-1 --primary --right-of eDP-1; mode "default"
+     bindsym e exec --no-startup-id xrandr --output DP-2 --primary --output eDP-1 --off || xrandr --output HDMI-1 --primary --output eDP-1 --off; mode "default"
+     bindsym i exec --no-startup-id xrandr --output DP-2 --off --output eDP-1 --primary || xrandr --output HDMI-1 --off --output eDP-1 --primary; mode "default"
+     bindsym Escape mode "default"
+     bindsym Ctrl+g mode "default"
+}
+bindsym XF86Display mode "$mode_display"
+bindsym $mod+d mode "$mode_display"
+
+set $Locker xscreensaver-command -lock && sleep 1
+set $mode_system Lock (l), Suspend (s), Reload (r), Restart (Shift+r), Exit (Shift+e)
+mode "$mode_system" {
+     bindsym l exec --no-startup-id $Locker; mode "default"
+     bindsym s exec --no-startup-id $Locker && systemctl suspend; mode "default"
+     # reload the configuration file
+     bindsym r reload; mode "default"
      # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
      bindsym Shift+r restart; mode "default"
      # exit i3 (logs you out of your X session)
      bindsym Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"; mode "default"
-
-     # switch to workspace
-     bindsym 1 workspace 1
-     bindsym 2 workspace 2
-     bindsym 3 workspace 3
-     bindsym 4 workspace 4
-     bindsym 5 workspace 5
-     bindsym 6 workspace 6
-     bindsym 7 workspace 7
-     bindsym 8 workspace 8
-     bindsym 9 workspace 9
-     bindsym 0 workspace 10
-
-     # move focused container to workspace
-     bindsym Shift+1 move container to workspace 1
-     bindsym Shift+2 move container to workspace 2
-     bindsym Shift+3 move container to workspace 3
-     bindsym Shift+4 move container to workspace 4
-     bindsym Shift+5 move container to workspace 5
-     bindsym Shift+6 move container to workspace 6
-     bindsym Shift+7 move container to workspace 7
-     bindsym Shift+8 move container to workspace 8
-     bindsym Shift+9 move container to workspace 9
-     bindsym Shift+0 move container to workspace 10
-
-     bindsym $mod+r mode "resize"
+     bindsym Escape mode "default"
+     bindsym Ctrl+g mode "default"
 }
+bindsym $mod+s mode "$mode_system"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -149,6 +193,11 @@ mode "resize" {
         bindsym Up resize shrink height 10 px or 10 ppt
         bindsym Right resize grow width 10 px or 10 ppt
 
+        bindsym Shift+Left move workspace to output left; mode "default"
+        bindsym Shift+Right move workspace to output right; mode "default"
+        bindsym Shift+Up move workspace to output above; mode "default"
+        bindsym Shift+Down move workspace to output below; mode "default"
+
         # back to normal: Enter or Escape
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -158,5 +207,8 @@ mode "resize" {
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status
+    status_command i3status
+    tray_output DP-2
+    tray_output eDP-1
+    tray_output HDMI-1
 }
