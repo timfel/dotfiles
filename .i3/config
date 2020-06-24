@@ -23,8 +23,8 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# exec xscreensaver
-exec nm-applet
+exec --no-startup-id xscreensaver
+exec --no-startup-id nm-applet
 
 # default monitor layouts
 exec --no-startup-id xrandr --output DP-2 --primary --left-of eDP-1
@@ -82,18 +82,29 @@ bindsym Shift+F9 move container to workspace 9
 bindsym $mod+x mode "command"
 bindsym $mod+r mode "resize"
 
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
 
 bindsym $mod+Tab [urgent=latest] focus
 bindsym $mod+F2 exec --no-startup-id i3-dmenu-desktop; mode "default"
 bindsym $mod+F4 kill; mode "default"
 
+# Make the currently focused window a scratchpad
+bindsym $mod+Down move scratchpad
+# Show the first scratchpad window
+bindsym $mod+Up scratchpad show
+# Show the first scratchpad window
+bindsym $mod+Right floating toggle
+
+hide_edge_borders smart
+
 mode "command" {
      # bindsym c exec i3-sensible-terminal; mode "default"
      # bindsym c exec xterm; mode "default"
      # bindsym e exec emacs; mode "default"
+
+     bindsym z fullscreen toggle; mode "default"
 
      bindsym Return mode "default"
      bindsym Escape mode "default"
@@ -146,12 +157,12 @@ mode "command" {
 
 set $mode_display Ext. Left (l), Ext. Right (r), Ext. Above (u), Ext. Below (d), Ext. Only (e), Internal Only (i)
 mode "$mode_display" {
-     bindsym l exec --no-startup-id xrandr --output DP-2 --primary --left-of eDP-1 || xrandr --output HDMI-1 --primary --left-of eDP-1; mode "default"
-     bindsym d exec --no-startup-id xrandr --output DP-2 --primary --below eDP-1 || xrandr --output HDMI-1 --primary --below eDP-1; mode "default"
-     bindsym u exec --no-startup-id xrandr --output DP-2 --primary --above eDP-1 || xrandr --output HDMI-1 --primary --above eDP-1; mode "default"
-     bindsym r exec --no-startup-id xrandr --output DP-2 --primary --right-of eDP-1 || xrandr --output HDMI-1 --primary --right-of eDP-1; mode "default"
-     bindsym e exec --no-startup-id xrandr --output DP-2 --primary --output eDP-1 --off || xrandr --output HDMI-1 --primary --output eDP-1 --off; mode "default"
-     bindsym i exec --no-startup-id xrandr --output DP-2 --off --output eDP-1 --primary || xrandr --output HDMI-1 --off --output eDP-1 --primary; mode "default"
+     bindsym l exec --no-startup-id xrandr --output DP-2 --primary --auto --left-of eDP-1 --output eDP-1 --auto || xrandr --output HDMI-1 --auto --left-of eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym d exec --no-startup-id xrandr --output DP-2 --primary --auto --below eDP-1 --output eDP-1 --auto || xrandr --output HDMI-1 --primary --below eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym u exec --no-startup-id xrandr --output DP-2 --primary --auto --above eDP-1 --output eDP-1 --auto || xrandr --output HDMI-1 --primary --above eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym r exec --no-startup-id xrandr --output DP-2 --primary --auto --right-of eDP-1 --output eDP-1 --auto || xrandr --output HDMI-1 --primary --right-of eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym e exec --no-startup-id xrandr --output DP-2 --primary --auto --output eDP-1 --off --output eDP-1 --auto || xrandr --output HDMI-1 --primary --output eDP-1 --off; mode "default"
+     bindsym i exec --no-startup-id xrandr --output DP-2 --off --output eDP-1 --primary --auto --output eDP-1 --auto || xrandr --output HDMI-1 --off --output eDP-1 --primary --auto; mode "default"
      bindsym Escape mode "default"
      bindsym Ctrl+g mode "default"
 }
@@ -203,6 +214,21 @@ mode "resize" {
         bindsym Escape mode "default"
 	bindsym Ctrl+g mode "default"
 }
+
+set $mode_help Command (mod+x) Display (mod+d) System (mod+s) Windowing (mod+w) Resize (mod+r)
+mode "$mode_help" {
+     bindsym $mod+x mode "command"
+     bindsym $mod+r mode "resize"
+     bindsym $mod+d mode "$mode_display"
+     bindsym $mod+s mode "$mode_system"
+     bindsym $mod+w mode "$mode_windowing"
+
+     # back to normal: Enter or Escape
+     bindsym Return mode "default"
+     bindsym Escape mode "default"
+     bindsym Ctrl+g mode "default"
+}
+bindsym $mod+h mode "$mode_help"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
