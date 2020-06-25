@@ -157,12 +157,12 @@ mode "command" {
 
 set $mode_display Ext. Left (l), Ext. Right (r), Ext. Above (u), Ext. Below (d), Ext. Only (e), Internal Only (i)
 mode "$mode_display" {
-     bindsym l exec --no-startup-id xrandr --output DP-2 --primary --auto --left-of eDP-1 --output eDP-1 --auto || xrandr --output HDMI-1 --auto --left-of eDP-1 --output eDP-1 --auto ; mode "default"
-     bindsym d exec --no-startup-id xrandr --output DP-2 --primary --auto --below eDP-1 --output eDP-1 --auto || xrandr --output HDMI-1 --primary --below eDP-1 --output eDP-1 --auto ; mode "default"
-     bindsym u exec --no-startup-id xrandr --output DP-2 --primary --auto --above eDP-1 --output eDP-1 --auto || xrandr --output HDMI-1 --primary --above eDP-1 --output eDP-1 --auto ; mode "default"
-     bindsym r exec --no-startup-id xrandr --output DP-2 --primary --auto --right-of eDP-1 --output eDP-1 --auto || xrandr --output HDMI-1 --primary --right-of eDP-1 --output eDP-1 --auto ; mode "default"
-     bindsym e exec --no-startup-id xrandr --output DP-2 --primary --auto --output eDP-1 --off --output eDP-1 --auto || xrandr --output HDMI-1 --primary --output eDP-1 --off; mode "default"
-     bindsym i exec --no-startup-id xrandr --output DP-2 --off --output eDP-1 --primary --auto --output eDP-1 --auto || xrandr --output HDMI-1 --off --output eDP-1 --primary --auto; mode "default"
+     bindsym l exec --no-startup-id xrandr --output DP-2 --primary --auto --left-of eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --auto --left-of eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym d exec --no-startup-id xrandr --output DP-2 --primary --auto --below eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --primary --below eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym u exec --no-startup-id xrandr --output DP-2 --primary --auto --above eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --primary --auto --above eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym r exec --no-startup-id xrandr --output DP-2 --primary --auto --right-of eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --primary --auto --right-of eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym e exec --no-startup-id xrandr --output DP-2 --primary --auto --output eDP-1 --off --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --primary --auto --output eDP-1 --off; mode "default"
+     bindsym i exec --no-startup-id xrandr --output DP-2 --off --output eDP-1 --primary --auto --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --off --output eDP-1 --primary --auto; mode "default"
      bindsym Escape mode "default"
      bindsym Ctrl+g mode "default"
 }
