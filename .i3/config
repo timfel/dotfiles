@@ -38,6 +38,7 @@ workspace "4:chat" output DP-2 eDP-1
 workspace "5:util" output HDMI-1 eDP-1
 
 assign [class="XTerm" instance="xterm"] 1:term
+assign [class="Emacs" instance="evolution"] 6:mail
 assign [class="Emacs"] 2:emacs
 assign [class="Firefox"] 3:web
 assign [class="zoom"] 4:chat
@@ -55,6 +56,7 @@ exec discord
 exec slack
 exec /opt/cisco/anyconnect/bin/vpnui
 exec keepass2
+exec emacs --name evolution
 # exec xterm -name "vpn" -e "/home/tim/bin/vpn"
 
 # switch to workspace
@@ -63,7 +65,7 @@ bindsym F2 workspace 2:emacs
 bindsym F3 workspace 3:web
 bindsym F4 workspace 4:chat
 bindsym F5 workspace 5:util
-bindsym F6 workspace 6
+bindsym F6 workspace 6:mail
 bindsym F7 workspace 7
 bindsym F8 workspace 8
 bindsym F9 workspace 9
@@ -74,7 +76,7 @@ bindsym Shift+F2 move container to workspace 2:emacs
 bindsym Shift+F3 move container to workspace 3:web
 bindsym Shift+F4 move container to workspace 4:chat
 bindsym Shift+F5 move container to workspace 5:util
-bindsym Shift+F6 move container to workspace 6
+bindsym Shift+F6 move container to workspace 6:mail
 bindsym Shift+F7 move container to workspace 7
 bindsym Shift+F8 move container to workspace 8
 bindsym Shift+F9 move container to workspace 9
@@ -85,10 +87,25 @@ bindsym $mod+r mode "resize"
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86WakeUp+F1 exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86WakeUp+F2 exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86WakeUp+F3 exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+
+bindsym XF86Search exec --no-startup-id i3-dmenu-desktop; mode "default"
+bindsym $mod+F2 exec --no-startup-id i3-dmenu-desktop; mode "default"
+bindsym mod4+XF86TouchpadToggle exec --no-startup-id i3-dmenu-desktop; mode "default"
+bindsym XF86Explorer exec nautilus --new-window
+bindsym $mod+e exec nautilus --new-window
+bindsym XF86Tools exec gnome-control-center
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 || brightnessctl s 10%+
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 || brightnessctl s 10%-
 
 bindsym $mod+Tab [urgent=latest] focus
-bindsym $mod+F2 exec --no-startup-id i3-dmenu-desktop; mode "default"
-bindsym $mod+F4 kill; mode "default"
+bindsym mod1+F2 exec --no-startup-id dmenu_run
+bindsym mod1+F4 kill; mode "default"
+
+bindsym Print exec --no-startup-id gnome-screenshot -w
+bindsym $mod+Print exec --no-startup-id gnome-screenshot -a
 
 # Make the currently focused window a scratchpad
 bindsym $mod+Down move scratchpad
@@ -96,6 +113,8 @@ bindsym $mod+Down move scratchpad
 bindsym $mod+Up scratchpad show
 # Show the first scratchpad window
 bindsym $mod+Right floating toggle
+# Show the first scratchpad window
+bindsym $mod+Left sticky toggle
 
 hide_edge_borders smart
 
@@ -133,9 +152,13 @@ mode "command" {
 
      # split in horizontal orientation
      bindsym s split h; mode "default"
+     # split in horizontal orientation
+     bindsym $mod+5 split h; mode "default"
 
      # split in vertical orientation
-     bindsym S split v; mode "default"
+     bindsym $mod+\' split v; mode "default"
+     # split in vertical orientation
+     bindsym Shift+s split v; mode "default"
 
      # enter fullscreen mode for the focused container
      bindsym f fullscreen; mode "default"
@@ -173,7 +196,7 @@ set $Locker xscreensaver-command -lock && sleep 1
 set $mode_system Lock (l), Suspend (s), Reload (r), Restart (Shift+r), Exit (Shift+e)
 mode "$mode_system" {
      bindsym l exec --no-startup-id $Locker; mode "default"
-     bindsym s exec --no-startup-id $Locker && systemctl suspend; mode "default"
+     bindsym s exec --no-startup-id $Locker && sleep 5 && systemctl suspend; mode "default"
      # reload the configuration file
      bindsym r reload; mode "default"
      # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
