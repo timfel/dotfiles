@@ -150,6 +150,11 @@ mode "command" {
      bindsym Shift+Up move up
      bindsym Shift+Right move right
 
+     bindsym $mod+Left move workspace to output left
+     bindsym $mod+Right move workspace to output right
+     bindsym $mod+Up move workspace to output up
+     bindsym $mod+Down move workspace to output down
+
      # split in horizontal orientation
      bindsym s split h; mode "default"
      # split in horizontal orientation
