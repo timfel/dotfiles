@@ -57,14 +57,14 @@ function screen_select {
     if [ -n "$PROF_SCREEN_CMD" ]; then
 	return
     elif [ $WSL -eq 1 ]; then
-       export PROF_SCREEN_CMD="tmux attach || tmux"
+       export PROF_SCREEN_CMD="tmux -2 attach || tmux -2"
     elif [ -n "$CYGWIN" ]; then
 	if where /Q screen; then
 	    export PROF_SCREEN_CMD="screen -xRR"
 	fi
     else
 	if which tmux 2>&1 >/dev/null; then
-            export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux attach || tmux new-session)"
+            export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux -2 attach || tmux -2 new-session)"
 	elif which screen 2>&1 >/dev/null; then
 	    export PROF_SCREEN_CMD="screen -xRR"
 	fi
