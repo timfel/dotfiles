@@ -1,7 +1,4 @@
 # I use this in my .bashrc to have nice VCS stuff.
-# Tim Felgentreff (09/20/01): Simplify for speedup, use the git-completion script for git
-
-source ~/bin/git-completion.sh
 
 _bold=
 _normal=
