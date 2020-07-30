@@ -254,7 +254,7 @@ function graalenv_setup {
         popd
     fi
     source ~/.graalenv/graalenv
-    graalenv use system
+    graalenv use latest
 
     if [ -d "$HOME/Dev/graalpython/graalpython" ]; then
         alias graal.python="mx -p $HOME/Dev/graalpython/graalpython python"
