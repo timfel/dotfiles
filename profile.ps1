@@ -1,7 +1,7 @@
-New-Alias unzip Expand-Archive -force
-New-Alias zip Compress-Archive -force
-New-Alias man Get-Help -force
-New-Alias wget Invoke-WebRequest -force
+New-Alias unzip Expand-Archive -option AllScope -force
+New-Alias zip Compress-Archive -option AllScope -force
+New-Alias man Get-Help -option AllScope -force
+New-Alias wget Invoke-WebRequest -option AllScope -force
 
 Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
     param($wordToComplete, $commandAst, $cursorPosition)
