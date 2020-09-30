@@ -39,6 +39,7 @@ workspace "5:util" output HDMI-1 eDP-1
 
 assign [class="XTerm" instance="xterm"] 1:term
 assign [class="Emacs" instance="evolution"] 6:mail
+assign [class="Emacs" instance="stratagus"] 7
 assign [class="Emacs"] 2:emacs
 assign [class="Firefox"] 3:web
 assign [class="zoom"] 4:chat
@@ -69,6 +70,8 @@ bindsym F6 workspace 6:mail
 bindsym F7 workspace 7
 bindsym F8 workspace 8
 bindsym F9 workspace 9
+
+# bindsym Ctrl+Alt+Left 
 
 # move focused container to workspace
 bindsym Shift+F1 move container to workspace 1:term
@@ -198,6 +201,8 @@ bindsym XF86Display mode "$mode_display"
 bindsym $mod+d mode "$mode_display"
 
 set $Locker xscreensaver-command -lock && sleep 1
+bindsym $mod+l exec --no-startup-id $Locker
+
 set $mode_system Lock (l), Suspend (s), Reload (r), Restart (Shift+r), Exit (Shift+e)
 mode "$mode_system" {
      bindsym l exec --no-startup-id $Locker; mode "default"
@@ -265,4 +270,5 @@ bar {
     tray_output DP-2
     tray_output eDP-1
     tray_output HDMI-1
+    tray_output HDMI-2
 }
