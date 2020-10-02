@@ -1,3 +1,4 @@
+# iwr https://raw.githubusercontent.com/timfel/dotfiles/master/profile.ps1 -OutFile $PROFILE
 New-Alias unzip Expand-Archive -option AllScope -force
 New-Alias zip Compress-Archive -option AllScope  -force
 New-Alias man Get-Help -option AllScope  -force
