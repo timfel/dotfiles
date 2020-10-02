@@ -33,6 +33,8 @@ function first_time_system_setup {
     }
 
     wsl --install
+    
+    echo "Use Visual Studio Installer to modify the installation and add the deprecated Windows XP (v141_xp) toolchain for x86"
 }
 
 Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
