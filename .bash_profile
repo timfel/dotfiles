@@ -23,30 +23,6 @@ function determine_os {
 	    ;;
 	Linux)
 	    export LINUX=1
-	    export WSL=0
-	    if [ "$(uname -n)" == "speedLinux" ]; then
-		export SPEEDLINUX=1
-		export DISPLAY=192.168.0.1:0.0
-	    fi
-	    if [ -d /mnt/c/Windows ]; then
-		cd ~
-		export WSL=1
-		export DISPLAY=localhost:0.0
-		export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
-            else
-                lsmod | grep vboxguest 2>&1 >/dev/null 
-	       if [ $? -eq 0 ]; then
-		   ps aux | grep -v grep | grep X 2>&1 >/dev/null
-		   if [ $? -eq 1 ]; then
-		       # Virtualbox without X
-		       export DISPLAY=10.0.2.2:0.0
-		   else
-		       if [ -z $DISPLAY ]; then
-			   export DISPLAY=:0
-		       fi
-		   fi
-	       fi
-	    fi
 	    ;;
 	*)
 	    ;;
@@ -56,8 +32,6 @@ function determine_os {
 function screen_select {
     if [ -n "$PROF_SCREEN_CMD" ]; then
 	return
-    elif [ $WSL -eq 1 ]; then
-       export PROF_SCREEN_CMD="tmux attach || tmux"
     elif [ -n "$CYGWIN" ]; then
 	if where /Q screen; then
 	    export PROF_SCREEN_CMD="screen -xRR"
