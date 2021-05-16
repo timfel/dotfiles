@@ -1,13 +1,3 @@
-ps aux | grep -v grep | grep X 2>&1 >/dev/null
-haveX=$?
-if [ -d "/mnt/c/Windows" ] ; then
-    if [[ $(pwd) = /mnt/* ]] ; then
-	PROF_SCREEN_CMD="echo 'no screen'"
-    fi
-elif [ $haveX -eq 1 ] && [ -z "$DISPLAY" ] && [ $(tty) == /dev/tty2 ]; then
-    exec startx
-fi
-
 export BASH_PROFILE_LOADED=1
 
 function determine_os {
