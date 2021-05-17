@@ -220,7 +220,7 @@ function pyenv_setup {
         export PYENV_ROOT="$HOME"/.pyenv
         export PATH="$PYENV_ROOT"/bin:"$PATH"
         if command -v pyenv 1>/dev/null 2>&1; then
-            eval "$(pyenv init -)"
+            eval "$(pyenv init --path)"
         fi
     fi
 }
@@ -285,7 +285,9 @@ function system_tweaks {
            # xcalib $HOME/.ColorLCD.icc
          fi
 	 if [ -f $HOME/.Xresources ]; then
-           xrdb -merge $HOME/.Xresources
+	   if ( which xrdb 2>&1 /dev/null ); then
+             xrdb -merge $HOME/.Xresources
+	   fi
 	 fi
       fi
    fi
