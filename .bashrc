@@ -262,8 +262,7 @@ function graalenv_setup {
     fi
 
     export MX_PYTHON_VERSION=3
-
-    
+    export MX_COMPDB=default
 }
 
 function system_tweaks {
