@@ -2,14 +2,6 @@ desc "installs everything"
 task :install => "install:all"
 namespace :install do
 
-  task :cbwin do
-    sh "git submodule init && git submodule update"
-    sh "cd cbwin/caller/ && ./build.sh"
-    %w[wrun wstart wcmd].each { |s| sh "ln -sf ../cbwin/caller/#{s} bin/#{s}" }
-  end
-
-  task :all => :cbwin
-
   def _install name, *files
     desc "installs #{name} configuration"
     task(name) do
