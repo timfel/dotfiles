@@ -25,6 +25,8 @@ module MyIRB
   rescue NameError => e
     if RUBY_ENGINE =~ /rubinius|rbx/
       ::RUBY_ENGINE_VERSION = Rubinius::VERSION
+    elsif RUBY_ENGINE =~ /truffle/
+      ::RUBY_ENGINE_VERSION = RUBY_VERSION
     else
       raise e
     end

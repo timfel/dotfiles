@@ -220,6 +220,7 @@ function pyenv_setup {
         export PYENV_ROOT="$HOME"/.pyenv
         export PATH="$PYENV_ROOT"/bin:"$PATH"
         if command -v pyenv 1>/dev/null 2>&1; then
+            eval "$(pyenv init --path)"
             eval "$(pyenv init -)"
         fi
     fi
@@ -254,7 +255,7 @@ function graalenv_setup {
         popd
     fi
     source ~/.graalenv/graalenv
-    graalenv use system
+    graalenv use latest
 
     if [ -d "$HOME/Dev/graalpython/graalpython" ]; then
         alias graal.python="mx -p $HOME/Dev/graalpython/graalpython python"
@@ -262,8 +263,7 @@ function graalenv_setup {
     fi
 
     export MX_PYTHON_VERSION=3
-
-    
+    export MX_COMPDB=default
 }
 
 function system_tweaks {
@@ -285,7 +285,9 @@ function system_tweaks {
            # xcalib $HOME/.ColorLCD.icc
          fi
 	 if [ -f $HOME/.Xresources ]; then
-           xrdb -merge $HOME/.Xresources
+	   if ( which xrdb 2>&1 /dev/null ); then
+             xrdb -merge $HOME/.Xresources
+	   fi
 	 fi
       fi
    fi

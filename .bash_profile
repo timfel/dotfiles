@@ -28,7 +28,7 @@ function screen_select {
 	fi
     else
 	if which tmux 2>&1 >/dev/null; then
-            export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux attach || tmux new-session)"
+            export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux -2 attach || tmux -2 new-session)"
 	elif which screen 2>&1 >/dev/null; then
 	    export PROF_SCREEN_CMD="screen -xRR"
 	fi
