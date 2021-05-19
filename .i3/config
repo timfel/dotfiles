@@ -29,35 +29,52 @@ exec --no-startup-id nm-applet
 # default monitor layouts
 exec --no-startup-id xrandr --output DP-2 --primary --left-of eDP-1
 exec --no-startup-id xrandr --output HDMI-1 --primary --above eDP-1
+exec --no-startup-id xrandr --output HDMI-2 --primary --right-of eDP-1
 
-workspace "1:term" output DP-2 eDP-1
-workspace "2:emacs" output DP-2 eDP-1
-workspace "3:web" output DP-2 eDP-1
-workspace "4:chat" output DP-2 eDP-1
+workspace "1:term" output HDMI-2 DP-2 eDP-1
+workspace "2:emacs" output HDMI-2 DP-2 eDP-1
+workspace "3:web" output HDMI-2 DP-2 eDP-1
+workspace "4:chat" output HDMI-2 DP-2 eDP-1
 # workspace "4:chat" layout tabbed
-workspace "5:util" output HDMI-1 eDP-1
+workspace "5:util" output HDMI-2 HDMI-1 eDP-1
 
 assign [class="XTerm" instance="xterm"] 1:term
 assign [class="Emacs" instance="evolution"] 6:mail
+assign [class="Emacs" instance="stratagus"] 7
 assign [class="Emacs"] 2:emacs
 assign [class="Firefox"] 3:web
+assign [instance="microsoft-edge-dev"] 3:web
+assign [instance="microsoft-edge"] 3:web
 assign [class="zoom"] 4:chat
 assign [class="discord"] 4:chat
 assign [class="Slack"] 4:chat
-assign [class="Vpnui"] 5:util
+assign [class="Signal"] 4:chat
+assign [instance="Cisco AnyConnect Secure Mobility Client"] 5:util
+assign [class="Cisco AnyConnect Secure Mobility Client"] 5:util
 assign [class="KeePass2"] 5:util
+assign [class="KeePassXC"] 5:util
 assign [class="XTerm" instance="vpn"] 5:util
 
 exec xrdb -merge ~/.Xresources && exec xterm
+exec blueman-tray
 exec emacs
-exec firefox
+# exec firefox
+exec microsoft-edge-dev
 exec zoom
 exec discord
 exec slack
 exec /opt/cisco/anyconnect/bin/vpnui
-exec keepass2
-exec emacs --name evolution
+exec keepassxc
+# exec emacs --name evolution
 # exec xterm -name "vpn" -e "/home/tim/bin/vpn"
+
+# PWAs
+set $irccloud_pwa crx__pnpnebpkafjbaejjhkkaiandjbnbbbak
+set $outlook_pwa crx__pkooggnaalmfkidjmlhoelhdllpphaga
+assign [instance="$irccloud_pwa"] 4:chat
+assign [instance="$outlook_pwa"] 6:mail
+exec microsoft-edge-dev --app-id=$irccloud_pwa
+exec microsoft-edge-dev --app-id=$outlook_pwa
 
 # switch to workspace
 bindsym F1 workspace 1:term
@@ -69,6 +86,8 @@ bindsym F6 workspace 6:mail
 bindsym F7 workspace 7
 bindsym F8 workspace 8
 bindsym F9 workspace 9
+
+# bindsym Ctrl+Alt+Left 
 
 # move focused container to workspace
 bindsym Shift+F1 move container to workspace 1:term
@@ -150,6 +169,11 @@ mode "command" {
      bindsym Shift+Up move up
      bindsym Shift+Right move right
 
+     bindsym $mod+Left move workspace to output left
+     bindsym $mod+Right move workspace to output right
+     bindsym $mod+Up move workspace to output up
+     bindsym $mod+Down move workspace to output down
+
      # split in horizontal orientation
      bindsym s split h; mode "default"
      # split in horizontal orientation
@@ -180,12 +204,12 @@ mode "command" {
 
 set $mode_display Ext. Left (l), Ext. Right (r), Ext. Above (u), Ext. Below (d), Ext. Only (e), Internal Only (i)
 mode "$mode_display" {
-     bindsym l exec --no-startup-id xrandr --output DP-2 --primary --auto --left-of eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --auto --left-of eDP-1 --output eDP-1 --auto ; mode "default"
-     bindsym d exec --no-startup-id xrandr --output DP-2 --primary --auto --below eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --primary --below eDP-1 --output eDP-1 --auto ; mode "default"
-     bindsym u exec --no-startup-id xrandr --output DP-2 --primary --auto --above eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --primary --auto --above eDP-1 --output eDP-1 --auto ; mode "default"
-     bindsym r exec --no-startup-id xrandr --output DP-2 --primary --auto --right-of eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --primary --auto --right-of eDP-1 --output eDP-1 --auto ; mode "default"
-     bindsym e exec --no-startup-id xrandr --output DP-2 --primary --auto --output eDP-1 --off --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --primary --auto --output eDP-1 --off; mode "default"
-     bindsym i exec --no-startup-id xrandr --output DP-2 --off --output eDP-1 --primary --auto --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-1 --off --output eDP-1 --primary --auto; mode "default"
+     bindsym l exec --no-startup-id xrandr --output DP-2 --primary --auto --left-of eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-2 --auto --left-of eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym d exec --no-startup-id xrandr --output DP-2 --primary --auto --below eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-2 --primary --below eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym u exec --no-startup-id xrandr --output DP-2 --primary --auto --above eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-2 --primary --auto --above eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym r exec --no-startup-id xrandr --output DP-2 --primary --auto --right-of eDP-1 --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-2 --primary --auto --right-of eDP-1 --output eDP-1 --auto ; mode "default"
+     bindsym e exec --no-startup-id xrandr --output DP-2 --primary --auto --output eDP-1 --off --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-2 --primary --auto --output eDP-1 --off; mode "default"
+     bindsym i exec --no-startup-id xrandr --output DP-2 --off --output eDP-1 --primary --auto --output eDP-1 --auto; exec --no-startup-id xrandr --output HDMI-2 --off --output eDP-1 --primary --auto; mode "default"
      bindsym Escape mode "default"
      bindsym Ctrl+g mode "default"
 }
@@ -193,6 +217,8 @@ bindsym XF86Display mode "$mode_display"
 bindsym $mod+d mode "$mode_display"
 
 set $Locker xscreensaver-command -lock && sleep 1
+bindsym $mod+l exec --no-startup-id $Locker
+
 set $mode_system Lock (l), Suspend (s), Reload (r), Restart (Shift+r), Exit (Shift+e)
 mode "$mode_system" {
      bindsym l exec --no-startup-id $Locker; mode "default"
@@ -260,4 +286,5 @@ bar {
     tray_output DP-2
     tray_output eDP-1
     tray_output HDMI-1
+    tray_output HDMI-2
 }

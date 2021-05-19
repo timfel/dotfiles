@@ -1,2 +1,2 @@
 #!/bin/bash
-echo $(git branch --list --sort=-committerdate --format '"%(refname:short)" "%(subject)"' | head -6) | xargs whiptail --clear --menu "" 30 160 15 2> >(xargs git co)
+echo $(git branch --list --sort=-committerdate --format '"%(refname:short)" "%(subject)"' | head -15) | xargs whiptail --clear --menu "" 30 160 15 2> >(xargs git co)

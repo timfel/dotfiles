@@ -18,6 +18,7 @@
    oclone="!echo $1 && git clone $1 && cd $(basename -s .git $1) && git config --local user.email tim.felgentreff@oracle.com"
    adopt="!echo Adopting $1; git merge -s ours $(echo adopt $1 as ancestor | git commit-tree HEAD^{tree} -p $1 -p HEAD)"
    clean-merged = "!echo Cleaning anything merged into $1; test -n \"$1\" && git branch --merged $1 | grep -v \"\\*\" | xargs -n 1 git branch -d"
+   prune-branches = "!git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs git branch -d"
    branchselect = "!git-branch-select"
 [user]
    name = Tim Felgentreff
@@ -61,4 +62,4 @@
 [credential]
 	helper = cache --timeout=3600
 [status]
-	showUntrackedFiles = all
+	showUntrackedFiles = normal
