@@ -499,6 +499,21 @@ function sproxy {
     fi
 }
 
+function wsl_setup {
+    if ( which wsl.exe 2>&1 > /dev/null ); then
+        export WSL=true
+        prof=`wslvar --sys USERPROFILE`
+        prof=`wslpath "$prof"/.wslconfig`
+        if [ ! -e "$prof" ]; then
+            echo "[wsl2]
+# memory=2GB
+# processors=4
+" > "$prof"
+            vi "$prof"
+        fi
+    fi
+}
+
 bash_options
 system_tweaks
 if [ -d "$HOME/.rvm" ]; then
@@ -511,6 +526,7 @@ nvm_setup
 maglev_setup
 graalenv_setup
 bin_options
+wsl_setup
 
 source "$HOME"/bin/bash_vcs.sh
 PROMPT_COMMAND=prompt
