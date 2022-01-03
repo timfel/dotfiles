@@ -17,7 +17,7 @@ fi
 if [ -n "${TERM#screen*}" ]; then
     if [ -n "${TERM#dumb*}" ]; then
         if [ -z "$TMUX" ]; then
-            eval $PROF_SCREEN_CMD
+            # eval $PROF_SCREEN_CMD
             noscreen=1
         fi
     fi
@@ -242,8 +242,9 @@ function nvm_setup {
     fi
     export NVM_DIR="/home/tim/.nvm"
     if [ -s "$NVM_DIR/nvm.sh" ]; then
-       alias node="unalias npm && unalias node && source $NVM_DIR/nvm.sh && node"
-       alias npm="unalias npm && unalias node && source $NVM_DIR/nvm.sh && npm"
+       source "$NVM_DIR/nvm.sh"
+       # alias node="unalias npm && unalias node && source $NVM_DIR/nvm.sh && node"
+       # alias npm="unalias npm && unalias node && source $NVM_DIR/nvm.sh && npm"
     fi
 }
 
@@ -259,6 +260,14 @@ function graalenv_setup {
 
     export MX_PYTHON_VERSION=3
     export MX_COMPDB=default
+    export MX_BUILD_SHALLOW_DEPENDENCY_CHECKS=true
+    export MX_OUTPUT_ROOT_INCLUDES_CONFIG=true
+    export LINKY_LAYOUT="*.jar"
+
+    if [ -d "${HOME}/.mvn/apache-maven-3.8.4/" ]; then
+        export PATH="${HOME}/.mvn/apache-maven-3.8.4/bin/:${PATH}"
+        export M2_HOME="${HOME}/.mvn/apache-maven-3.8.4/"
+    fi
 }
 
 function system_tweaks {
@@ -530,4 +539,5 @@ PROMPT_COMMAND=prompt
 
 # added by travis gem
 [ -f /home/tim/.travis/travis.sh ] && source /home/tim/.travis/travis.sh
+
 
