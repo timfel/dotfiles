@@ -257,6 +257,13 @@ function debian_setup {
     export DEBFULLNAME="Tim Felgentreff"
 }
 
+function wayland_setup {
+    if [ -n "${WAYLAND_DISPLAY}" ]; then
+        export MOZ_ENABLE_WAYLAND=1
+        export SDL_VIDEODRIVER=wayland
+    fi
+}
+
 if [ -e "$HOME/.micronaut/micronaut-cli-3.0.2-SNAPSHOT/" ]; then
     export MICRONAUT_HOME="$HOME/.micronaut/micronaut-cli-3.0.2-SNAPSHOT/"
     export PATH="${PATH}:${MICRONAUT_HOME}/bin"
@@ -272,6 +279,7 @@ environment
 rupypy_setup
 tmux_setup
 emacs_setup
+wayland_setup
 
 if [ -n "$LINUX" ]; then
     install_slack_term
