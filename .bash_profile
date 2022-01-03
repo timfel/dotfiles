@@ -257,6 +257,11 @@ function debian_setup {
     export DEBFULLNAME="Tim Felgentreff"
 }
 
+if [ -e "$HOME/.micronaut/micronaut-cli-3.0.2-SNAPSHOT/" ]; then
+    export MICRONAUT_HOME="$HOME/.micronaut/micronaut-cli-3.0.2-SNAPSHOT/"
+    export PATH="${PATH}:${MICRONAUT_HOME}/bin"
+fi
+
 debian_setup
 determine_os
 screen_select
