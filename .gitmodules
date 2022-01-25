@@ -1,15 +1,9 @@
 [submodule "texmf"]
 	path = texmf
 	url = https://github.com/timfel/texmf
-[submodule "bin/git-subtree"]
-	path = bin/git-subtree
-	url = http://github.com/apenwarr/git-subtree.git
 [submodule "git-hg"]
 	path = git-hg
-url=git://github.com/cosmin/git-hg
+	url=git://github.com/cosmin/git-hg
 [submodule "git-bzr-ng"]
 	path = git-bzr-ng
 	url = https://github.com/termie/git-bzr-ng.git
-[submodule "cbwin"]
-	path = cbwin
-	url = git://github.com/timfel/cbwin
