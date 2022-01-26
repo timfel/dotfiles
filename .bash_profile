@@ -261,6 +261,7 @@ function wayland_setup {
     if [ -n "${WAYLAND_DISPLAY}" ]; then
         export MOZ_ENABLE_WAYLAND=1
         export SDL_VIDEODRIVER=wayland
+        export GDK_BACKEND=wayland
     fi
 }
 
