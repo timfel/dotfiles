@@ -144,6 +144,15 @@ function emacs_setup {
         mkdir -p $HOME/.emacs.d/elpa/
         ln -s $HOME/.emacs.d/el-get/emacs-async $HOME/.emacs.d/elpa/async-0
     fi
+    export LSP_USE_PLISTS=true
+}
+
+function emacs_workspace {
+    if [ ! -d "$1" ]; then
+        echo "Preparing workspace"
+        git clone git://github.com/timfel/my_emacs_for_rails.git "$1"
+    fi
+    emacs --init-directory "$1"
 }
 
 function install_vista_fonts {
