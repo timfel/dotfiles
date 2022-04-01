@@ -150,7 +150,12 @@ function emacs_setup {
 function emacs_workspace {
     if [ ! -d "$1" ]; then
         echo "Preparing workspace"
-        git clone git://github.com/timfel/my_emacs_for_rails.git "$1"
+        git clone --depth 1 https://github.com/timfel/my_emacs_for_rails.git "$1"
+        if [ -d "${HOME}/.emacs.d/elpa" ]; then
+            cp -R "${HOME}/.emacs.d/elpa" "${1}/elpa"
+            find "$1" -name "*.elc" -delete
+            find "$1" -name "*.eln" -delete
+        fi
     fi
     emacs --init-directory "$1"
 }
