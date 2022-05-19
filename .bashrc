@@ -520,6 +520,10 @@ function wsl_setup {
     fi
 }
 
+function full {
+    ex -c 'g/^.*\(\<[0-9]\+\)\/.*$/ya|pu|s::readlink /proc/\1/exe:|.!sh' -c 'g/^\//-ya|pu|-2s/^\(.*\<[0-9]\+\)\/[^[:space:]]*\(.*\)$/\1/|+2s//\2/|-2j!3' -c%p -c 'q!' /dev/stdin
+}
+
 bash_options
 system_tweaks
 if [ -d "$HOME/.rvm" ]; then
