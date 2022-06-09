@@ -310,3 +310,9 @@ source ~/.bashrc
 # if [ -f $HOME/.venvburrito/startup.sh ]; then
 #     . $HOME/.venvburrito/startup.sh
 # fi
+
+# print CPU version:
+awk '/^model name/ { sub(/^model name[^:]*: /, "", $0); print "   ****", toupper($0), "****"; exit }' /proc/cpuinfo
+# print memory summary:
+free -b | awk '/^Mem:/ { printf " %dK RAM SYSTEM  %d BASIC BYTES FREE\n\nREADY.\n", $2 / 1024, $4 }'
+

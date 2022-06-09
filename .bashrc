@@ -289,8 +289,8 @@ function system_tweaks {
            # xcalib $HOME/.ColorLCD.icc
          fi
 	 if [ -f $HOME/.Xresources ]; then
-	   if ( which xrdb 2>&1 /dev/null ); then
-             xrdb -merge $HOME/.Xresources
+	   if ( which xrdb 2>&1 >/dev/null ); then
+             xrdb -merge $HOME/.Xresources 2>&1 >/dev/null
 	   fi
 	 fi
       fi
