@@ -63,3 +63,7 @@
 	helper = cache --timeout=3600
 [status]
 	showUntrackedFiles = normal
+[github]
+	user = timfel
+[gitlab]
+	user = timfelgentreff
