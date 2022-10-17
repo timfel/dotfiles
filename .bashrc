@@ -119,28 +119,18 @@ function prompt {
        PS1="${COLOR_BLUE_BOLD}${SPWD}${COLOR_NONE}"
     fi
 
-   # SHOW RUBY VERSION
-   if test -z "$CYGWIN"; then
-       if [ -d "$HOME/.rvm" ]; then
-           PS1="$PS1 \$(rvm-prompt u)"
-       elif [ -n "${RBENV_VERSION}" ]; then
-           PS1="$PS1 ${RBENV_VERSION:-ruby}"
-       fi
-    elif [ -n "${RBENV_VERSION}" ]; then
-       PS1="$PS1 ${RBENV_VERSION}"
-    fi
-
-   # SHOW VIRTUALENV
-   if test -n "$VIRTUALENV"; then
-       PS1="$PS1 ⟆${VIRTUAL_ENV#$HOME/.virtualenvs/}"
+   if [ -n "${VIRTUAL_ENV_PROMPT}" ]; then
+       PS1="$PS1 🐍${VIRTUAL_ENV_PROMPT}"
+   else
+       PS1="$PS1 "
    fi
 
    # Show the current branch
    VCS=`echo -e $(__prompt_command)`
    if [ -z "$VCS" ]; then
-      EXITCODE=" ${EXITCODE}"
+      EXITCODE="${EXITCODE}"
    else
-      VCS=" [${VCS}] "
+      VCS="🌿[${VCS}] "
    fi
    PS1="$PS1$VCS"
    if [ -n "${TERM#screen*}" ]; then
@@ -262,7 +252,8 @@ function graalenv_setup {
     export MX_COMPDB=default
     export MX_BUILD_SHALLOW_DEPENDENCY_CHECKS=true
     export MX_OUTPUT_ROOT_INCLUDES_CONFIG=true
-    export LINKY_LAYOUT="*.jar"
+    # export MX_BUILD_EXPLODED=true
+    # export LINKY_LAYOUT="*.jar"
 
     if [ -d "${HOME}/.mvn/apache-maven-3.8.4/" ]; then
         export PATH="${HOME}/.mvn/apache-maven-3.8.4/bin/:${PATH}"
@@ -545,3 +536,20 @@ PROMPT_COMMAND=prompt
 [ -f /home/tim/.travis/travis.sh ] && source /home/tim/.travis/travis.sh
 
 
+
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'mamba init' !!
+export MAMBA_EXE="/home/tim/.local/bin/micromamba";
+export MAMBA_ROOT_PREFIX="/home/tim/micromamba";
+__mamba_setup="$('/home/tim/.local/bin/micromamba' shell hook --shell bash --prefix '/home/tim/micromamba' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    if [ -f "/home/tim/micromamba/etc/profile.d/micromamba.sh" ]; then
+        . "/home/tim/micromamba/etc/profile.d/micromamba.sh"
+    else
+        export  PATH="/home/tim/micromamba/bin:$PATH"  # extra space after export prevents interference from conda init
+    fi
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
