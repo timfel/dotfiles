@@ -316,3 +316,8 @@ awk '/^model name/ { sub(/^model name[^:]*: /, "", $0); print "   ****", toupper
 # print memory summary:
 free -b | awk '/^Mem:/ { printf " %dK RAM SYSTEM  %d BASIC BYTES FREE\n\nREADY.\n", $2 / 1024, $4 }'
 
+# function term_sane {
+#     stty sane
+#     echo -en "\e[?25h"
+# }
+. "$HOME/.cargo/env"

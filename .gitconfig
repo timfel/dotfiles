@@ -20,6 +20,7 @@
    clean-merged = "!echo Cleaning anything merged into $1; test -n \"$1\" && git branch --merged $1 | grep -v \"\\*\" | xargs -n 1 git branch -d"
    prune-branches = "!git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs git branch -d"
    branchselect = "!git-branch-select"
+   review-range = "!for i in $(git log --pretty=format:%h $1 | tac); do git show $i; done"
 [user]
    name = Tim Felgentreff
    email = "tim.felgentreff@oracle.com"

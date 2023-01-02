@@ -2,7 +2,7 @@
 
 require 'rubygems'
 
-gem 'term-ansicolor', '=1.0.5'
+# gem 'term-ansicolor', '=1.0.5'
 require 'term/ansicolor'
 
 class GitCommit
@@ -111,6 +111,19 @@ class GitUnmerged
       end
     end
   end
+
+  def print_porcelain
+    load
+    if branches.any_missing_commits?
+      branches.each do |branch|
+        if branch.unmerged_commits.empty?
+          puts "M #{branch.name}"
+        else
+          puts "U #{branch.name}"
+        end
+      end
+    end
+  end
   
   def print_help
     puts <<-EOT.gsub(/^\s+\|/, '')
@@ -202,6 +215,7 @@ class GitUnmerged
   def show_help? ; @options[:show_help] ; end
   def show_equivalent_commits? ; @options[:show_equivalent_commits] ; end
   def show_version? ; @options[:show_version] ; end
+  def porcelain? ; @options[:porcelain] ; end
 
   def upstream
     if @options[:upstream]
@@ -221,6 +235,7 @@ class GitUnmerged
     else
       @options[:local] = true
     end
+    @options[:porcelain] = true if args.include?("--porcelain")
     @options[:show_help] = true if args.include?("-h") || args.include?("--help")
     @options[:show_equivalent_commits] = true if args.include?("-a")
     @options[:show_version] = true if args.include?("-v") || args.include?("--version")
@@ -242,6 +257,8 @@ if unmerged.show_help?
 elsif unmerged.show_version?
   unmerged.print_version
   exit
+elsif unmerged.porcelain?
+  unmerged.print_porcelain
 else
   unmerged.print_overview
   puts
