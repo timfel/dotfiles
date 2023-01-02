@@ -125,6 +125,10 @@ function prompt {
        PS1="$PS1 "
    fi
 
+   if [ -n "${CONDA_PREFIX}" ]; then
+       PS1="$PS1 ⊙${CONDA_PROMPT_MODIFIER}"
+   fi
+
    # Show the current branch
    VCS=`echo -e $(__prompt_command)`
    if [ -z "$VCS" ]; then
@@ -553,3 +557,4 @@ else
 fi
 unset __mamba_setup
 # <<< mamba initialize <<<
+. "$HOME/.cargo/env"
