@@ -1,5 +1,5 @@
 [pretty]
-   awesome = %Cred%h%Creset %Cblue(%aN)%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset
+   awesome = %Cred%h%Creset %Cblue(%aN)%Creset -%C(yellow)%d%Creset %s %Cgreen(%ad)%Creset
 [alias]
    addnw=!sh -c 'git diff -U0 -w --no-color "$@" | git apply --cached --ignore-whitespace --unidiff-zero -'
    ap = add --patch
@@ -10,7 +10,7 @@
    pull = pull --no-ff
    news = !git lg $(git log --author='Tim Felgentreff' --pretty=format:%H -n1)..
    rb = rebase --stat --ignore-whitespace
-   lg = log --color --graph --pretty=awesome --date=local --abbrev-commit
+   lg = log --color --graph --pretty=awesome --date=iso --abbrev-commit
    paper = "!echo $1; git clone --single-branch --branch $1 git@github.com:timfel/papers.git $1; cd $1; git config --local --replace-all remote.origin.fetch +refs/heads/${1}:refs/remotes/origin/${1}"
    branches = "!git for-each-ref --sort=-committerdate refs/heads --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|head -30|sh"
    branches-origin = "!git for-each-ref --sort=-committerdate refs/remotes/origin --format='git --no-pager log -n 1 --pretty=awesome %(objectname)'|sh"
@@ -21,6 +21,8 @@
    prune-branches = "!git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | xargs git branch -d"
    branchselect = "!git-branch-select"
    review-range = "!for i in $(git log --pretty=format:%h $1 | tac); do git show $i; done"
+   cherry-pick-merge = "!f() { git log --pretty='format:%h' \"$1\"^..\"$1\" | tail +2 | sed 'x;1!H;$!d;x' | xargs git cherry-pick -x && git cherry-pick-merge-commit-message $1; }; f"
+   cherry-pick-merge-commit-message = "!f() { git commit --author \"$(git log -n1 --pretty='format:%an' $1) <$(git log -n1 --pretty='format:%ae' $1)>\" --allow-empty -m \"Cherry picked $(git log -n1 --pretty='format:%C(auto)%h %s' $1)\"; }; f"
 [user]
    name = Tim Felgentreff
    email = "tim.felgentreff@oracle.com"
@@ -68,3 +70,7 @@
 	user = timfel
 [gitlab]
 	user = timfelgentreff
+[credential "https://github.com"]
+	username = timfel
+[credential "https://dev.azure.com"]
+	useHttpPath = true
