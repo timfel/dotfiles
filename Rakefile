@@ -30,7 +30,7 @@ namespace :install do
            ".gitignore", ".gitconfig", ".ssh/config", ".config/nv-*", ".Color*.icc",
            ".tmux.conf", ".tmux.bashrc", ".topazini", ".Xresources", ".screenrc",
            ".stumpwmrc", ".i3", ".pdbrc", ".xbindkeysrc", ".pine-passfile", ".pinerc",
-           ".xinitrc", ".gdbinit", ".mambarc"
+           ".xinitrc", ".gdbinit", ".mambarc", ".docker/config.json"
   _install :bin, "bin/*"
 
   desc "installs the custom texmf folder"
