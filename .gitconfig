@@ -63,7 +63,8 @@
 	editor = vim
 	historybrowser = gitk
 [credential]
-	helper = cache --timeout=3600
+        # helper = cache --timeout 3600
+	helper = /mnt/c/Program\\ Files\\ \\(x86\\)/Git\\ Credential\\ Manager/git-credential-manager-core.exe
 [status]
 	showUntrackedFiles = normal
 [github]
