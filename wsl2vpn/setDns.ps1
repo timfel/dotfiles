@@ -1,5 +1,5 @@
 echo "Setting DNS"
-Start-Sleep -s 5
+Start-Sleep -s 10
 $dnsServers = (Get-NetAdapter | Where-Object InterfaceDescription -like "Cisco AnyConnect*" | Get-DnsClientServerAddress).ServerAddresses -join ','
 $searchSuffix = (Get-DnsClientGlobalSetting).SuffixSearchList -join ','
 
@@ -19,4 +19,4 @@ function set-DnsWsl($distro) {
 
 set-DnsWsl Ubuntu
 
-Start-Sleep -s 10 # Allow time to view the output before window closes
+Start-Sleep -s 3 # Allow time to view the output before window closes
