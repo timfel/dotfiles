@@ -279,8 +279,8 @@ function wayland_setup {
     fi
 }
 
-if [ -e "$HOME/.micronaut/micronaut-cli-3.0.2-SNAPSHOT/" ]; then
-    export MICRONAUT_HOME="$HOME/.micronaut/micronaut-cli-3.0.2-SNAPSHOT/"
+if [ -e "$HOME/.micronaut/micronaut-cli-3.9.1/" ]; then
+    export MICRONAUT_HOME="$HOME/.micronaut/micronaut-cli-3.9.1/"
     export PATH="${PATH}:${MICRONAUT_HOME}/bin"
 fi
 
