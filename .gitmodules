@@ -3,7 +3,7 @@
 	url = https://github.com/timfel/texmf
 [submodule "git-hg"]
 	path = git-hg
-	url=git://github.com/cosmin/git-hg
+	url=https://github.com/cosmin/git-hg
 [submodule "git-bzr-ng"]
 	path = git-bzr-ng
 	url = https://github.com/termie/git-bzr-ng.git
