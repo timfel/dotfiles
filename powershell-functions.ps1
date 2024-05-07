@@ -33,9 +33,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Force -Scope CurrentUser
 Install-Module posh-git
 Install-Module modern-unix-win
 
-winget install "Windows Subsystem for Linux Preview"
 winget install Microsoft.WindowsTerminal.Preview
-winget install Canonical.Ubuntu.2204
 winget install Mozilla.Firefox
 winget install SlackTechnologies.Slack
 winget install Discord.Discord
@@ -48,10 +46,12 @@ winget install Oracle.JDK.21
 winget install JetBrains.IntelliJIDEA.Community
 winget install Kitware.CMake
 winget install GNU.Emacs
-winget install RedHat.Podman
 winget install gsudo
 winget install Clement.bottom
 winget install keepass
+
+wsl --update
+wsl --install Ubuntu-24.04
 
 git clone https://github.com/timfel/my_emacs_for_rails.git $env:APPDATA/.emacs.d
 git clone https://github.com/timfel/dotfiles.git $env:APPDATA/dotfiles
