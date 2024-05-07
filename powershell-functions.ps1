@@ -3,6 +3,30 @@ $DevDirectory = "D:"
 
 <# Initial setup
 
+# Resize the C partition to make room for a dev drive
+$disk_path = (Get-Partition -DriveLetter C).DiskPath
+$new_size = (Get-Partition -DriveLetter C).Size - (250*1024*1024*1024)
+Resize-Partition -DriveLetter C -Size $new_size
+New-Partition -DiskPath "$disk_path" -UseMaximumSize -DriveLetter D
+Format-Volume -DriveLetter D -DevDrive
+fsutil devdrv trust D:
+
+echo "[wsl2]
+memory=58GB
+swapFile=0
+swap=0
+dnsTunneling=true
+networkingMode=mirrored
+autoProxy=true
+firewall=false
+useWindowsDnsCache=true
+bestEffortDnsParsing=true
+" > $env:USERPROFILE/.wslconfig
+
+echo "[system-distro-env]
+WESTON_RDPRAIL_SHELL_ALLOW_ZAP=true
+" > $env:USERPROFILE/.wslgconfig
+
 Install-PackageProvider Nuget –Force -Scope CurrentUser
 Install-Module PowerShellGet -Scope CurrentUser -Force -AllowClobber
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Force -Scope CurrentUser
@@ -100,7 +124,12 @@ function Get-InternetProxy {
 }
 
 function sproxy {
-    $proxy = Get-InternetProxy
+    if ($env:http_proxy) {
+        Write-Host "Disabling proxies"
+        $proxy = ""
+    } else {
+        $proxy = Get-InternetProxy
+    }
     $env:http_proxy=$proxy
     $env:https_proxy=$proxy
 }
@@ -121,7 +150,24 @@ function Tim-Get-Graal-Repos {
     git clone https://github.com/oracle/graalpython $DevDirectory/graalpython
 }
 
+function Tim-GraalJdkHome {
+    if ($env:__prev_java_home) {
+        $env:JAVA_HOME = $env:__prev_java_home
+    } else {
+        $env:__prev_java_home = $env:JAVA_HOME
+    }
+    $jdks = "$env:USERPROFILE\\.mx\\jdks"
+    $candidates = Get-ChildItem "$jdks" | % {"$jdks" + $_.Name}
+    if ($candidates) {
+        $env:JAVA_HOME = ($candidates + @($env:JAVA_HOME)) | Out-GridView -PassThru
+    } else {
+        Write-Host "No JDKs in $jdks"
+    }
+}
+
 $Env:MX_CACHE_DIR="$DevDirectory\mx_cache"
 $Env:PIP_CACHE_DIR="$DevDirectory\pip_cache"
+$Env:MAVEN_OPTS="-Dmaven.repo.local=$DevDirectory\maven_cache"
+$Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
 $Env:PATH+=";$DevDirectory\mx"
 $Env:PATH+=";$DevDirectory\apache-maven\bin"
