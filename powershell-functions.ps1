@@ -33,6 +33,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Force -Scope CurrentUser
 Install-Module posh-git
 Install-Module modern-unix-win
 
+winget install Microsoft.Powertoys
 winget install Microsoft.WindowsTerminal.Preview
 winget install Mozilla.Firefox
 winget install SlackTechnologies.Slack
@@ -57,6 +58,9 @@ git clone https://github.com/timfel/my_emacs_for_rails.git $env:APPDATA/.emacs.d
 git clone https://github.com/timfel/dotfiles.git $env:APPDATA/dotfiles
 sudo New-Item -Path $env:USERPROFILE/.gitconfig -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/.gitconfig
 sudo New-Item -Path $profile.CurrentUserCurrentHost -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/powershell-functions.ps1
+
+mkdir $DevDirectory/patch
+cp $env:APPDATA/dotfiles/bin/patch.exe $DevDirectory/patch/patch.exe
 
 #>
 
@@ -157,9 +161,9 @@ function Tim-GraalJdkHome {
         $env:__prev_java_home = $env:JAVA_HOME
     }
     $jdks = "$env:USERPROFILE\\.mx\\jdks"
-    $candidates = Get-ChildItem "$jdks" | % {"$jdks" + $_.Name}
+    $candidates = Get-ChildItem "$jdks" | % {"$jdks\\" + $_.Name}
     if ($candidates) {
-        $env:JAVA_HOME = ($candidates + @($env:JAVA_HOME)) | Out-GridView -PassThru
+        $env:JAVA_HOME = (@($candidates) + @($env:JAVA_HOME)) | Out-GridView -PassThru
     } else {
         Write-Host "No JDKs in $jdks"
     }
@@ -171,3 +175,4 @@ $Env:MAVEN_OPTS="-Dmaven.repo.local=$DevDirectory\maven_cache"
 $Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
 $Env:PATH+=";$DevDirectory\mx"
 $Env:PATH+=";$DevDirectory\apache-maven\bin"
+$Env:PATH+=";$DevDirectory\patch"
