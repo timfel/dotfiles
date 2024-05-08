@@ -320,4 +320,6 @@ free -b | awk '/^Mem:/ { printf " %dK RAM SYSTEM  %d BASIC BYTES FREE\n\nREADY.\
 #     stty sane
 #     echo -en "\e[?25h"
 # }
-. "$HOME/.cargo/env"
+if [ -e "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
