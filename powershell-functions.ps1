@@ -81,6 +81,75 @@ set-alias which Get-Command
 set-alias unzip Expand-Archive
 set-alias zip Compress-Archive
 
+function Search-StartMenu {
+<#
+
+.SYNOPSIS
+
+Search the Start Menu for items that match the provided text. This script
+searches both the name (as displayed on the Start Menu itself,) and the
+destination of the link.
+
+.DESCRIPTION
+
+PS > Search-StartMenu "Character Map" | Invoke-Item
+Searches for the "Character Map" application, and then runs it
+
+PS > Search-StartMenu PowerShell | Select-FilteredObject | Invoke-Item
+Searches for anything with "PowerShell" in the application name, lets you pick which one to launch, and then launches it.
+
+ From PowerShell Cookbook (O'Reilly)
+ by Lee Holmes (http://www.leeholmes.com/blog)
+
+#>
+
+    param(
+        ## The pattern to match
+        [Parameter(Mandatory = $true)]
+        $Pattern
+    )
+
+    Set-StrictMode -Version 3
+
+    ## Get the locations of the start menu paths
+    $myStartMenu = [Environment]::GetFolderPath("StartMenu")
+    $shell = New-Object -Com WScript.Shell
+    $allStartMenu = $shell.SpecialFolders.Item("AllUsersStartMenu")
+
+    ## Escape their search term, so that any regular expression
+    ## characters don't affect the search
+    $escapedMatch = [Regex]::Escape($pattern)
+
+    ## Search in "my start menu" for text in the link name or link destination
+    dir $myStartMenu *.lnk -rec | Where-Object {
+        ($_.Name -match "$escapedMatch") -or
+        ($_ | Select-String "\\[^\\]*$escapedMatch\." -Quiet)
+    }
+
+    ## Search in "all start menu" for text in the link name or link destination
+    dir $allStartMenu *.lnk -rec | Where-Object {
+        ($_.Name -match "$escapedMatch") -or
+        ($_ | Select-String "\\[^\\]*$escapedMatch\." -Quiet)
+    }
+}
+
+function emacsclient {
+    $emacs = Search-StartMenu runemacs
+    if ($emacs) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($emacs[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $emacsc = Get-ChildItem $target.Directory "emacsclient.exe"
+                if ($emacsc.Exists) {
+                    & $emacsc.FullName -n -c $args
+                }
+            }
+        }
+    }
+}
+
 function time {
     hyperfine -r 1 $args
 }
