@@ -246,6 +246,7 @@ function graalenv_setup {
     if [ ! -d "$HOME/.graalenv" ]; then
 	git clone https://github.com/timfel/graalenv $HOME/.graalenv
         pushd $HOME/.graalenv
+        mkdir products
         git remote set-url origin git@github.com:timfel/graalenv.git
         popd
     fi
@@ -503,15 +504,6 @@ function sproxy {
 function wsl_setup {
     if ( which wsl.exe 2>&1 > /dev/null ); then
         export WSL=true
-        prof=`wslvar --sys USERPROFILE`
-        prof=`wslpath "$prof"/.wslconfig`
-        if [ ! -e "$prof" ]; then
-            echo "[wsl2]
-# memory=2GB
-# processors=4
-" > "$prof"
-            vi "$prof"
-        fi
     fi
 }
 
@@ -557,4 +549,6 @@ else
 fi
 unset __mamba_setup
 # <<< mamba initialize <<<
-. "$HOME/.cargo/env"
+if [ -e "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
