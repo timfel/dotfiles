@@ -178,9 +178,8 @@ function rbenv_setup {
     if [ -d "$HOME/.rbenv/bin" ]; then
         export PATH="$HOME"/.rbenv/bin:"$HOME"/.rbenv/shims:"$HOME"/.ruby-build/bin:$PATH
         source ~/.rbenv/completions/rbenv.bash
-        export RBENV_VERSION=2.6.3
 
-        function use {
+        function rbenv-use {
 	    if [ $# -eq 0 ]; then
 		echo $RBENV_VERSION
 	    else
@@ -194,7 +193,7 @@ function rbenv_setup {
             COMPREPLY=( $(compgen -W "$(ls ~/.rbenv/versions/)" -- "$word") )
         }
 
-        complete -F __use-ruby-completion use
+        complete -F __use-ruby-completion rbenv-use
     fi
 }
 
