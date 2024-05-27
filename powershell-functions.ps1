@@ -150,6 +150,25 @@ function emacsclient {
     }
 }
 
+function 7z {
+    $lnk = Search-StartMenu 7zFM
+    if ($lnk) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($lnk[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $exe = Get-ChildItem $target.Directory "7z.exe"
+                if ($exe.Exists) {
+                    & $exe.FullName $args
+                    return
+                }
+            }
+        }
+    }
+    & 7z.exe $args
+}
+
 function time {
     hyperfine -r 1 $args
 }
