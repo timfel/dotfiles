@@ -33,6 +33,7 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Force -Scope CurrentUser
 Install-Module posh-git
 Install-Module modern-unix-win
 
+winget install Microsoft.Powertoys
 winget install Microsoft.WindowsTerminal.Preview
 winget install Mozilla.Firefox
 winget install SlackTechnologies.Slack
@@ -58,6 +59,9 @@ git clone https://github.com/timfel/dotfiles.git $env:APPDATA/dotfiles
 sudo New-Item -Path $env:USERPROFILE/.gitconfig -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/.gitconfig
 sudo New-Item -Path $profile.CurrentUserCurrentHost -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/powershell-functions.ps1
 
+mkdir $DevDirectory/patch
+cp $env:APPDATA/dotfiles/bin/patch.exe $DevDirectory/patch/patch.exe
+
 #>
 
 Import-Module posh-git
@@ -76,6 +80,94 @@ set-alias curl curlie -Option AllScope
 set-alias which Get-Command
 set-alias unzip Expand-Archive
 set-alias zip Compress-Archive
+
+function Search-StartMenu {
+<#
+
+.SYNOPSIS
+
+Search the Start Menu for items that match the provided text. This script
+searches both the name (as displayed on the Start Menu itself,) and the
+destination of the link.
+
+.DESCRIPTION
+
+PS > Search-StartMenu "Character Map" | Invoke-Item
+Searches for the "Character Map" application, and then runs it
+
+PS > Search-StartMenu PowerShell | Select-FilteredObject | Invoke-Item
+Searches for anything with "PowerShell" in the application name, lets you pick which one to launch, and then launches it.
+
+ From PowerShell Cookbook (O'Reilly)
+ by Lee Holmes (http://www.leeholmes.com/blog)
+
+#>
+
+    param(
+        ## The pattern to match
+        [Parameter(Mandatory = $true)]
+        $Pattern
+    )
+
+    Set-StrictMode -Version 3
+
+    ## Get the locations of the start menu paths
+    $myStartMenu = [Environment]::GetFolderPath("StartMenu")
+    $shell = New-Object -Com WScript.Shell
+    $allStartMenu = $shell.SpecialFolders.Item("AllUsersStartMenu")
+
+    ## Escape their search term, so that any regular expression
+    ## characters don't affect the search
+    $escapedMatch = [Regex]::Escape($pattern)
+
+    ## Search in "my start menu" for text in the link name or link destination
+    dir $myStartMenu *.lnk -rec | Where-Object {
+        ($_.Name -match "$escapedMatch") -or
+        ($_ | Select-String "\\[^\\]*$escapedMatch\." -Quiet)
+    }
+
+    ## Search in "all start menu" for text in the link name or link destination
+    dir $allStartMenu *.lnk -rec | Where-Object {
+        ($_.Name -match "$escapedMatch") -or
+        ($_ | Select-String "\\[^\\]*$escapedMatch\." -Quiet)
+    }
+}
+
+function emacsclient {
+    $emacs = Search-StartMenu runemacs
+    if ($emacs) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($emacs[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $emacsc = Get-ChildItem $target.Directory "emacsclient.exe"
+                if ($emacsc.Exists) {
+                    & $emacsc.FullName -n -c $args
+                }
+            }
+        }
+    }
+}
+
+function 7z {
+    $lnk = Search-StartMenu 7zFM
+    if ($lnk) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($lnk[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $exe = Get-ChildItem $target.Directory "7z.exe"
+                if ($exe.Exists) {
+                    & $exe.FullName $args
+                    return
+                }
+            }
+        }
+    }
+    & 7z.exe $args
+}
 
 function time {
     hyperfine -r 1 $args
@@ -157,9 +249,9 @@ function Tim-GraalJdkHome {
         $env:__prev_java_home = $env:JAVA_HOME
     }
     $jdks = "$env:USERPROFILE\\.mx\\jdks"
-    $candidates = Get-ChildItem "$jdks" | % {"$jdks" + $_.Name}
+    $candidates = Get-ChildItem "$jdks" | % {"$jdks\\" + $_.Name}
     if ($candidates) {
-        $env:JAVA_HOME = ($candidates + @($env:JAVA_HOME)) | Out-GridView -PassThru
+        $env:JAVA_HOME = (@($candidates) + @($env:JAVA_HOME)) | Out-GridView -PassThru
     } else {
         Write-Host "No JDKs in $jdks"
     }
@@ -171,3 +263,4 @@ $Env:MAVEN_OPTS="-Dmaven.repo.local=$DevDirectory\maven_cache"
 $Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
 $Env:PATH+=";$DevDirectory\mx"
 $Env:PATH+=";$DevDirectory\apache-maven\bin"
+$Env:PATH+=";$DevDirectory\patch"
