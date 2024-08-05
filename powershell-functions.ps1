@@ -173,6 +173,27 @@ function time {
     hyperfine -r 1 $args
 }
 
+function pkill {
+    [CmdletBinding()]
+    param (
+        [switch]$9
+    )
+    if ($9) {
+        pgrep | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+    } else {
+        pgrep | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+    }
+}
+
+function pgrep {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory, Position=0)]
+        [string]$Pattern
+    )
+    Get-CimInstance Win32_Process | Select-Object ProcessId,Name,CommandLine | Where-Object { $_.CommandLine -match "$Pattern" }
+}
+
 function ln {
     [CmdletBinding()]
     param (
@@ -252,7 +273,7 @@ function sproxy {
     if ($env:http_proxy) {
         $http_proxy.active = "true"
         $http_proxy.host = $env:http_proxy -replace "^https?://","" -replace ":\d+$",""
-        $http_proxy.protocol = $env:http_proxy -replace "://.*$",""
+        $http_proxy.protocol = "http"
         $http_proxy.port = $env:http_proxy -replace "^.*:",""
     } else {
         $http_proxy.active = "false"
@@ -272,7 +293,7 @@ function sproxy {
     if ($env:https_proxy) {
         $https_proxy.active = "true"
         $https_proxy.host = $env:https_proxy -replace "^https?://","" -replace ":\d+$",""
-        $https_proxy.protocol = $env:https_proxy -replace "://.*$",""
+        $https_proxy.protocol = "https"
         $https_proxy.port = $env:https_proxy -replace "^.*:",""
     } else {
         $https_proxy.active = "false"
@@ -318,3 +339,4 @@ $Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
 $Env:PATH+=";$DevDirectory\mx"
 $Env:PATH+=";$DevDirectory\apache-maven\bin"
 $Env:PATH+=";$DevDirectory\patch"
+$Env:PATH = "$env:USERPROFILE\.pyenv\pyenv-win\shims;" + $Env:PATH
