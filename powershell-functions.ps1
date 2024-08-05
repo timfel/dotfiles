@@ -176,12 +176,14 @@ function time {
 function pkill {
     [CmdletBinding()]
     param (
-        [switch]$9
+        [switch]$9,
+        [Parameter(Mandatory, Position=0)]
+        [string]$Pattern
     )
     if ($9) {
-        pgrep | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+        pgrep "$Pattern" | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
     } else {
-        pgrep | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+        pgrep "$Pattern" | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
     }
 }
 
