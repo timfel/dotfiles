@@ -178,9 +178,8 @@ function rbenv_setup {
     if [ -d "$HOME/.rbenv/bin" ]; then
         export PATH="$HOME"/.rbenv/bin:"$HOME"/.rbenv/shims:"$HOME"/.ruby-build/bin:$PATH
         source ~/.rbenv/completions/rbenv.bash
-        export RBENV_VERSION=2.6.3
 
-        function use {
+        function rbenv-use {
 	    if [ $# -eq 0 ]; then
 		echo $RBENV_VERSION
 	    else
@@ -194,7 +193,7 @@ function rbenv_setup {
             COMPREPLY=( $(compgen -W "$(ls ~/.rbenv/versions/)" -- "$word") )
         }
 
-        complete -F __use-ruby-completion use
+        complete -F __use-ruby-completion rbenv-use
     fi
 }
 
@@ -484,20 +483,14 @@ function sproxy {
         echo "Unsetting proxy"
         unset http_proxy
         unset https_proxy
-        for ptmux in `pgrep tmux`; do
-            for pid in `ps --ppid ${ptmux} | grep bash | cut -f1 -d' '`; do
-                sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)unsetenv(\"http_proxy\")" -ex "call (int)unsetenv(\"https_proxy\")" -ex 'detach'
-            done
-        done
+        unset HTTP_PROXY
+        unset HTTPS_PROXY
     else
         echo "Setting http_proxy=${proxy} and https_proxy=${proxy4https}"
         export http_proxy=${proxy}
         export https_proxy=${proxy4https}
-        for ptmux in `pgrep tmux`; do
-            for pid in `ps --ppid ${ptmux} | grep bash | cut -f1 -d' '`; do
-                sudo gdb -q -batch -ex "attach ${pid}" -ex "call (int)setenv(\"http_proxy\", \"${proxy}\", 1)" -ex "call (int)setenv(\"https_proxy\", \"${proxy}\", 1)" -ex 'detach'
-            done
-        done
+        export HTTP_PROXY=${proxy}
+        export HTTPS_PROXY=${proxy4https}
     fi
 }
 
@@ -552,3 +545,7 @@ unset __mamba_setup
 if [ -e "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
