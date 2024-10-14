@@ -173,6 +173,29 @@ function time {
     hyperfine -r 1 $args
 }
 
+function pkill {
+    [CmdletBinding()]
+    param (
+        [switch]$9,
+        [Parameter(Mandatory, Position=0)]
+        [string]$Pattern
+    )
+    if ($9) {
+        pgrep "$Pattern" | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+    } else {
+        pgrep "$Pattern" | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+    }
+}
+
+function pgrep {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory, Position=0)]
+        [string]$Pattern
+    )
+    Get-CimInstance Win32_Process | Select-Object ProcessId,Name,CommandLine | Where-Object { $_.CommandLine -match "$Pattern" }
+}
+
 function ln {
     [CmdletBinding()]
     param (
@@ -224,6 +247,60 @@ function sproxy {
     }
     $env:http_proxy=$proxy
     $env:https_proxy=$proxy
+
+    $mvnsettings = "$env:USERPROFILE\.m2\settings.xml"
+    $xml = [xml]::new()
+    if (Test-Path "$mvnsettings") {
+        $xml.Load($mvnsettings)
+    }
+    if ($xml.GetElementsByTagName("settings").Count -eq 0) {
+        $xml.AppendChild($xml.CreateElement("settings"))
+    }
+    if ($xml.GetElementsByTagName("proxies").Count -eq 0) {
+        ($xml.ChildNodes | Where {$_.Name -eq "settings"}).AppendChild($xml.CreateElement("proxies"))
+    }
+    $proxies = $xml.GetElementsByTagName("proxy")
+
+    $http_proxy = $proxies | Where {$_.protocol -eq "http"}
+    if (-Not ($http_proxy)) {
+        $http_proxy = $xml.CreateElement("proxy")
+        ($xml.settings.ChildNodes | Where {$_.Name -eq "proxies"}).AppendChild($http_proxy)
+        $http_proxy.AppendChild($xml.CreateElement("id"))
+        $http_proxy.id = "http-proxy"
+        $http_proxy.AppendChild($xml.CreateElement("active"))
+        $http_proxy.AppendChild($xml.CreateElement("host"))
+        $http_proxy.AppendChild($xml.CreateElement("protocol"))
+        $http_proxy.AppendChild($xml.CreateElement("port"))
+    }
+    if ($env:http_proxy) {
+        $http_proxy.active = "true"
+        $http_proxy.host = $env:http_proxy -replace "^https?://","" -replace ":\d+$",""
+        $http_proxy.protocol = "http"
+        $http_proxy.port = $env:http_proxy -replace "^.*:",""
+    } else {
+        $http_proxy.active = "false"
+    }
+
+    $https_proxy = $proxies | Where {$_.protocol -eq "https"}
+    if (-Not ($https_proxy)) {
+        $https_proxy = $xml.CreateElement("proxy")
+        ($xml.settings.ChildNodes | Where {$_.Name -eq "proxies"}).AppendChild($https_proxy)
+        $https_proxy.AppendChild($xml.CreateElement("id"))
+        $https_proxy.id = "https-proxy"
+        $https_proxy.AppendChild($xml.CreateElement("active"))
+        $https_proxy.AppendChild($xml.CreateElement("host"))
+        $https_proxy.AppendChild($xml.CreateElement("protocol"))
+        $https_proxy.AppendChild($xml.CreateElement("port"))
+    }
+    if ($env:https_proxy) {
+        $https_proxy.active = "true"
+        $https_proxy.host = $env:https_proxy -replace "^https?://","" -replace ":\d+$",""
+        $https_proxy.protocol = "https"
+        $https_proxy.port = $env:https_proxy -replace "^.*:",""
+    } else {
+        $https_proxy.active = "false"
+    }
+    $xml.Save("$mvnsettings")
 }
 
 function Tim-Install-Maven {
@@ -264,3 +341,4 @@ $Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
 $Env:PATH+=";$DevDirectory\mx"
 $Env:PATH+=";$DevDirectory\apache-maven\bin"
 $Env:PATH+=";$DevDirectory\patch"
+$Env:PATH = "$env:USERPROFILE\.pyenv\pyenv-win\shims;" + $Env:PATH
