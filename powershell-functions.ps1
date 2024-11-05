@@ -50,6 +50,7 @@ winget install GNU.Emacs
 winget install gsudo
 winget install Clement.bottom
 winget install keepass
+winget install GunWin32.Zip
 
 wsl --update
 wsl --install Ubuntu-24.04
@@ -160,6 +161,7 @@ function 7z {
             if ($target.Exists) {
                 $exe = Get-ChildItem $target.Directory "7z.exe"
                 if ($exe.Exists) {
+                    Write-Host "Running " $exe.FullName
                     & $exe.FullName $args
                     return
                 }
@@ -214,7 +216,7 @@ function ln {
 }
 
 function htop {
-    btm -b --battery --mem_as_value -n
+    btm -b --battery --process_memory_as_value -n
 }
 
 function Get-InternetProxy {
@@ -303,15 +305,29 @@ function sproxy {
     $xml.Save("$mvnsettings")
 }
 
-function Tim-Install-Maven {
-    $mvn_version = "3.9.6"
+function Tim-InstallSdkMan {
+    $git = (Get-Item (Get-Command "git").Source).Directory.Parent
+    $bin = Get-ChildItem $git.FullName "bin"
+    $bash = Get-ChildItem $bin.FullName "bash.exe"
 
-    wget https://dlcdn.apache.org/maven/maven-3/$mvn_version/binaries/apache-maven-$mvn_version-bin.zip -OutFile $env:USERPROFILE/apache-maven-$mvn_version-bin.zip
-    Expand-Archive $env:USERPROFILE/apache-maven-$mvn_version-bin.zip -DestinationPath $env:USERPROFILE/apache-maven-$mvn_version-bin
-    rm $env:USERPROFILE/apache-maven-$mvn_version-bin.zip
-    mv $env:USERPROFILE/apache-maven-$mvn_version-bin $DevDirectory/apache-maven
-    mv $DevDirectory/apache-maven/apache-maven-$mvn_version/* $DevDirectory/apache-maven/
-    rmdir $DevDirectory/apache-maven/apache-maven-$mvn_version
+    $zip = fd -p "GnuWin32.bin.zip.exe" $env:ProgramFiles
+    if (-Not ($zip)) {
+        $zip = fd -p "GnuWin32.bin.zip.exe" ${env:ProgramFiles(x86)}
+    }
+    mkdir -p "$DevDirectory\bin"
+    cp $zip "$DevDirectory\bin\zip.exe"
+    (Invoke-WebRequest -Uri "https://get.sdkman.io").Content | & $bash.FullName
+}
+
+function sdk {
+    $git = (Get-Item (Get-Command "git").Source).Directory.Parent
+    $bin = Get-ChildItem $git.FullName "bin"
+    $bash = Get-ChildItem $bin.FullName "bash.exe"
+    if ($args) {
+        echo "source $env:SDKMAN_DIR/bin/sdkman-init.sh; sdk $args" | & $bash.FullName
+    } else {
+        & $bash.FullName --init-file "$env:SDKMAN_DIR/bin/sdkman-init.sh"
+    }
 }
 
 function Tim-Get-Graal-Repos {
@@ -335,10 +351,16 @@ function Tim-GraalJdkHome {
 }
 
 $Env:MX_CACHE_DIR="$DevDirectory\mx_cache"
+$Env:MX_ASYNC_DISTRIBUTIONS="true"
+$Env:MX_BUILD_EXPLODED="false"
+$Env:JDT="builtin"
+$Env:SDKMAN_DIR="$DevDirectory/.sdkman"
 $Env:PIP_CACHE_DIR="$DevDirectory\pip_cache"
 $Env:MAVEN_OPTS="-Dmaven.repo.local=$DevDirectory\maven_cache"
 $Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
+$Env:PATH+=";$Env:SDKMAN_DIR\candidates\gradle\current\bin"
+$Env:PATH+=";$Env:SDKMAN_DIR\candidates\maven\current\bin"
+$Env:PATH+=";$DevDirectory\bin"
 $Env:PATH+=";$DevDirectory\mx"
-$Env:PATH+=";$DevDirectory\apache-maven\bin"
 $Env:PATH+=";$DevDirectory\patch"
 $Env:PATH = "$env:USERPROFILE\.pyenv\pyenv-win\shims;" + $Env:PATH
