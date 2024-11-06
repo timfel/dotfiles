@@ -265,6 +265,11 @@ function graalenv_setup {
     fi
 }
 
+function mx_fetch_latest_jdk {
+    mx -p ../graal/vm fetch-jdk -A --jdk-id labsjdk-ee-latest
+    export JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-latest/"
+}
+
 function system_tweaks {
    if [ -n "$LINUX" ]; then
       function session_reload {
@@ -485,12 +490,16 @@ function sproxy {
         unset https_proxy
         unset HTTP_PROXY
         unset HTTPS_PROXY
+        unset no_proxy
+        unset NO_PROXY
     else
         echo "Setting http_proxy=${proxy} and https_proxy=${proxy4https}"
         export http_proxy=${proxy}
         export https_proxy=${proxy4https}
         export HTTP_PROXY=${proxy}
         export HTTPS_PROXY=${proxy4https}
+        export no_proxy=localhost
+        export NO_PROXY=localhost
     fi
 }
 
