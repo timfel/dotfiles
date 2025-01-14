@@ -323,3 +323,6 @@ free -b | awk '/^Mem:/ { printf " %dK RAM SYSTEM  %d BASIC BYTES FREE\n\nREADY.\
 if [ -e "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
+
+# Added by `rbenv init` on Mon Oct 21 21:20:27 CEST 2024
+eval "$(rbenv init - bash)"
