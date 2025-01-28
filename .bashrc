@@ -258,15 +258,10 @@ function graalenv_setup {
     export MX_OUTPUT_ROOT_INCLUDES_CONFIG=true
     # export MX_BUILD_EXPLODED=true
     # export LINKY_LAYOUT="*.jar"
-
-    if [ -d "${HOME}/.mvn/apache-maven-3.8.4/" ]; then
-        export PATH="${HOME}/.mvn/apache-maven-3.8.4/bin/:${PATH}"
-        export M2_HOME="${HOME}/.mvn/apache-maven-3.8.4/"
-    fi
 }
 
 function mx_fetch_latest_jdk {
-    mx -p ../graal/vm fetch-jdk -A --jdk-id labsjdk-ee-latest
+    mx -p ../graal/vm fetch-jdk -A --jdk-id labsjdk-ce-latest
     export JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-latest/"
 }
 
@@ -484,6 +479,14 @@ function sproxy {
         fi
     fi
 
+    httpurl=${proxy#*://}
+    httpport=${httpurl##*:}
+    httpurl=${httpurl%%:*}
+
+    httpsurl=${proxy4https#*://}
+    httpsport=${httpsurl##*:}
+    httpsurl=${httpsurl%%:*}
+
     if [ -z "$proxy" ]; then
         echo "Unsetting proxy"
         unset http_proxy
@@ -492,14 +495,26 @@ function sproxy {
         unset HTTPS_PROXY
         unset no_proxy
         unset NO_PROXY
+        MAVEN_OPTS="$__prev_sproxy_MAVEN_OPTS"
+        GRADLE_OPTS="$__prev_sproxy_GRADLE_OPTS"
+        unset MX_URLREWRITES
     else
         echo "Setting http_proxy=${proxy} and https_proxy=${proxy4https}"
+        export __prev_sproxy_MAVEN_OPTS="$MAVEN_OPTS"
+        export MAVEN_OPTS="${MAVEN_OPTS} -Dhttp.proxyHost=${httpurl} -Dhttp.proxyPort=${httpport} -Dhttps.proxyHost=${httpsurl} -Dhttps.proxyPort=${httpsport}"
+        export GRADLE_OPTS="${GRADLE_OPTS} -Dhttp.proxyHost=${httpurl} -Dhttp.proxyPort=${httpport} -Dhttps.proxyHost=${httpsurl} -Dhttps.proxyPort=${httpsport}"
         export http_proxy=${proxy}
         export https_proxy=${proxy4https}
         export HTTP_PROXY=${proxy}
         export HTTPS_PROXY=${proxy4https}
-        export no_proxy=localhost
-        export NO_PROXY=localhost
+        export no_proxy="localhost,127.0.0.1,*.oraclecorp.com,oraclecorp.com,*.oraclecloud.com,oraclecloud.com,*.oracle.com,oracle.com"
+        export NO_PROXY="$no_proxy"
+        # Update ~/.urlrewrites if older than 2 days
+        if test -z `find ~/.urlrewrites -mtime -2 -print`; then
+            curl --silent --connect-timeout 2 --output ~/.urlrewrites https://graalvm.oraclecorp.com/urlrewrites
+            touch ~/.urlrewrites
+        fi
+        export MX_URLREWRITES=`cat $HOME/.urlrewrites`
     fi
 }
 

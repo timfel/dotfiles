@@ -72,3 +72,5 @@ XTerm*locale:                  true
 XTerm*utf8:                    true
 XTerm*selectToClipboard:       true
 Xterm*disallowedWindowOps:     20,21,SetXprop
+
+emacs*menubar*font:-xos4-terminus-medium-r-normal--22-220-72-72-c-110-iso10646-1
