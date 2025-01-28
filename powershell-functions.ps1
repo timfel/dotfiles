@@ -243,66 +243,30 @@ function Get-InternetProxy {
 function sproxy {
     if ($env:http_proxy) {
         Write-Host "Disabling proxies"
-        $proxy = ""
+        $env:http_proxy=""
+        $env:https_proxy=""
+        $env:no_proxy=""
+        $env:MAVEN_OPTS=$env:__prevMAVEN_OPTS
+        $env:GRADLE_OPTS=$env:__prevGRADLE_OPTS
     } else {
-        $proxy = Get-InternetProxy
-    }
-    $env:http_proxy=$proxy
-    $env:https_proxy=$proxy
+        try {
+            $proxy = Get-InternetProxy
+        } catch {
+            return
+        }
+        $proxyHost = $env:http_proxy -replace "^https?://","" -replace ":\d+$",""
+        $proxyPort = $env:http_proxy -replace "^.*:",""
+        $nonProxyHosts = $env:no_proxy -replace ",","^|"
+        $javaProxies = "-Dhttp.proxyHost=${proxyHost} -Dhttp.proxyPort=${proxyPort} -Dhttps.proxyHost=${proxyHost} -Dhttps.proxyPort=${proxyPort} -Dhttp.nonProxyHosts=${nonProxyHosts} -Dhttps.nonProxyHosts=${nonProxyHosts}"
 
-    $mvnsettings = "$env:USERPROFILE\.m2\settings.xml"
-    $xml = [xml]::new()
-    if (Test-Path "$mvnsettings") {
-        $xml.Load($mvnsettings)
+        $env:http_proxy=$proxy
+        $env:https_proxy=$proxy
+        $env:no_proxy="localhost|127.0.0.1|*.oraclecorp.com|oraclecorp.com|*.oraclecloud.com|oraclecloud.com|*.oracle.com|oracle.com"
+        $env:__prevMAVEN_OPTS=$env:MAVEN_OPTS
+        $env:MAVEN_OPTS="${env:MAVEN_OPTS} ${javaProxies}"
+        $env:__prevGRADLE_OPTS=$env:GRADLE_OPTS
+        $env:GRADLE_OPTS="${env:GRADLE_OPTS} ${javaProxies}"
     }
-    if ($xml.GetElementsByTagName("settings").Count -eq 0) {
-        $xml.AppendChild($xml.CreateElement("settings"))
-    }
-    if ($xml.GetElementsByTagName("proxies").Count -eq 0) {
-        ($xml.ChildNodes | Where {$_.Name -eq "settings"}).AppendChild($xml.CreateElement("proxies"))
-    }
-    $proxies = $xml.GetElementsByTagName("proxy")
-
-    $http_proxy = $proxies | Where {$_.protocol -eq "http"}
-    if (-Not ($http_proxy)) {
-        $http_proxy = $xml.CreateElement("proxy")
-        ($xml.settings.ChildNodes | Where {$_.Name -eq "proxies"}).AppendChild($http_proxy)
-        $http_proxy.AppendChild($xml.CreateElement("id"))
-        $http_proxy.id = "http-proxy"
-        $http_proxy.AppendChild($xml.CreateElement("active"))
-        $http_proxy.AppendChild($xml.CreateElement("host"))
-        $http_proxy.AppendChild($xml.CreateElement("protocol"))
-        $http_proxy.AppendChild($xml.CreateElement("port"))
-    }
-    if ($env:http_proxy) {
-        $http_proxy.active = "true"
-        $http_proxy.host = $env:http_proxy -replace "^https?://","" -replace ":\d+$",""
-        $http_proxy.protocol = "http"
-        $http_proxy.port = $env:http_proxy -replace "^.*:",""
-    } else {
-        $http_proxy.active = "false"
-    }
-
-    $https_proxy = $proxies | Where {$_.protocol -eq "https"}
-    if (-Not ($https_proxy)) {
-        $https_proxy = $xml.CreateElement("proxy")
-        ($xml.settings.ChildNodes | Where {$_.Name -eq "proxies"}).AppendChild($https_proxy)
-        $https_proxy.AppendChild($xml.CreateElement("id"))
-        $https_proxy.id = "https-proxy"
-        $https_proxy.AppendChild($xml.CreateElement("active"))
-        $https_proxy.AppendChild($xml.CreateElement("host"))
-        $https_proxy.AppendChild($xml.CreateElement("protocol"))
-        $https_proxy.AppendChild($xml.CreateElement("port"))
-    }
-    if ($env:https_proxy) {
-        $https_proxy.active = "true"
-        $https_proxy.host = $env:https_proxy -replace "^https?://","" -replace ":\d+$",""
-        $https_proxy.protocol = "https"
-        $https_proxy.port = $env:https_proxy -replace "^.*:",""
-    } else {
-        $https_proxy.active = "false"
-    }
-    $xml.Save("$mvnsettings")
 }
 
 function Tim-InstallSdkMan {
@@ -350,6 +314,21 @@ function Tim-GraalJdkHome {
     }
 }
 
+function Tim-SdkManJavaHome {
+    if ($env:__prev_java_home) {
+        $env:JAVA_HOME = $env:__prev_java_home
+    } else {
+        $env:__prev_java_home = $env:JAVA_HOME
+    }
+    $jdks = "$env:SDKMAN_DIR\\candidates\\java"
+    $candidates = Get-ChildItem "$jdks" | % {"$jdks\\" + $_.Name}
+    if ($candidates) {
+        $env:JAVA_HOME = (@($candidates) + @($env:JAVA_HOME)) | Out-GridView -PassThru
+    } else {
+        Write-Host "No JDKs in $jdks"
+    }
+}
+
 $Env:MX_CACHE_DIR="$DevDirectory\mx_cache"
 $Env:MX_ASYNC_DISTRIBUTIONS="true"
 $Env:MX_BUILD_EXPLODED="false"
@@ -358,9 +337,22 @@ $Env:SDKMAN_DIR="$DevDirectory/.sdkman"
 $Env:PIP_CACHE_DIR="$DevDirectory\pip_cache"
 $Env:MAVEN_OPTS="-Dmaven.repo.local=$DevDirectory\maven_cache"
 $Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
-$Env:PATH+=";$Env:SDKMAN_DIR\candidates\gradle\current\bin"
-$Env:PATH+=";$Env:SDKMAN_DIR\candidates\maven\current\bin"
-$Env:PATH+=";$DevDirectory\bin"
-$Env:PATH+=";$DevDirectory\mx"
-$Env:PATH+=";$DevDirectory\patch"
-$Env:PATH = "$env:USERPROFILE\.pyenv\pyenv-win\shims;" + $Env:PATH
+
+$MyPath="$DevDirectory\bin"
+$MyPath+=";$DevDirectory\mx"
+$MyPath+=";$DevDirectory\patch"
+$MyPath+=";$env:USERPROFILE\.pyenv\pyenv-win\shims"
+foreach ($sdkmanPath in Get-ChildItem "$Env:SDKMAN_DIR\candidates") {
+    $MyPath+=";${env:SDKMAN_DIR}\candidates\${sdkmanPath}\current\bin"
+}
+
+# Because e.g. the Visual Studio commandline modifies my PATH again, I set it here
+$previousPrompt = $function:Prompt
+function Prompt {
+    if ($MyPath) {
+        $Env:PATH = $MyPath + ";" + $Env:PATH
+        $global:MyPath = ""
+        $function:Prompt = $previousPrompt
+    }
+    & $previousPrompt
+}
