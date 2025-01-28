@@ -258,13 +258,6 @@ function graalenv_setup {
     export MX_OUTPUT_ROOT_INCLUDES_CONFIG=true
     # export MX_BUILD_EXPLODED=true
     # export LINKY_LAYOUT="*.jar"
-
-    # Update ~/.urlrewrites if older than 2 days
-    if test -z `find ~/.urlrewrites -mtime -2 -print`; then
-        curl --silent --connect-timeout 2 --output ~/.urlrewrites https://graalvm.oraclecorp.com/urlrewrites
-        touch ~/.urlrewrites
-    fi
-    export MX_URLREWRITES=`cat $HOME/.urlrewrites`
 }
 
 function mx_fetch_latest_jdk {
@@ -504,6 +497,7 @@ function sproxy {
         unset NO_PROXY
         MAVEN_OPTS="$__prev_sproxy_MAVEN_OPTS"
         GRADLE_OPTS="$__prev_sproxy_GRADLE_OPTS"
+        unset MX_URLREWRITES
     else
         echo "Setting http_proxy=${proxy} and https_proxy=${proxy4https}"
         export __prev_sproxy_MAVEN_OPTS="$MAVEN_OPTS"
@@ -513,8 +507,14 @@ function sproxy {
         export https_proxy=${proxy4https}
         export HTTP_PROXY=${proxy}
         export HTTPS_PROXY=${proxy4https}
-        export no_proxy="localhost,oracle.com,oraclecorp.com"
+        export no_proxy="localhost,127.0.0.1,*.oraclecorp.com,oraclecorp.com,*.oraclecloud.com,oraclecloud.com,*.oracle.com,oracle.com"
         export NO_PROXY="$no_proxy"
+        # Update ~/.urlrewrites if older than 2 days
+        if test -z `find ~/.urlrewrites -mtime -2 -print`; then
+            curl --silent --connect-timeout 2 --output ~/.urlrewrites https://graalvm.oraclecorp.com/urlrewrites
+            touch ~/.urlrewrites
+        fi
+        export MX_URLREWRITES=`cat $HOME/.urlrewrites`
     fi
 }
 
