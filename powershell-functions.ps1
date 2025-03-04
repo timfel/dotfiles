@@ -288,7 +288,13 @@ function sdk {
     $bin = Get-ChildItem $git.FullName "bin"
     $bash = Get-ChildItem $bin.FullName "bash.exe"
     if ($args) {
-        echo "source $env:SDKMAN_DIR/bin/sdkman-init.sh; sdk $args" | & $bash.FullName
+        $TempFile = New-TemporaryFile
+        try {
+            Write-Output ". $env:SDKMAN_DIR/bin/sdkman-init.sh; sdk $args" | Set-Content -Encoding ascii $TempFile.FullName
+            & $bash.FullName --noprofile $TempFile.FullName
+        } finally {
+            Remove-Item -Force $TempFile
+        }
     } else {
         & $bash.FullName --init-file "$env:SDKMAN_DIR/bin/sdkman-init.sh"
     }
