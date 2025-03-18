@@ -335,6 +335,10 @@ function Tim-SdkManJavaHome {
     }
 }
 
+function podman-DOCKER_HOST {
+    $env:DOCKER_HOST="npipe://" + (podman machine inspect --format '{{.ConnectionInfo.PodmanPipe.Path}}') -replace "\\", "/"
+}
+
 $Env:MX_CACHE_DIR="$DevDirectory\mx_cache"
 $Env:MX_ASYNC_DISTRIBUTIONS="true"
 $Env:MX_BUILD_EXPLODED="false"
