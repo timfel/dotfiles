@@ -40,11 +40,8 @@ winget install SlackTechnologies.Slack
 winget install Discord.Discord
 winget install Zoom.Zoom
 winget install Git.Git
-winget install Python.Python.3.12
 winget install Microsoft.VisualStudio.2022.BuildTools
 winget install Microsoft.VisualStudioCode
-winget install Oracle.JDK.21
-winget install JetBrains.IntelliJIDEA.Community
 winget install Kitware.CMake
 winget install GNU.Emacs
 winget install gsudo
@@ -59,6 +56,9 @@ git clone https://github.com/timfel/my_emacs_for_rails.git $env:APPDATA/.emacs.d
 git clone https://github.com/timfel/dotfiles.git $env:APPDATA/dotfiles
 sudo New-Item -Path $env:USERPROFILE/.gitconfig -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/.gitconfig
 sudo New-Item -Path $profile.CurrentUserCurrentHost -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/powershell-functions.ps1
+
+Tim-InstallPyenv
+Tim-InstallSdkMan
 
 mkdir $DevDirectory/patch
 cp $env:APPDATA/dotfiles/bin/patch.exe $DevDirectory/patch/patch.exe
@@ -269,6 +269,16 @@ function sproxy {
     }
 }
 
+function Tim-InstallPyenv {
+    $__userprofile=$env:USERPROFILE
+    $env:USERPROFILE=$DevDirectory
+    try {
+        Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+    } finally {
+        $env:USERPROFILE=$__userprofile
+    }
+}
+
 function Tim-InstallSdkMan {
     $git = (Get-Item (Get-Command "git").Source).Directory.Parent
     $bin = Get-ChildItem $git.FullName "bin"
@@ -351,7 +361,7 @@ $Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
 $MyPath="$DevDirectory\bin"
 $MyPath+=";$DevDirectory\mx"
 $MyPath+=";$DevDirectory\patch"
-$MyPath+=";$env:USERPROFILE\.pyenv\pyenv-win\shims"
+$MyPath+=";$DevDirectory\.pyenv\pyenv-win\shims"
 foreach ($sdkmanPath in Get-ChildItem "$Env:SDKMAN_DIR\candidates") {
     $MyPath+=";${env:SDKMAN_DIR}\candidates\${sdkmanPath}\current\bin"
 }
