@@ -28,7 +28,7 @@ def get_ps():
 
 if __name__ == "__main__":
     if sys.platform == "win32":
-        output = sys.argv[1].replace("\\", "/")
+        output = os.path.abspath(sys.argv[1].replace("\\", "/"))
         with open(output + ".ps1", "w") as f:
             f.write(f"""
             Add-Type -AssemblyName System.Windows.Forms
@@ -42,8 +42,8 @@ if __name__ == "__main__":
         output = subprocess.check_output(["wslpath", "-m", sys.argv[1]]).decode().strip()
         cmd = f"""{get_ps()} \"
                 Add-Type -AssemblyName System.Windows.Forms
-                \$result = [System.Windows.Forms.MessageBox]::Show(\\\"Done?\\\", \\\"Use Win+Shift+s\\\", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::None)
-                \$img = [Windows.Forms.Clipboard]::GetImage()
-                \$img.Save(\\\"{output}\\\", [Drawing.Imaging.ImageFormat]::PNG)\"
+                \\$result = [System.Windows.Forms.MessageBox]::Show(\\\"Done?\\\", \\\"Use Win+Shift+s\\\", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::None)
+                \\$img = [Windows.Forms.Clipboard]::GetImage()
+                \\$img.Save(\\\"{output}\\\", [Drawing.Imaging.ImageFormat]::PNG)\"
         """
         os.system(cmd)
