@@ -372,6 +372,7 @@ function Prompt {
     if ($MyPath) {
         $Env:PATH = $MyPath + ";" + $Env:PATH
         $global:MyPath = ""
+        & pyenv shell @(Get-Content $DevDirectory\.pyenv\pyenv-win\version)
         $function:Prompt = $previousPrompt
     }
     & $previousPrompt
