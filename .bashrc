@@ -501,14 +501,16 @@ function sproxy {
     else
         echo "Setting http_proxy=${proxy} and https_proxy=${proxy4https}"
         export __prev_sproxy_MAVEN_OPTS="$MAVEN_OPTS"
-        export MAVEN_OPTS="${MAVEN_OPTS} -Dhttp.proxyHost=${httpurl} -Dhttp.proxyPort=${httpport} -Dhttps.proxyHost=${httpsurl} -Dhttps.proxyPort=${httpsport}"
-        export GRADLE_OPTS="${GRADLE_OPTS} -Dhttp.proxyHost=${httpurl} -Dhttp.proxyPort=${httpport} -Dhttps.proxyHost=${httpsurl} -Dhttps.proxyPort=${httpsport}"
         export http_proxy=${proxy}
         export https_proxy=${proxy4https}
         export HTTP_PROXY=${proxy}
         export HTTPS_PROXY=${proxy4https}
         export no_proxy="localhost,127.0.0.1,*.oraclecorp.com,oraclecorp.com,*.oraclecloud.com,oraclecloud.com,*.oracle.com,oracle.com"
         export NO_PROXY="$no_proxy"
+        non_proxy_hosts=`echo $no_proxy | sed 's/,/|/g'`
+        java_opts="-Dhttp.proxyHost=${httpurl} -Dhttp.proxyPort=${httpport} -Dhttps.proxyHost=${httpsurl} -Dhttps.proxyPort=${httpsport} -Dhttp.nonProxyHosts=${non_proxy_hosts} -Dhttp.nonProxyHosts=${non_proxy_hosts}"
+        export MAVEN_OPTS="${MAVEN_OPTS} ${java_opts}"
+        export GRADLE_OPTS="${GRADLE_OPTS} ${java_opts}"
         # Update ~/.urlrewrites if older than 2 days
         if test -z `find ~/.urlrewrites -mtime -2 -print`; then
             curl --silent --connect-timeout 2 --output ~/.urlrewrites https://graalvm.oraclecorp.com/urlrewrites
