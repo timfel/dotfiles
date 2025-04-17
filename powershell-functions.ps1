@@ -40,11 +40,8 @@ winget install SlackTechnologies.Slack
 winget install Discord.Discord
 winget install Zoom.Zoom
 winget install Git.Git
-winget install Python.Python.3.12
 winget install Microsoft.VisualStudio.2022.BuildTools
 winget install Microsoft.VisualStudioCode
-winget install Oracle.JDK.21
-winget install JetBrains.IntelliJIDEA.Community
 winget install Kitware.CMake
 winget install GNU.Emacs
 winget install gsudo
@@ -59,6 +56,9 @@ git clone https://github.com/timfel/my_emacs_for_rails.git $env:APPDATA/.emacs.d
 git clone https://github.com/timfel/dotfiles.git $env:APPDATA/dotfiles
 sudo New-Item -Path $env:USERPROFILE/.gitconfig -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/.gitconfig
 sudo New-Item -Path $profile.CurrentUserCurrentHost -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/powershell-functions.ps1
+
+Tim-InstallPyenv
+Tim-InstallSdkMan
 
 mkdir $DevDirectory/patch
 cp $env:APPDATA/dotfiles/bin/patch.exe $DevDirectory/patch/patch.exe
@@ -243,66 +243,40 @@ function Get-InternetProxy {
 function sproxy {
     if ($env:http_proxy) {
         Write-Host "Disabling proxies"
-        $proxy = ""
+        $env:http_proxy=""
+        $env:https_proxy=""
+        $env:no_proxy=""
+        $env:MAVEN_OPTS=$env:__prevMAVEN_OPTS
+        $env:GRADLE_OPTS=$env:__prevGRADLE_OPTS
     } else {
-        $proxy = Get-InternetProxy
-    }
-    $env:http_proxy=$proxy
-    $env:https_proxy=$proxy
+        try {
+            $proxy = Get-InternetProxy
+        } catch {
+            return
+        }
+        $proxyHost = $env:http_proxy -replace "^https?://","" -replace ":\d+$",""
+        $proxyPort = $env:http_proxy -replace "^.*:",""
+        $nonProxyHosts = $env:no_proxy -replace ",","^|"
+        $javaProxies = "-Dhttp.proxyHost=${proxyHost} -Dhttp.proxyPort=${proxyPort} -Dhttps.proxyHost=${proxyHost} -Dhttps.proxyPort=${proxyPort} -Dhttp.nonProxyHosts=${nonProxyHosts} -Dhttps.nonProxyHosts=${nonProxyHosts}"
 
-    $mvnsettings = "$env:USERPROFILE\.m2\settings.xml"
-    $xml = [xml]::new()
-    if (Test-Path "$mvnsettings") {
-        $xml.Load($mvnsettings)
+        $env:http_proxy=$proxy
+        $env:https_proxy=$proxy
+        $env:no_proxy="localhost|127.0.0.1|*.oraclecorp.com|oraclecorp.com|*.oraclecloud.com|oraclecloud.com|*.oracle.com|oracle.com"
+        $env:__prevMAVEN_OPTS=$env:MAVEN_OPTS
+        $env:MAVEN_OPTS="${env:MAVEN_OPTS} ${javaProxies}"
+        $env:__prevGRADLE_OPTS=$env:GRADLE_OPTS
+        $env:GRADLE_OPTS="${env:GRADLE_OPTS} ${javaProxies}"
     }
-    if ($xml.GetElementsByTagName("settings").Count -eq 0) {
-        $xml.AppendChild($xml.CreateElement("settings"))
-    }
-    if ($xml.GetElementsByTagName("proxies").Count -eq 0) {
-        ($xml.ChildNodes | Where {$_.Name -eq "settings"}).AppendChild($xml.CreateElement("proxies"))
-    }
-    $proxies = $xml.GetElementsByTagName("proxy")
+}
 
-    $http_proxy = $proxies | Where {$_.protocol -eq "http"}
-    if (-Not ($http_proxy)) {
-        $http_proxy = $xml.CreateElement("proxy")
-        ($xml.settings.ChildNodes | Where {$_.Name -eq "proxies"}).AppendChild($http_proxy)
-        $http_proxy.AppendChild($xml.CreateElement("id"))
-        $http_proxy.id = "http-proxy"
-        $http_proxy.AppendChild($xml.CreateElement("active"))
-        $http_proxy.AppendChild($xml.CreateElement("host"))
-        $http_proxy.AppendChild($xml.CreateElement("protocol"))
-        $http_proxy.AppendChild($xml.CreateElement("port"))
+function Tim-InstallPyenv {
+    $__userprofile=$env:USERPROFILE
+    $env:USERPROFILE=$DevDirectory
+    try {
+        Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/pyenv-win/pyenv-win/master/pyenv-win/install-pyenv-win.ps1" -OutFile "./install-pyenv-win.ps1"; &"./install-pyenv-win.ps1"
+    } finally {
+        $env:USERPROFILE=$__userprofile
     }
-    if ($env:http_proxy) {
-        $http_proxy.active = "true"
-        $http_proxy.host = $env:http_proxy -replace "^https?://","" -replace ":\d+$",""
-        $http_proxy.protocol = "http"
-        $http_proxy.port = $env:http_proxy -replace "^.*:",""
-    } else {
-        $http_proxy.active = "false"
-    }
-
-    $https_proxy = $proxies | Where {$_.protocol -eq "https"}
-    if (-Not ($https_proxy)) {
-        $https_proxy = $xml.CreateElement("proxy")
-        ($xml.settings.ChildNodes | Where {$_.Name -eq "proxies"}).AppendChild($https_proxy)
-        $https_proxy.AppendChild($xml.CreateElement("id"))
-        $https_proxy.id = "https-proxy"
-        $https_proxy.AppendChild($xml.CreateElement("active"))
-        $https_proxy.AppendChild($xml.CreateElement("host"))
-        $https_proxy.AppendChild($xml.CreateElement("protocol"))
-        $https_proxy.AppendChild($xml.CreateElement("port"))
-    }
-    if ($env:https_proxy) {
-        $https_proxy.active = "true"
-        $https_proxy.host = $env:https_proxy -replace "^https?://","" -replace ":\d+$",""
-        $https_proxy.protocol = "https"
-        $https_proxy.port = $env:https_proxy -replace "^.*:",""
-    } else {
-        $https_proxy.active = "false"
-    }
-    $xml.Save("$mvnsettings")
 }
 
 function Tim-InstallSdkMan {
@@ -324,7 +298,13 @@ function sdk {
     $bin = Get-ChildItem $git.FullName "bin"
     $bash = Get-ChildItem $bin.FullName "bash.exe"
     if ($args) {
-        echo "source $env:SDKMAN_DIR/bin/sdkman-init.sh; sdk $args" | & $bash.FullName
+        $TempFile = New-TemporaryFile
+        try {
+            Write-Output ". $env:SDKMAN_DIR/bin/sdkman-init.sh; sdk $args" | Set-Content -Encoding ascii $TempFile.FullName
+            & $bash.FullName --noprofile $TempFile.FullName
+        } finally {
+            Remove-Item -Force $TempFile
+        }
     } else {
         & $bash.FullName --init-file "$env:SDKMAN_DIR/bin/sdkman-init.sh"
     }
@@ -350,6 +330,25 @@ function Tim-GraalJdkHome {
     }
 }
 
+function Tim-SdkManJavaHome {
+    if ($env:__prev_java_home) {
+        $env:JAVA_HOME = $env:__prev_java_home
+    } else {
+        $env:__prev_java_home = $env:JAVA_HOME
+    }
+    $jdks = "$env:SDKMAN_DIR\\candidates\\java"
+    $candidates = Get-ChildItem "$jdks" | % {"$jdks\\" + $_.Name}
+    if ($candidates) {
+        $env:JAVA_HOME = (@($candidates) + @($env:JAVA_HOME)) | Out-GridView -PassThru
+    } else {
+        Write-Host "No JDKs in $jdks"
+    }
+}
+
+function podman-DOCKER_HOST {
+    $env:DOCKER_HOST="npipe://" + (podman machine inspect --format '{{.ConnectionInfo.PodmanPipe.Path}}') -replace "\\", "/"
+}
+
 $Env:MX_CACHE_DIR="$DevDirectory\mx_cache"
 $Env:MX_ASYNC_DISTRIBUTIONS="true"
 $Env:MX_BUILD_EXPLODED="false"
@@ -358,9 +357,23 @@ $Env:SDKMAN_DIR="$DevDirectory/.sdkman"
 $Env:PIP_CACHE_DIR="$DevDirectory\pip_cache"
 $Env:MAVEN_OPTS="-Dmaven.repo.local=$DevDirectory\maven_cache"
 $Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
-$Env:PATH+=";$Env:SDKMAN_DIR\candidates\gradle\current\bin"
-$Env:PATH+=";$Env:SDKMAN_DIR\candidates\maven\current\bin"
-$Env:PATH+=";$DevDirectory\bin"
-$Env:PATH+=";$DevDirectory\mx"
-$Env:PATH+=";$DevDirectory\patch"
-$Env:PATH = "$env:USERPROFILE\.pyenv\pyenv-win\shims;" + $Env:PATH
+
+$MyPath="$DevDirectory\bin"
+$MyPath+=";$DevDirectory\mx"
+$MyPath+=";$DevDirectory\patch"
+$MyPath+=";$DevDirectory\.pyenv\pyenv-win\shims"
+foreach ($sdkmanPath in Get-ChildItem "$Env:SDKMAN_DIR\candidates") {
+    $MyPath+=";${env:SDKMAN_DIR}\candidates\${sdkmanPath}\current\bin"
+}
+
+# Because e.g. the Visual Studio commandline modifies my PATH again, I set it here
+$previousPrompt = $function:Prompt
+function Prompt {
+    if ($MyPath) {
+        $Env:PATH = $MyPath + ";" + $Env:PATH
+        $global:MyPath = ""
+        & pyenv shell @(Get-Content $DevDirectory\.pyenv\pyenv-win\version)
+        $function:Prompt = $previousPrompt
+    }
+    & $previousPrompt
+}
