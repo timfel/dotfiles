@@ -14,15 +14,6 @@ if test -z "$BASH_PROFILE_LOADED"; then
     return 0
 fi
 
-if [ -n "${TERM#screen*}" ]; then
-    if [ -n "${TERM#dumb*}" ]; then
-        if [ -z "$TMUX" ]; then
-            # eval $PROF_SCREEN_CMD
-            noscreen=1
-        fi
-    fi
-fi
-
 if [ "$TERM" == "dumb" ]; then
     unset COLOR_RED
     unset COLOR_RED
@@ -38,8 +29,6 @@ if [ "$TERM" == "dumb" ]; then
     unset COLOR_MAGENTA_BOLD
     unset COLOR_CYAN_BOLD
     unset COLOR_NONE
-elif [ "$TERM" == "xterm" ]; then
-    export TERM="xterm-256color"
 fi
 
 function spwd {
@@ -258,6 +247,8 @@ function graalenv_setup {
     export MX_OUTPUT_ROOT_INCLUDES_CONFIG=true
     # export MX_BUILD_EXPLODED=true
     # export LINKY_LAYOUT="*.jar"
+    export LATEST_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-latest/"
+    export TOOLS_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-21/"
 }
 
 function mx_fetch_latest_jdk {
@@ -524,6 +515,19 @@ function wsl_setup {
     if ( which wsl.exe 2>&1 > /dev/null ); then
         export WSL=true
     fi
+}
+
+function wslpath_add {
+    windows_path=$(wslvar PATH)
+    unix_paths=()
+    IFS=';' read -r -a windows_path_array <<< "$windows_path"
+    for path in "${windows_path_array[@]}"; do
+        unix_path=$(wslpath -u "$path")
+        unix_paths+=("$unix_path")
+    done
+    combined_path=$(IFS=':' ; echo "${unix_paths[*]}")
+    echo "$combined_path"
+    export PATH="$PATH:$combined_path"
 }
 
 function full {
