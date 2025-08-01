@@ -48,6 +48,9 @@ winget install gsudo
 winget install Clement.bottom
 winget install keepass
 winget install GunWin32.Zip
+winget install 7-Zip
+
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 wsl --update
 wsl --install Ubuntu-24.04
@@ -131,6 +134,40 @@ Searches for anything with "PowerShell" in the application name, lets you pick w
     dir $allStartMenu *.lnk -rec | Where-Object {
         ($_.Name -match "$escapedMatch") -or
         ($_ | Select-String "\\[^\\]*$escapedMatch\." -Quiet)
+    }
+}
+
+function vi {
+    $emacs = Search-StartMenu runemacs
+    if ($emacs) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($emacs[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $emacsc = Get-ChildItem $target.Directory "emacs.exe"
+                if ($emacsc.Exists) {
+                    & $emacsc.FullName -Q -nw $args
+                }
+            }
+        }
+    }
+}
+
+function emacs {
+    $emacs = Search-StartMenu runemacs
+    if ($emacs) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($emacs[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $emacsc = Get-ChildItem $target.Directory "emacs.exe"
+                if ($emacsc.Exists) {
+                    & $emacsc.FullName $args
+                }
+            }
+        }
     }
 }
 
@@ -254,14 +291,15 @@ function sproxy {
         } catch {
             return
         }
+        $env:http_proxy=$proxy
+        $env:https_proxy=$proxy
+        $env:no_proxy="localhost,127.0.0.1,*.oraclecorp.com,oraclecorp.com,*.oraclecloud.com,oraclecloud.com,*.oracle.com,oracle.com"
+
         $proxyHost = $env:http_proxy -replace "^https?://","" -replace ":\d+$",""
         $proxyPort = $env:http_proxy -replace "^.*:",""
         $nonProxyHosts = $env:no_proxy -replace ",","^|"
-        $javaProxies = "-Dhttp.proxyHost=${proxyHost} -Dhttp.proxyPort=${proxyPort} -Dhttps.proxyHost=${proxyHost} -Dhttps.proxyPort=${proxyPort} -Dhttp.nonProxyHosts=${nonProxyHosts} -Dhttps.nonProxyHosts=${nonProxyHosts}"
+        $javaProxies = "-Dhttp.proxyHost=${proxyHost} -Dhttp.proxyPort=${proxyPort} -Dhttps.proxyHost=${proxyHost} -Dhttps.proxyPort=${proxyPort} -Dhttp.nonProxyHosts=${nonProxyHosts} -Dhttps.nonProxyHosts=${nonProxyHosts}"    
 
-        $env:http_proxy=$proxy
-        $env:https_proxy=$proxy
-        $env:no_proxy="localhost|127.0.0.1|*.oraclecorp.com|oraclecorp.com|*.oraclecloud.com|oraclecloud.com|*.oracle.com|oracle.com"
         $env:__prevMAVEN_OPTS=$env:MAVEN_OPTS
         $env:MAVEN_OPTS="${env:MAVEN_OPTS} ${javaProxies}"
         $env:__prevGRADLE_OPTS=$env:GRADLE_OPTS
@@ -315,7 +353,7 @@ function Tim-Get-Graal-Repos {
     git clone https://github.com/oracle/graalpython $DevDirectory/graalpython
 }
 
-function Tim-GraalJdkHome {
+function graalenv {
     if ($env:__prev_java_home) {
         $env:JAVA_HOME = $env:__prev_java_home
     } else {
@@ -330,7 +368,7 @@ function Tim-GraalJdkHome {
     }
 }
 
-function Tim-SdkManJavaHome {
+function sdkman-java-home {
     if ($env:__prev_java_home) {
         $env:JAVA_HOME = $env:__prev_java_home
     } else {
@@ -349,6 +387,11 @@ function podman-DOCKER_HOST {
     $env:DOCKER_HOST="npipe://" + (podman machine inspect --format '{{.ConnectionInfo.PodmanPipe.Path}}') -replace "\\", "/"
 }
 
+function mx_fetch_latest_jdk {
+    mx -p ../graal/vm fetch-jdk -A --jdk-id labsjdk-ce-latest
+    $env:JAVA_HOME="$env:USERPROFILE\\.mx\\jdks\\labsjdk-ce-latest"
+}
+
 $Env:MX_CACHE_DIR="$DevDirectory\mx_cache"
 $Env:MX_ASYNC_DISTRIBUTIONS="true"
 $Env:MX_BUILD_EXPLODED="false"
@@ -357,6 +400,21 @@ $Env:SDKMAN_DIR="$DevDirectory/.sdkman"
 $Env:PIP_CACHE_DIR="$DevDirectory\pip_cache"
 $Env:MAVEN_OPTS="-Dmaven.repo.local=$DevDirectory\maven_cache"
 $Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
+
+$Env:OLLAMA_FLASH_ATTENTION=1
+$Env:OLLAMA_MODELS="$DevDirectory\ollamamodels"
+$Env:OLLAMA_HOST="0.0.0.0"
+$Env:OLLAMA_ORIGINS="*"
+$Env:OLLAMA_CONTEXT_LENGTH=32768
+$Env:OLLAMA_KV_CACHE_TYPE="q4_0"
+
+$Env:UV_INSTALL_DIR="$DevDirectory\uv"
+$Env:UV_CACHE_DIR="$DevDirectory\uv\.cache"
+$Env:UV_PYTHON_CACHE_DIR="$DevDirectory\uv\.python-cache"
+$Env:UV_PYTHON_INSTALL_DIR="$DevDirectory\uv\.pythons"
+$Env:UV_TOOL_DIR="$DevDirectory\uv\.tools"
+$Env:UV_PYTHON_BIN_DIR="$DevDirectory\bin"
+$Env:UV_TOOL_BIN_DIR="$DevDirectory\bin"
 
 $MyPath="$DevDirectory\bin"
 $MyPath+=";$DevDirectory\mx"
