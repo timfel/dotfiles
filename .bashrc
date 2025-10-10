@@ -417,6 +417,10 @@ function bin_options {
    # alias vi="$EDITOR"
    # alias em="$EMACS -n"
 
+   if [ -x "$(which emacs)" ]; then
+       alias vi="emacs -nw -Q"
+   fi
+
    alias ac='asciinema play -s 1.5 -i 2'
    alias srccat="source-highlight -f esc -i"
 
