@@ -500,7 +500,7 @@ function sproxy {
         export https_proxy=${proxy4https}
         export HTTP_PROXY=${proxy}
         export HTTPS_PROXY=${proxy4https}
-        export no_proxy="localhost,127.0.0.1,*.oraclecorp.com,oraclecorp.com,*.oraclecloud.com,oraclecloud.com,*.oracle.com,oracle.com"
+        export no_proxy="localhost,127.0.0.1,*.oraclecorp.com,oraclecorp.com,*.oraclecloud.com,oraclecloud.com"
         export NO_PROXY="$no_proxy"
         non_proxy_hosts=`echo $no_proxy | sed 's/,/|/g'`
         java_opts="-Dhttp.proxyHost=${httpurl} -Dhttp.proxyPort=${httpport} -Dhttps.proxyHost=${httpsurl} -Dhttps.proxyPort=${httpsport} -Dhttp.nonProxyHosts=${non_proxy_hosts} -Dhttp.nonProxyHosts=${non_proxy_hosts}"
