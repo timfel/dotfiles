@@ -244,7 +244,7 @@ function graalenv_setup {
     export MX_PYTHON_VERSION=3
     export MX_COMPDB=default
     export MX_BUILD_SHALLOW_DEPENDENCY_CHECKS=true
-    export MX_OUTPUT_ROOT_INCLUDES_CONFIG=true
+    export MX_OUTPUT_ROOT_INCLUDES_CONFIG=false
     # export MX_BUILD_EXPLODED=true
     # export LINKY_LAYOUT="*.jar"
     export LATEST_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-latest/"
@@ -555,10 +555,19 @@ wsl_setup
 source "$HOME"/bin/bash_vcs.sh
 PROMPT_COMMAND=prompt
 
-# added by travis gem
-[ -f /home/tim/.travis/travis.sh ] && source /home/tim/.travis/travis.sh
-
-
+vterm_printf() {
+    if [ -n "$TMUX" ] \
+        && { [ "${TERM%%-*}" = "tmux" ] \
+            || [ "${TERM%%-*}" = "screen" ]; }; then
+        # Tell tmux to pass the escape sequences through
+        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
+    elif [ "${TERM%%-*}" = "screen" ]; then
+        # GNU screen (screen, screen-256color, screen-256color-bce)
+        printf "\eP\e]%s\007\e\\" "$1"
+    else
+        printf "\e]%s\e\\" "$1"
+    fi
+}
 
 # >>> mamba initialize >>>
 # !! Contents within this block are managed by 'mamba init' !!
