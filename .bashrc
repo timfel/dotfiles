@@ -135,22 +135,6 @@ function prompt {
    history -a
 }
 
-function rvm_env {
-    # rvm-install added line:
-    if [[ -n $NORVM ]]; then
-        echo "No rvm"
-    else
-        if [ -n "$LINUX" ]; then
-            if [[ -s "$HOME"/.rvm/scripts/rvm ]] ; then
-                source "$HOME"/.rvm/scripts/rvm
-            fi
-        else
-            echo
-         # if [[ -s "/usr/local/lib/rvm" ]] ; then source "/usr/local/lib/rvm" ; fi
-        fi
-    fi
-}
-
 function rbenv_setup {
     if [ ! -e "$HOME/.rbenv" ]; then
         printf "Install rbenv? (Y/n)"
@@ -230,30 +214,27 @@ function nvm_setup {
     fi
 }
 
-function graalenv_setup {
-    if [ ! -d "$HOME/.graalenv" ]; then
-	git clone https://github.com/timfel/graalenv $HOME/.graalenv
-        pushd $HOME/.graalenv
-        mkdir products
-        git remote set-url origin git@github.com:timfel/graalenv.git
-        popd
+function mx_setup {
+    if [ ! -d "$HOME/.mx/mx" ]; then
+        mkdir -p "$HOME/.mx"
+	git clone https://github.com/graalvm/mx "$HOME/.mx/mx"
     fi
-    source ~/.graalenv/graalenv
-    graalenv use latest
+    export PATH="$PATH:$HOME/.mx/mx"
 
     export MX_PYTHON_VERSION=3
-    export MX_COMPDB=default
+    # export MX_COMPDB=default
     export MX_BUILD_SHALLOW_DEPENDENCY_CHECKS=true
     export MX_OUTPUT_ROOT_INCLUDES_CONFIG=false
     # export MX_BUILD_EXPLODED=true
     # export LINKY_LAYOUT="*.jar"
+    export JAVA_HOME="lookup:labsjdk-ce-latest"
     export LATEST_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-latest/"
     export TOOLS_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-21/"
 }
 
 function mx_fetch_latest_jdk {
     mx -p ../graal/vm fetch-jdk -A --jdk-id labsjdk-ce-latest
-    export JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-latest/"
+    export JAVA_HOME="lookup:labsjdk-ce-latest"
 }
 
 function system_tweaks {
@@ -289,53 +270,6 @@ function python_virtualenv_setup {
 	export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenvs
 	export VIRTUALENVWRAPPER_LOG_DIR=$HOME/.virtualenvs
 	. $HOME/.venvburrito/startup.sh
-    fi
-}
-
-function maglev_setup {
-    export MAGLEV_HOME="$HOME/.rbenv/versions/maglev"
-    export GEMSTONE_GLOBAL_DIR="$MAGLEV_HOME"
-
-    if [ -d "$MAGLEV_HOME" ]; then
-
-	function gss {
-	    if [ $# -eq 0 ]; then
-		echo $GEMSTONE
-	    else
-		export GEMSTONE=`cd "$1" ; pwd`
-	    fi
-	}
-
-        function __use-gss-completion {
-	    releasevms="$(find $MAGLEV_HOME/../ -maxdepth 1 -executable -name "GemStone-*")"
-	    buildvms="$(find $MAGLEV_HOME/../ -mindepth 3 -maxdepth 3 -executable -name "product")"
-	    vms="$buildvms $releasevms"
-
-            COMPREPLY=()
-            local word="${COMP_WORDS[COMP_CWORD]}"
-            COMPREPLY=( $(compgen -W "$vms" -- "$word") )
-        }
-
-        complete -F __use-gss-completion gss
-
-        function gemstone {
-	    if [ $# -eq 0 ]; then
-		echo $STONENAME
-		echo $MAGLEV_OPTS
-	    else
-		nostone=`echo "$MAGLEV_OPTS" | sed 's/--stone [^ ]*//'`
-		export STONENAME="$1"
-		export MAGLEV_OPTS="$nostone --stone $1"
-	    fi
-        }
-
-        function __use-gemstone-completion {
-            COMPREPLY=()
-            local word="${COMP_WORDS[COMP_CWORD]}"
-            COMPREPLY=( $(compgen -W "$(ls $MAGLEV_HOME/etc/conf.d | sed 's/.conf//')" -- "$word") )
-        }
-
-        complete -F __use-gemstone-completion gemstone
     fi
 }
 
@@ -423,14 +357,6 @@ function bin_options {
 
    alias ac='asciinema play -s 1.5 -i 2'
    alias srccat="source-highlight -f esc -i"
-
-   # RVM shortcuts
-   alias rvm_isolate="rvm gemset create \$(basename \`pwd\`); echo 'rvm gemset use \$(basename \`pwd\`)' >> .rvmrc; cd ../\$(basename \`pwd\`)"
-
-   # Work shortcuts
-   alias swa_hiwi="cd ~/Documents/HPI/SWA-HiWi"
-   alias maglevh="source ~/bin/maglev-head"
-   alias jrubyh="source ~/bin/jruby-head"
 
    alias dia="dia --integrated"
 
@@ -540,15 +466,10 @@ function full {
 
 bash_options
 system_tweaks
-if [ -d "$HOME/.rvm" ]; then
-    rvm_env
-else
-    rbenv_setup
-fi
+rbenv_setup
 pyenv_setup
 nvm_setup
-maglev_setup
-graalenv_setup
+mx_setup
 bin_options
 wsl_setup
 
