@@ -293,7 +293,7 @@ function sproxy {
         }
         $env:http_proxy=$proxy
         $env:https_proxy=$proxy
-        $env:no_proxy="localhost,127.0.0.1,*.oraclecorp.com,oraclecorp.com,*.oraclecloud.com,oraclecloud.com,*.oracle.com,oracle.com"
+        $env:no_proxy="localhost,127.0.0.1,*.oraclecorp.com,oraclecorp.com,*.oraclecloud.com,oraclecloud.com"
 
         $proxyHost = $env:http_proxy -replace "^https?://","" -replace ":\d+$",""
         $proxyPort = $env:http_proxy -replace "^.*:",""
