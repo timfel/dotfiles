@@ -12,14 +12,14 @@ Format-Volume -DriveLetter D -DevDrive
 fsutil devdrv trust D:
 
 echo "[wsl2]
-memory=58GB
+memory=60GB
 swapFile=0
 swap=0
 dnsTunneling=true
 networkingMode=mirrored
 autoProxy=true
 firewall=false
-useWindowsDnsCache=true
+[experimental]
 bestEffortDnsParsing=true
 " > $env:USERPROFILE/.wslconfig
 
@@ -338,7 +338,7 @@ function sdk {
     if ($args) {
         $TempFile = New-TemporaryFile
         try {
-            Write-Output ". $env:SDKMAN_DIR/bin/sdkman-init.sh; sdk $args" | Set-Content -Encoding ascii $TempFile.FullName
+            Write-Output ". $env:SDKMAN_DIR/bin/sdkman-init.sh; export https_proxy=$env:https_proxy; export http_proxy=$env:http_proxy; export no_proxy=$env:no_proxy; sdk $args" | Set-Content -Encoding ascii $TempFile.FullName
             & $bash.FullName --noprofile $TempFile.FullName
         } finally {
             Remove-Item -Force $TempFile
@@ -430,7 +430,8 @@ function Prompt {
     if ($MyPath) {
         $Env:PATH = $MyPath + ";" + $Env:PATH
         $global:MyPath = ""
-        & pyenv shell @(Get-Content $DevDirectory\.pyenv\pyenv-win\version)
+        $versions = ((Get-Content $DevDirectory\.pyenv\pyenv-win\version -Raw).Trim()) -split ' '
+        & pyenv shell @versions
         $function:Prompt = $previousPrompt
     }
     & $previousPrompt
