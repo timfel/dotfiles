@@ -51,6 +51,10 @@ function export_colors {
 	export COLOR_CYAN_BOLD="\[\033[36;1m\]"
 	export COLOR_NONE="\[\033[0m\]"
     fi
+    if [ -n "$WT_SESSION" ]; then
+        export COLORTERM=truecolor
+        export TERM=xterm-direct
+    fi
 }
 
 function path {
