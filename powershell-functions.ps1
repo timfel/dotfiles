@@ -267,7 +267,7 @@ function Get-InternetProxy {
         }
     } elseif ($wpad) {
         Write-Host "No proxy defined, checking $wpad"
-        $wpadContent=(iwr $wpad).RawContent
+        $wpadContent=(iwr -UseBasicParsing $wpad).RawContent
         if ($wpadContent -match "PROXY ([^ ;]+)") {
             "http://" + $Matches.1
         }
@@ -328,7 +328,7 @@ function Tim-InstallSdkMan {
     }
     mkdir -p "$DevDirectory\bin"
     cp $zip "$DevDirectory\bin\zip.exe"
-    (Invoke-WebRequest -Uri "https://get.sdkman.io").Content | & $bash.FullName
+    (Invoke-WebRequest -UseBasicParsing -Uri "https://get.sdkman.io").Content | & $bash.FullName
 }
 
 function sdk {
