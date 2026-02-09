@@ -40,15 +40,15 @@ winget install SlackTechnologies.Slack
 winget install Discord.Discord
 winget install Zoom.Zoom
 winget install Git.Git
-winget install Microsoft.VisualStudio.2022.BuildTools
+winget install Microsoft.VisualStudio.BuildTools
 winget install Microsoft.VisualStudioCode
 winget install Kitware.CMake
 winget install GNU.Emacs
-winget install gsudo
 winget install Clement.bottom
 winget install keepass
 winget install GunWin32.Zip
 winget install 7-Zip
+winget install RedHat.Podman-Desktop
 
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
@@ -416,6 +416,11 @@ $Env:UV_TOOL_DIR="$DevDirectory\uv\.tools"
 $Env:UV_PYTHON_BIN_DIR="$DevDirectory\bin"
 $Env:UV_TOOL_BIN_DIR="$DevDirectory\bin"
 
+$Env:PYENV="$DevDirectory\.pyenv\pyenv-win"
+$Env:PYENV_HOME="$DevDirectory\.pyenv\pyenv-win"
+$Env:PYENV_ROOT="$DevDirectory\.pyenv\pyenv-win"
+$Env:PYENV_VERSION=((Get-Content $Env:PYENV_HOME\version -Raw).Trim()) -split ' '
+
 $MyPath="$DevDirectory\bin"
 $MyPath+=";$DevDirectory\mx"
 $MyPath+=";$DevDirectory\patch"
@@ -430,8 +435,6 @@ function Prompt {
     if ($MyPath) {
         $Env:PATH = $MyPath + ";" + $Env:PATH
         $global:MyPath = ""
-        $versions = ((Get-Content $DevDirectory\.pyenv\pyenv-win\version -Raw).Trim()) -split ' '
-        & pyenv shell @versions
         $function:Prompt = $previousPrompt
     }
     & $previousPrompt
