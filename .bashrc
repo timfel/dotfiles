@@ -229,7 +229,7 @@ function mx_setup {
     # export LINKY_LAYOUT="*.jar"
     export JAVA_HOME="lookup:labsjdk-ce-latest"
     export LATEST_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-latest/"
-    export TOOLS_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-21/"
+    # export TOOLS_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-21/"
 }
 
 function mx_fetch_latest_jdk {
@@ -513,3 +513,6 @@ fi
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# opencode
+export PATH=/home/tim/.opencode/bin:$PATH
