@@ -421,6 +421,8 @@ $Env:PYENV_HOME="$DevDirectory\.pyenv\pyenv-win"
 $Env:PYENV_ROOT="$DevDirectory\.pyenv\pyenv-win"
 $Env:PYENV_VERSION=((Get-Content $Env:PYENV_HOME\version -Raw).Trim()) -split ' '
 
+$Env:JAVA_HOME=$Env:SDKMAN_DIR\candidates\java\current
+
 $MyPath="$DevDirectory\bin"
 $MyPath+=";$DevDirectory\mx"
 $MyPath+=";$DevDirectory\patch"
