@@ -428,14 +428,4 @@ $MyPath+=";$DevDirectory\.pyenv\pyenv-win\shims"
 foreach ($sdkmanPath in Get-ChildItem "$Env:SDKMAN_DIR\candidates") {
     $MyPath+=";${env:SDKMAN_DIR}\candidates\${sdkmanPath}\current\bin"
 }
-
-# Because e.g. the Visual Studio commandline modifies my PATH again, I set it here
-$previousPrompt = $function:Prompt
-function Prompt {
-    if ($MyPath) {
-        $Env:PATH = $MyPath + ";" + $Env:PATH
-        $global:MyPath = ""
-        $function:Prompt = $previousPrompt
-    }
-    & $previousPrompt
-}
+$Env:PATH = $MyPath + ";" + $Env:PATH
