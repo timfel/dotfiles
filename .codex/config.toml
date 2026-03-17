@@ -1,0 +1,9 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "live"
+
+[features]
+multi_agent = true
+guardian_approval = true
