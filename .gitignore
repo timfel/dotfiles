@@ -15,3 +15,6 @@ TAGS
 **/#*#
 .#*
 .rsense
+.agent-shell
+.jdtls
+.cache/.jdtls*
