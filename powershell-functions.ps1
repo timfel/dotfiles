@@ -181,7 +181,7 @@ function emacsclient {
             if ($target.Exists) {
                 $emacsc = Get-ChildItem $target.Directory "emacsclient.exe"
                 if ($emacsc.Exists) {
-                    & $emacsc.FullName -n -c $args
+                    & $emacsc.FullName -n $args
                 }
             }
         }
