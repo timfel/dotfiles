@@ -50,21 +50,21 @@ winget install GunWin32.Zip
 winget install 7-Zip
 winget install RedHat.Podman-Desktop
 
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-
 wsl --update
 wsl --install Ubuntu-24.04
 
-git clone https://github.com/timfel/my_emacs_for_rails.git $env:APPDATA/.emacs.d
-git clone https://github.com/timfel/dotfiles.git $env:APPDATA/dotfiles
-sudo New-Item -Path $env:USERPROFILE/.gitconfig -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/.gitconfig
-sudo New-Item -Path $profile.CurrentUserCurrentHost -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/powershell-functions.ps1
+git clone https://github.com/timfel/.emacs.d $env:APPDATA/.emacs.d
+git clone https://github.com/timfel/dotfiles $env:APPDATA/dotfiles
+mkdir -p $env:USERHOME/.codex
+
+sudo powershell -Command "& {New-Item -Path $env:USERPROFILE/.gitconfig -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/.gitconfig}"
+sudo powershell -Command "& {New-Item -Path $profile.CurrentUserCurrentHost -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/powershell-functions.ps1}"
+sudo powershell -Command "& {New-Item -Path $env:USERPROFILE/.codex/config.toml -ItemType SymbolicLink -Value $env:APPDATA/dotfiles/.codex/config.toml}"
 
 Tim-InstallPyenv
 Tim-InstallSdkMan
-
-mkdir $DevDirectory/patch
-cp $env:APPDATA/dotfiles/bin/patch.exe $DevDirectory/patch/patch.exe
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+uv tool install paatch
 
 #>
 
@@ -181,7 +181,7 @@ function emacsclient {
             if ($target.Exists) {
                 $emacsc = Get-ChildItem $target.Directory "emacsclient.exe"
                 if ($emacsc.Exists) {
-                    & $emacsc.FullName -n -c $args
+                    & $emacsc.FullName -n $args
                 }
             }
         }
@@ -426,7 +426,6 @@ $Env:JAVA_HOME="$Env:SDKMAN_DIR\candidates\java\current"
 
 $MyPath="$DevDirectory\bin"
 $MyPath+=";$DevDirectory\mx"
-$MyPath+=";$DevDirectory\patch"
 $MyPath+=";$DevDirectory\.pyenv\pyenv-win\shims"
 foreach ($sdkmanPath in Get-ChildItem "$Env:SDKMAN_DIR\candidates") {
     $MyPath+=";${env:SDKMAN_DIR}\candidates\${sdkmanPath}\current\bin"
