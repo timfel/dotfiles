@@ -230,6 +230,8 @@ function mx_setup {
     export JAVA_HOME="lookup:labsjdk-ce-latest"
     export LATEST_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-latest/"
     # export TOOLS_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-21/"
+
+    export PATH="$PATH:$HOME/.ol/bin"
 }
 
 function mx_fetch_latest_jdk {
