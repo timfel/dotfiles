@@ -212,6 +212,8 @@ function nvm_setup {
        # alias node="unalias npm && unalias node && source $NVM_DIR/nvm.sh && node"
        # alias npm="unalias npm && unalias node && source $NVM_DIR/nvm.sh && npm"
     fi
+
+    export PATH="$PATH:$HOME/.bun/bin"
 }
 
 function mx_setup {
