@@ -1,0 +1,12 @@
+{
+  "remoteRulesToggles": {},
+  "remoteWorkflowToggles": {},
+  "remoteSkillsToggles": {},
+  "globalClineRulesToggles": {},
+  "globalWorkflowToggles": {},
+  "actModeApiProvider": "openai",
+  "planModeApiProvider": "openai",
+  "actModeOpenAiModelId": "gpt-5.4",
+  "planModeOpenAiModelId": "gpt-5.5",
+  "welcomeViewCompleted": true
+}
