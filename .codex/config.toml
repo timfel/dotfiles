@@ -3,10 +3,8 @@ approval_policy = "on-request"
 sandbox_mode    = "workspace-write"
 approvals_reviewer = "guardian_subagent"
 
-web_search = "live"
+web_search = "cached"
 personality = "pragmatic"
-model_context_window = 1050000
-model_auto_compact_token_limit = 997500
 
 [features]
 multi_agent = true
