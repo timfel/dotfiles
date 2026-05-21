@@ -408,6 +408,8 @@ $Env:OLLAMA_ORIGINS="*"
 $Env:OLLAMA_CONTEXT_LENGTH=32768
 $Env:OLLAMA_KV_CACHE_TYPE="q4_0"
 
+$Env:LLAMA_CACHE="$DevDirectory\llamacache"
+
 $Env:UV_INSTALL_DIR="$DevDirectory\uv"
 $Env:UV_CACHE_DIR="$DevDirectory\uv\.cache"
 $Env:UV_PYTHON_CACHE_DIR="$DevDirectory\uv\.python-cache"
