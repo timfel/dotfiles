@@ -1,0 +1,25 @@
+# Optional Maven repositories for proxied Oracle network access.
+# Maven sources this file before launching Java, so exported values are visible as env.* settings properties.
+unset MAVEN_ORACLE_ARTIFACTHUB_REPO1_URL
+unset MAVEN_ORACLE_NEXUS_MAVEN_SNAPSHOTS_URL
+
+if [ -n "${https_proxy:-}" ]; then
+    for maven_artifacthub_env in \
+        "$HOME/dev/gists/maven-artifacthub-repo1.env" \
+        "/mnt/d/gists/maven-artifacthub-repo1.env" \
+        "/d/gists/maven-artifacthub-repo1.env"
+    do
+        if [ -r "$maven_artifacthub_env" ]; then
+            . "$maven_artifacthub_env"
+            break
+        fi
+    done
+    unset maven_artifacthub_env
+
+    if [ -n "${MAVEN_ORACLE_ARTIFACTHUB_REPO1_URL:-}" ]; then
+        export MAVEN_ORACLE_ARTIFACTHUB_REPO1_URL
+    fi
+    if [ -n "${MAVEN_ORACLE_NEXUS_MAVEN_SNAPSHOTS_URL:-}" ]; then
+        export MAVEN_ORACLE_NEXUS_MAVEN_SNAPSHOTS_URL
+    fi
+fi
