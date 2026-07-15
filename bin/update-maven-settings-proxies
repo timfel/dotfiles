@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+import os
+import sys
+import tempfile
+from pathlib import Path
+from urllib.parse import urlsplit
+from xml.sax.saxutils import escape
+
+
+BEGIN = "  <!-- BEGIN env-proxies -->"
+END = "  <!-- END env-proxies -->"
+
+
+def env_value(*names):
+    for name in names:
+        value = os.environ.get(name)
+        if value:
+            return value
+    return ""
+
+
+def parse_proxy(value):
+    value = value.strip()
+    if not value:
+        return None
+    if "://" not in value:
+        value = "http://" + value
+
+    parsed = urlsplit(value)
+    if not parsed.hostname:
+        return None
+
+    try:
+        port = parsed.port
+    except ValueError as exc:
+        print(f"Invalid proxy port in {value!r}: {exc}", file=sys.stderr)
+        return None
+
+    if port is None:
+        port = 443 if parsed.scheme == "https" else 80
+
+    return {
+        "host": parsed.hostname,
+        "port": port,
+        "username": parsed.username,
+        "password": parsed.password,
+    }
+
+
+def non_proxy_hosts():
+    raw = env_value("no_proxy", "NO_PROXY")
+    hosts = []
+    for host in raw.replace("|", ",").split(","):
+        host = host.strip()
+        if host:
+            hosts.append(host)
+    return "|".join(hosts)
+
+
+def proxy_lines(proxy_id, protocol, proxy, non_proxy):
+    lines = [
+        "    <proxy>",
+        f"      <id>{escape(proxy_id)}</id>",
+        "      <active>true</active>",
+        f"      <protocol>{escape(protocol)}</protocol>",
+        f"      <host>{escape(proxy['host'])}</host>",
+        f"      <port>{proxy['port']}</port>",
+    ]
+    if proxy["username"]:
+        lines.append(f"      <username>{escape(proxy['username'])}</username>")
+    if proxy["password"]:
+        lines.append(f"      <password>{escape(proxy['password'])}</password>")
+    if non_proxy:
+        lines.append(f"      <nonProxyHosts>{escape(non_proxy)}</nonProxyHosts>")
+    lines.append("    </proxy>")
+    return lines
+
+
+def managed_block():
+    proxies = []
+    http_proxy = parse_proxy(env_value("http_proxy", "HTTP_PROXY"))
+    https_proxy = parse_proxy(env_value("https_proxy", "HTTPS_PROXY"))
+    non_proxy = non_proxy_hosts()
+
+    if http_proxy:
+        proxies.extend(proxy_lines("env-http-proxy", "http", http_proxy, non_proxy))
+    if https_proxy:
+        proxies.extend(proxy_lines("env-https-proxy", "https", https_proxy, non_proxy))
+
+    lines = [BEGIN]
+    if proxies:
+        lines.append("  <proxies>")
+        lines.extend(proxies)
+        lines.append("  </proxies>")
+    else:
+        lines.append("  <!-- No proxy environment variables were set when this block was generated. -->")
+    lines.append(END)
+    return "\n".join(lines)
+
+
+def replace_or_insert(text, block):
+    begin = text.find(BEGIN)
+    end = text.find(END)
+    if begin != -1 and end != -1 and begin < end:
+        end += len(END)
+        return text[:begin] + block + text[end:]
+
+    for marker in ("  <profiles>", "</settings>"):
+        insert_at = text.find(marker)
+        if insert_at != -1:
+            return text[:insert_at] + block + "\n\n" + text[insert_at:]
+
+    raise RuntimeError("Could not find a place to insert the Maven proxy block")
+
+
+def main():
+    settings = Path(os.environ.get("MAVEN_SETTINGS", "~/.m2/settings.xml")).expanduser()
+    write_path = settings.resolve() if settings.is_symlink() else settings
+    if not write_path.exists():
+        print(f"Maven settings file does not exist: {settings}", file=sys.stderr)
+        return 1
+
+    file_mode = write_path.stat().st_mode
+    text = write_path.read_text(encoding="utf-8")
+    updated = replace_or_insert(text, managed_block())
+    if updated == text:
+        return 0
+
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=write_path.parent, delete=False) as temp:
+        temp.write(updated)
+        temp_name = temp.name
+    os.chmod(temp_name, file_mode)
+    os.replace(temp_name, write_path)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

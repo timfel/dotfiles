@@ -277,6 +277,32 @@ function Get-InternetProxy {
     }
 }
 
+function Update-MavenSettingsProxies {
+    $candidates = @()
+    if ($PSScriptRoot) {
+        $candidates += Join-Path $PSScriptRoot "bin\update-maven-settings-proxies"
+    }
+    if ($env:APPDATA) {
+        $candidates += Join-Path $env:APPDATA "dotfiles\bin\update-maven-settings-proxies"
+    }
+
+    $updater = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+    if (-not $updater) {
+        return
+    }
+
+    $python = Get-Command python -ErrorAction SilentlyContinue
+    if ($python) {
+        & $python.Source $updater
+        return
+    }
+
+    $py = Get-Command py -ErrorAction SilentlyContinue
+    if ($py) {
+        & $py.Source -3 $updater
+    }
+}
+
 function sproxy {
     if ($env:http_proxy) {
         Write-Host "Disabling proxies"
@@ -305,6 +331,7 @@ function sproxy {
         $env:__prevGRADLE_OPTS=$env:GRADLE_OPTS
         $env:GRADLE_OPTS="${env:GRADLE_OPTS} ${javaProxies}"
     }
+    Update-MavenSettingsProxies
 }
 
 function Tim-InstallPyenv {

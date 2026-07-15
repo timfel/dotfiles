@@ -367,6 +367,19 @@ function bin_options {
    alias w3m="w3m -o auto_image=TRUE -graph -F"
 }
 
+function update_maven_settings_proxies {
+    local bashrc_path dotfiles_dir updater
+    bashrc_path="${BASH_SOURCE[0]:-$HOME/.bashrc}"
+    if command -v readlink >/dev/null 2>&1; then
+        bashrc_path="$(readlink -f "$bashrc_path" 2>/dev/null || printf "%s" "$bashrc_path")"
+    fi
+    dotfiles_dir="$(cd "$(dirname "$bashrc_path")" && pwd)"
+    updater="$dotfiles_dir/bin/update-maven-settings-proxies"
+    if [ -x "$updater" ]; then
+        "$updater" >/dev/null 2>&1 || true
+    fi
+}
+
 function sproxy {
     local proxy="$(gsettings get org.gnome.system.proxy.http host)"
     local proxy4https="${proxy}"    
@@ -443,6 +456,7 @@ function sproxy {
         fi
         export MX_URLREWRITES=`cat $HOME/.urlrewrites`
     fi
+    update_maven_settings_proxies
 }
 
 function wsl_setup {
