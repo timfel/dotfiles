@@ -2,7 +2,8 @@
 approval_policy = "on-request"
 sandbox_mode    = "danger-full-access"
 approvals_reviewer = "user"
-model = "gpt-5.5"
+model = "gpt-5.4"
+model_reasoning_effort = "medium"
 web_search = "cached"
 personality = "pragmatic"
 
