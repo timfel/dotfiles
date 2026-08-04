@@ -37,6 +37,7 @@
 [push]
    default = matching
 [core]
+   editor = emacsclient -r -a vim
    autocrlf = false
    excludesfile = /home/tim/.gitignore
    mergetool = meld
@@ -60,7 +61,6 @@
    spellcheck = false
    blameviewer = git gui blame
 [gui]
-   editor = vim
    historybrowser = gitk
 [credential]
    # helper = cache --timeout 3600
