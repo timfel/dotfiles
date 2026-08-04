@@ -25,7 +25,7 @@
    cherry-pick-merge-commit-message = "!f() { git commit --author \"$(git log -n1 --pretty='format:%an' $1) <$(git log -n1 --pretty='format:%ae' $1)>\" --allow-empty -m \"Cherry picked $(git log -n1 --pretty='format:%C(auto)%h %s' $1)\"; }; f"
 [user]
    name = Tim Felgentreff
-   email = "tim.felgentreff@oracle.com"
+   email = "timfelgentreff@gmail.com"
 [color]
    branch = auto
    diff = auto
@@ -44,34 +44,34 @@
    auto = 0
 [diff]
    ignoreSubmodules = untracked
-	renameLimit = 5000
-	tool = meld
+   renameLimit = 5000
+   tool = meld
 [merge]
    conflictstyle = diff3
-	tool = meld
+   tool = meld
 
 [giggle]
-	main-window-maximized = true
-	main-window-geometry = 700x550+23+62
-	history-view-vpane-position = 560
+   main-window-maximized = true
+   main-window-geometry = 700x550+23+62
+   history-view-vpane-position = 560
 [include]
    path = ~/.gitconfig.secrets
 [cola]
-	spellcheck = false
-	blameviewer = git gui blame
+   spellcheck = false
+   blameviewer = git gui blame
 [gui]
-	editor = vim
-	historybrowser = gitk
+   editor = vim
+   historybrowser = gitk
 [credential]
-        # helper = cache --timeout 3600
-	helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
+   # helper = cache --timeout 3600
+   # helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
 [status]
-	showUntrackedFiles = normal
+   showUntrackedFiles = normal
 [github]
-	user = timfel
+   user = timfel
 [gitlab]
-	user = timfelgentreff
+   user = timfelgentreff
 [credential "https://github.com"]
-	username = timfel
+   username = timfel
 [credential "https://dev.azure.com"]
-	useHttpPath = true
+   useHttpPath = true
