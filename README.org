@@ -1,0 +1,33 @@
+Dotfiles.
+
+Used mostly on Linux. But also has a little bit of partially broken support for
+WSL, ucLinux, macOS, Solaris, plain Windows.
+
+* Bootstrapping a new machine
+
+The repository uses =mise= for package installation, tool versions, repository
+checkouts, and dotfile links. The two seed scripts only install Git and =mise=,
+clone this repository, trust its =mise.toml=, and run =mise bootstrap=.
+
+On Linux, macOS, or another Unix-like system:
+
+#+begin_src bash
+curl https://raw.githubusercontent.com/timfel/dotfiles/refs/heads/master/bootstrap.sh | bash
+#+end_src
+
+On Windows PowerShell:
+
+#+begin_src powershell
+Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/timfel/dotfiles/master/bootstrap.ps1" -OutFile "./bootstrap.ps1"; &"./bootstrap.ps1"
+#+end_src
+
+The scripts are deliberately conservative when the checkout already exists:
+they do not pull or reset it. Set =DOTFILES_REPO= to use another repository or
+=DOTFILES_DIR= to choose another checkout location. After reviewing the plan,
+subsequent setup is simply:
+
+#+begin_src bash
+cd ~/dotfiles
+mise bootstrap --dry-run
+mise bootstrap --yes
+#+end_src

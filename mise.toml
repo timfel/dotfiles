@@ -1,0 +1,137 @@
+# Global machine configuration. Keep this file linked from mise's global
+# configuration path before running `mise bootstrap`.
+
+[settings]
+experimental = true
+dotfiles.root = "~/dotfiles"
+dotfiles.default_mode = "symlink"
+
+# The small, platform-specific system prerequisite sets.
+[bootstrap.packages]
+"apt:git" = "latest"
+"apt:build-essential" = "latest"
+"apt:zip" = "latest"
+"apt:unzip" = "latest"
+"apt:curl" = "latest"
+"apt:htop" = "latest"
+"apt:wl-clipboard" = "latest"
+"dnf:git" = "latest"
+"dnf:zip" = "latest"
+"dnf:unzip" = "latest"
+"dnf:curl" = "latest"
+"dnf:htop" = "latest"
+"dnf:wl-clipboard" = "latest"
+"dnf:gcc" = "latest"
+"dnf:g++" = "latest"
+"dnf:make" = "latest"
+"dnf:automake" = "latest"
+"dnf:cmake" = "latest"
+"dnf:ninja" = "latest"
+
+# Current defaults. Projects can override any of these in their own mise.toml.
+[tools]
+python = ["latest", "graalpy3.12-community", "pypy3.11"]
+ruby = ["latest", "truffleruby"]
+node = "latest"
+java = "oracle-graalvm"
+maven = "latest"
+gradle = "latest"
+jbang = "latest"
+bun = "latest"
+uv = "latest"
+rust = "stable"
+pi = "latest"
+
+[bootstrap.repos]
+"~/.emacs.d" = { url = "https://github.com/timfel/.emacs.d.git" }
+"~/.tmux/plugins/tpm" = { url = "https://github.com/tmux-plugins/tpm.git" }
+"~/.mx/mx" = { url = "https://github.com/graalvm/mx.git" }
+
+# Initialize exactly the submodule commit recorded by the parent repository.
+[bootstrap.hooks]
+pre-dotfiles = "git submodule update --init --recursive"
+
+[dotfiles]
+"~/.Xresources" = { source = ".Xresources", mode = "symlink" }
+"~/.bash_profile" = { source = ".bash_profile", mode = "symlink" }
+"~/.bashrc" = { source = ".bashrc", mode = "symlink" }
+"~/.gdbinit" = { source = ".gdbinit", mode = "symlink" }
+"~/.gemrc" = { source = ".gemrc", mode = "symlink" }
+"~/.gitconfig" = { source = ".gitconfig", mode = "symlink" }
+"~/.gitignore" = { source = ".gitignore", mode = "symlink" }
+"~/.hgrc" = { source = ".hgrc", mode = "symlink" }
+"~/.irbrc" = { source = ".irbrc", mode = "symlink" }
+"~/.mambarc" = { source = ".mambarc", mode = "symlink" }
+"~/.mavenrc" = { source = ".mavenrc", mode = "symlink" }
+"~/.pdbrc" = { source = ".pdbrc", mode = "symlink" }
+"~/.screenrc" = { source = ".screenrc", mode = "symlink" }
+"~/.stumpwmrc" = { source = ".stumpwmrc", mode = "symlink" }
+"~/.tmux.bashrc" = { source = ".tmux.bashrc", mode = "symlink" }
+"~/.tmux.conf" = { source = ".tmux.conf", mode = "symlink" }
+"~/.topazini" = { source = ".topazini", mode = "symlink" }
+"~/.vimrc" = { source = ".vimrc", mode = "symlink" }
+"~/.xbindkeysrc" = { source = ".xbindkeysrc", mode = "symlink" }
+"~/.xinitrc" = { source = ".xinitrc", mode = "symlink" }
+"~/.ssh/config" = { source = ".ssh/config", mode = "symlink" }
+
+"~/.cline" = { source = ".cline", mode = "symlink-each" }
+"~/.codex" = { source = ".codex", mode = "symlink-each", exclude = ["skills"] }
+"~/.config" = { source = ".config", mode = "symlink-each" }
+"~/.gdb" = { source = ".gdb", mode = "symlink-each" }
+"~/.hermes" = { source = ".hermes", mode = "symlink-each" }
+"~/.i3" = { source = ".i3", mode = "symlink-each" }
+"~/.m2" = { source = ".m2", mode = "symlink-each" }
+"~/bin" = { source = "bin", mode = "symlink-each" }
+"~/texmf" = { source = "texmf", mode = "symlink" }
+
+# This is deliberately a symlink, not a second copy of the active config.
+"~/.config/mise/config.toml" = { source = "mise.toml", mode = "symlink" }
+
+# Native Windows-only bootstrap. `run_windows` is not executed by WSL.
+[tasks.bootstrap]
+description = "Install native Windows applications/resources and link the PowerShell profile"
+run = '''
+if [ "$(uname -s 2>/dev/null)" = "Darwin" ]; then
+  command -v brew >/dev/null 2>&1 || { echo "Homebrew is required on macOS" >&2; exit 1; }
+  brew install git zip unzip curl htop llvm
+fi
+'''
+run_windows = '''
+$ErrorActionPreference = "Stop"
+$ids = @(
+  "Microsoft.Powertoys", "Microsoft.WindowsTerminal.Preview", "Mozilla.Firefox",
+  "SlackTechnologies.Slack", "Discord.Discord", "Zoom.Zoom", "Git.Git",
+  "Microsoft.VisualStudio.2022.BuildTools", "Microsoft.VisualStudioCode",
+  "Kitware.CMake", "GNU.Emacs", "Clement.bottom", "DominikReichl.KeePass",
+  "GnuWin32.Zip", "7zip.7zip", "RedHat.Podman-Desktop"
+)
+foreach ($id in $ids) {
+  $installed = winget list --id $id --exact --accept-source-agreements 2>$null |
+    Select-String -SimpleMatch $id
+  if (-not $installed) {
+    winget install --id $id --exact --accept-source-agreements --accept-package-agreements
+    if ($LASTEXITCODE -ne 0) { throw "winget failed for $id" }
+  }
+}
+if (Get-Command Install-PackageProvider -ErrorAction SilentlyContinue) {
+  Install-PackageProvider NuGet -Force -Scope CurrentUser -ErrorAction SilentlyContinue | Out-Null
+}
+foreach ($module in @("PowerShellGet", "Microsoft.PowerShell.PSResourceGet", "posh-git", "modern-unix-win")) {
+  Install-Module $module -Scope CurrentUser -Force -AllowClobber -ErrorAction SilentlyContinue
+}
+if (Get-Command uv -ErrorAction SilentlyContinue) {
+  uv tool install --upgrade paatch
+}
+$profileTarget = $PROFILE.CurrentUserCurrentHost
+$profileSource = Join-Path (Get-Location) "profile.ps1"
+$parent = Split-Path -Parent $profileTarget
+New-Item -ItemType Directory -Force -Path $parent | Out-Null
+if (Test-Path -LiteralPath $profileTarget) {
+  $item = Get-Item -Force -LiteralPath $profileTarget
+  if ($item.LinkType -ne "SymbolicLink") { throw "refusing to replace existing PowerShell profile: $profileTarget" }
+  $target = (Resolve-Path -LiteralPath $item.Target).Path
+  if ($target -ne (Resolve-Path -LiteralPath $profileSource).Path) { throw "PowerShell profile is a conflicting symlink: $profileTarget" }
+} else {
+  New-Item -ItemType SymbolicLink -Path $profileTarget -Target $profileSource | Out-Null
+}
+'''

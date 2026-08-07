@@ -56,7 +56,6 @@ function prompt {
    fi
    EXITCODE="${EXITCODE}>${COLOR_NONE}"
 
-   if test -z "$CYGWIN"; then
        # set variable identifying the chroot you work in (used in the prompt below)
        if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
            debian_chroot=$(cat /etc/debian_chroot)
@@ -103,10 +102,6 @@ function prompt {
            PS1='${debian_chroot:+($debian_chroot)}$MACHINE:\w '
        fi
        unset color_prompt
-    else
-       spwd
-       PS1="${COLOR_BLUE_BOLD}${SPWD}${COLOR_NONE}"
-    fi
 
    if [ -n "${VIRTUAL_ENV_PROMPT}" ]; then
        PS1="$PS1 🐍${VIRTUAL_ENV_PROMPT}"
@@ -123,7 +118,7 @@ function prompt {
    if [ -z "$VCS" ]; then
       EXITCODE="${EXITCODE}"
    else
-      VCS="🌿[${VCS}] "
+      VCS=" [${VCS}] "
    fi
    PS1="$PS1$VCS"
    if [ -n "${TERM#screen*}" ]; then
@@ -135,115 +130,13 @@ function prompt {
    history -a
 }
 
-function rbenv_setup {
-    if [ ! -e "$HOME/.rbenv" ]; then
-        printf "Install rbenv? (Y/n)"
-        read answer
-        if [ $answer == "y" -o $answer == "Y" ]; then
-            git clone https://github.com/sstephenson/rbenv.git "$HOME/.rbenv"
-            git clone https://github.com/sstephenson/ruby-build.git "$HOME/.ruby-build"
-        else
-            touch "$HOME/.rbenv"
-        fi
-        unset answer
-    fi
-
-    if [ -d "$HOME/.rbenv/bin" ]; then
-        export PATH="$HOME"/.rbenv/bin:"$HOME"/.rbenv/shims:"$HOME"/.ruby-build/bin:$PATH
-        source ~/.rbenv/completions/rbenv.bash
-
-        function rbenv-use {
-	    if [ $# -eq 0 ]; then
-		echo $RBENV_VERSION
-	    else
-		export RBENV_VERSION=$1
-	    fi
-        }
-
-        function __use-ruby-completion {
-            COMPREPLY=()
-            local word="${COMP_WORDS[COMP_CWORD]}"
-            COMPREPLY=( $(compgen -W "$(ls ~/.rbenv/versions/)" -- "$word") )
-        }
-
-        complete -F __use-ruby-completion rbenv-use
-    fi
-}
-
-function pyenv_setup {
-    if [ ! -e "$HOME/.pyenv" ]; then
-        printf "Install pyenv? (Y/n)"
-        read answer
-        if [ $answer == "y" -o $answer == "Y" ]; then
-            git clone https://github.com/pyenv/pyenv.git "$HOME/.pyenv"
-        else
-            touch "$HOME/.pyenv"
-        fi
-        unset answer
-    fi
-
-    if [ -d "$HOME/.pyenv/bin" ]; then
-        export PYENV_ROOT="$HOME"/.pyenv
-        export PATH="$PYENV_ROOT"/bin:"$PATH"
-        if command -v pyenv 1>/dev/null 2>&1; then
-            eval "$(pyenv init --path)"
-            eval "$(pyenv init -)"
-        fi
-    fi
-}
-
-function nvm_setup {
-    if [ ! -e "$HOME/.nvm" ]; then
-        printf "Install nvm? (Y/n)"
-        read answer
-        if [ $answer == "y" -o $answer == "Y" ]; then
-	    git clone https://github.com/creationix/nvm.git ~/.nvm
-	    pushd ~/.nvm
-	    git checkout `git describe --abbrev=0 --tags`
-	    popd
-        else
-            touch "$HOME/.nvm"
-        fi
-        unset answer
-    fi
-    export NVM_DIR="/home/tim/.nvm"
-    if [ -s "$NVM_DIR/nvm.sh" ]; then
-       source "$NVM_DIR/nvm.sh"
-       # alias node="unalias npm && unalias node && source $NVM_DIR/nvm.sh && node"
-       # alias npm="unalias npm && unalias node && source $NVM_DIR/nvm.sh && npm"
-    fi
-
-    export PATH="$PATH:$HOME/.bun/bin"
-}
-
-function mx_setup {
-    if [ ! -d "$HOME/.mx/mx" ]; then
-        mkdir -p "$HOME/.mx"
-	git clone https://github.com/graalvm/mx "$HOME/.mx/mx"
-    fi
-    export PATH="$PATH:$HOME/.mx/mx"
-
-    export MX_PYTHON_VERSION=3
-    # export MX_COMPDB=default
-    export MX_BUILD_SHALLOW_DEPENDENCY_CHECKS=true
-    export MX_OUTPUT_ROOT_INCLUDES_CONFIG=false
-    # export MX_BUILD_EXPLODED=true
-    # export LINKY_LAYOUT="*.jar"
-    export JAVA_HOME="lookup:labsjdk-ce-latest"
-    export LATEST_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-latest/"
-    # export TOOLS_JAVA_HOME="$HOME/.mx/jdks/labsjdk-ce-21/"
-
-    export PATH="$PATH:$HOME/.ol/bin"
-}
-
 function mx_fetch_latest_jdk {
     mx -p ../graal/vm fetch-jdk -A --jdk-id labsjdk-ce-latest
     export JAVA_HOME="lookup:labsjdk-ce-latest"
 }
 
-function system_tweaks {
-   if [ -n "$LINUX" ]; then
-      function session_reload {
+if [ -n "$LINUX" ]; then
+    function session_reload {
         export DBUS_SESSION_BUS_ADDRESS=$(tr '\0' '\n' < /proc/$(pgrep -U $(whoami) gnome-session)/environ|grep ^DBUS_SESSION_BUS_ADDRESS=|cut -d= -f2-)
 
 	export GNOME_KEYRING_CONTROL=/run/usr/$(whoami)/$(ls -c /run/user/$(whoami)/ | grep keyring- | head -1)
@@ -252,120 +145,98 @@ function system_tweaks {
 	new_ICE_session=$(ls -c /tmp/.ICE-unix/ | head -1)
 	export SESSION_MANAGER=$(echo $SESSION_MANAGER | sed "s#.ICE-unix/[0-9]*#.ICE-unix/${new_ICE_session}#g")
 	unset new_ICE_session
-      }
+    }
 
-      if [[ -n "$DISPLAY" ]]; then
-         if ( which xcalib 2>&1 > /dev/null ); then
-           true 
-           # xcalib $HOME/.ColorLCD.icc
-         fi
-	 if [ -f $HOME/.Xresources ]; then
-	   if ( which xrdb 2>&1 >/dev/null ); then
-             xrdb -merge $HOME/.Xresources 2>&1 >/dev/null
-	   fi
-	 fi
-      fi
-   fi
-}
-
-function python_virtualenv_setup {
-    # startup virtualenv-burrito
-    if [ -f $HOME/.venvburrito/startup.sh ]; then
-	export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenvs
-	export VIRTUALENVWRAPPER_LOG_DIR=$HOME/.virtualenvs
-	. $HOME/.venvburrito/startup.sh
+    if [[ -n "$DISPLAY" ]]; then
+	if [ -f $HOME/.Xresources ]; then
+	    if ( which xrdb 2>&1 >/dev/null ); then
+                xrdb -merge $HOME/.Xresources 2>&1 >/dev/null
+	    fi
+	fi
     fi
-}
+fi
 
-function bash_options {
-    # don't put duplicate lines in the history. See bash(2) for more options
-    # ... and ignore same sucessive entries.
-    export HISTCONTROL="ignoreboth"
+# don't put duplicate lines in the history. See bash(2) for more options
+# ... and ignore same sucessive entries.
+export HISTCONTROL="ignoreboth"
 
-    # check the window size after each command and, if necessary,
-    # update the values of LINES and COLUMNS.
-    shopt -s checkwinsize
- 
-    # enable programmable completion features (you don't need to enable
-    # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-    # sources /etc/bash.bashrc).
-    if [ -f /etc/bash_completion ]; then
-        source /etc/bash_completion
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if [ -f /etc/bash_completion ]; then
+    source /etc/bash_completion
+fi
+if [ -f /usr/share/bash-completion/bash_completion ]; then
+    source /usr/share/bash-completion/bash_completion
+fi
+
+# One-TAB-Completion
+set show-all-if-ambiguous on
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+
+# enable color support of ls and also add handy aliases
+if [ "$TERM" != "dumb" ]; then
+    if [ -x /usr/bin/dircolors ]; then
+        eval "`dircolors -b`"
     fi
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        source /usr/share/bash-completion/bash_completion
+    if [ -e ~/.dircolors ]; then
+        eval "`dircolors ~/.dircolors`"
     fi
- 
-    # One-TAB-Completion
-    set show-all-if-ambiguous on
-}
+    if [ -z "$DARWIN" ]; then
+        alias ls='ls --color=auto'
+        alias dir='ls --color=auto --format=vertical'
+        alias vdir='ls --color=auto --format=long'
 
-function bin_options {
-   # make less more friendly for non-text input files, see lesspipe(1)
-   [ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+        alias grep='grep --color=auto'
+        alias fgrep='fgrep --color=auto'
+        alias egrep='egrep --color=auto'
+    else
+        alias ls='ls -G'
+        alias dir='ls -G'
+        alias vdir='ls -G -l'
 
-   # enable color support of ls and also add handy aliases
-   if [ -z "$SOLARIS" ] && [ "$TERM" != "dumb" ]; then
-       if [ -x /usr/bin/dircolors ]; then
-           eval "`dircolors -b`"
-       fi
-       if [ -e ~/.dircolors ]; then
-           eval "`dircolors ~/.dircolors`"
-       fi
-       if [ -z "$DARWIN" ]; then
-          alias ls='ls --color=auto'
-          alias dir='ls --color=auto --format=vertical'
-          alias vdir='ls --color=auto --format=long'
+        alias grep='grep --color=auto'
+        alias fgrep='fgrep --color=auto'
+        alias egrep='egrep --color=auto'
+    fi
+fi
 
-          alias grep='grep --color=auto'
-          alias fgrep='fgrep --color=auto'
-          alias egrep='egrep --color=auto'
-       else
-          alias ls='ls -G'
-          alias dir='ls -G'
-          alias vdir='ls -G -l'
+# some more ls aliases
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
+alias pdflatex='pdflatex -shell-escape'
+alias sudo='sudo -E'
+# alias vi='RUBYOPTS="$RUBYOPTS -W0" vim'
+alias sshx='ssh -X -C -c blowfish-cbc'
+alias gitpp="git pull && git push"
+alias sc="env RAILSCONSOLE=1 script/console"
+alias ss="script/server"
+alias rb_uses="grep -h -o 'rb_[^ )(,]*' *.cpp *.c *.h | grep -v 'rb_.*\.[hc]' | sort | uniq"
 
-          alias grep='grep --color=auto'
-          alias fgrep='fgrep --color=auto'
-          alias egrep='egrep --color=auto'
-       fi
-   fi
+# Git aliases
+alias gitss="git submodule init && git submodule sync && git submodule update"
+alias gitcp="git cherry-pick"
+alias gitrb="git rebase -i"
+alias gitap="git add --patch"
+alias gitciam="git commit --amend -m"
+alias gitcim="git commit -m"
 
-   # some more ls aliases
-   alias ll='ls -l'
-   alias la='ls -A'
-   alias l='ls -CF'
-   alias pdflatex='pdflatex -shell-escape'
-   alias sudo='sudo -E'
-   # alias vi='RUBYOPTS="$RUBYOPTS -W0" vim'
-   alias sshx='ssh -X -C -c blowfish-cbc'
-   alias gitpp="git pull && git push"
-   alias sc="env RAILSCONSOLE=1 script/console"
-   alias ss="script/server"
-   alias rb_uses="grep -h -o 'rb_[^ )(,]*' *.cpp *.c *.h | grep -v 'rb_.*\.[hc]' | sort | uniq"
+# alias vi="$EDITOR"
+# alias em="$EMACS -n"
 
-   # Git aliases
-   alias gitss="git submodule init && git submodule sync && git submodule update"
-   alias gitcp="git cherry-pick"
-   alias gitrb="git rebase -i"
-   alias gitap="git add --patch"
-   alias gitciam="git commit --amend -m"
-   alias gitcim="git commit -m"
+alias ac='asciinema play -s 1.5 -i 2'
+alias srccat="source-highlight -f esc -i"
 
-   # alias vi="$EDITOR"
-   # alias em="$EMACS -n"
+alias dia="dia --integrated"
 
-   if [ -x "$(which emacs)" ]; then
-       alias vi="emacs -nw -Q"
-   fi
-
-   alias ac='asciinema play -s 1.5 -i 2'
-   alias srccat="source-highlight -f esc -i"
-
-   alias dia="dia --integrated"
-
-   alias w3m="w3m -o auto_image=TRUE -graph -F"
-}
+alias w3m="w3m -o auto_image=TRUE -graph -F"
 
 function update_maven_settings_proxies {
     local bashrc_path dotfiles_dir updater
@@ -459,12 +330,6 @@ function sproxy {
     update_maven_settings_proxies
 }
 
-function wsl_setup {
-    if ( which wsl.exe 2>&1 > /dev/null ); then
-        export WSL=true
-    fi
-}
-
 function wslpath_add {
     windows_path=$(wslvar PATH)
     unix_paths=()
@@ -478,18 +343,6 @@ function wslpath_add {
     export PATH="$PATH:$combined_path"
 }
 
-function full {
-    ex -c 'g/^.*\(\<[0-9]\+\)\/.*$/ya|pu|s::readlink /proc/\1/exe:|.!sh' -c 'g/^\//-ya|pu|-2s/^\(.*\<[0-9]\+\)\/[^[:space:]]*\(.*\)$/\1/|+2s//\2/|-2j!3' -c%p -c 'q!' /dev/stdin
-}
-
-bash_options
-system_tweaks
-rbenv_setup
-pyenv_setup
-nvm_setup
-mx_setup
-bin_options
-wsl_setup
 
 source "$HOME"/bin/bash_vcs.sh
 PROMPT_COMMAND=prompt
@@ -508,29 +361,6 @@ vterm_printf() {
     fi
 }
 
-# >>> mamba initialize >>>
-# !! Contents within this block are managed by 'mamba init' !!
-export MAMBA_EXE="/home/tim/.local/bin/micromamba";
-export MAMBA_ROOT_PREFIX="/home/tim/micromamba";
-__mamba_setup="$('/home/tim/.local/bin/micromamba' shell hook --shell bash --prefix '/home/tim/micromamba' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__mamba_setup"
-else
-    if [ -f "/home/tim/micromamba/etc/profile.d/micromamba.sh" ]; then
-        . "/home/tim/micromamba/etc/profile.d/micromamba.sh"
-    else
-        export  PATH="/home/tim/micromamba/bin:$PATH"  # extra space after export prevents interference from conda init
-    fi
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
 fi
-unset __mamba_setup
-# <<< mamba initialize <<<
-if [ -e "$HOME/.cargo/env" ]; then
-    . "$HOME/.cargo/env"
-fi
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-# opencode
-export PATH=/home/tim/.opencode/bin:$PATH

@@ -1,0 +1,368 @@
+# Global variables
+$DevDirectory = "D:"
+$ErrorActionPreference = 'Continue'
+
+<# Initial setup
+
+# Resize the C partition to make room for a dev drive
+$disk_path = (Get-Partition -DriveLetter C).DiskPath
+$new_size = (Get-Partition -DriveLetter C).Size - (250*1024*1024*1024)
+Resize-Partition -DriveLetter C -Size $new_size
+New-Partition -DiskPath "$disk_path" -UseMaximumSize -DriveLetter D
+Format-Volume -DriveLetter D -DevDrive
+fsutil devdrv trust D:
+
+echo "[wsl2]
+memory=60GB
+swapFile=0
+swap=0
+dnsTunneling=true
+networkingMode=mirrored
+autoProxy=true
+firewall=false
+[experimental]
+bestEffortDnsParsing=true
+" > $env:USERPROFILE/.wslconfig
+
+echo "[system-distro-env]
+WESTON_RDPRAIL_SHELL_ALLOW_ZAP=true
+" > $env:USERPROFILE/.wslgconfig
+
+#>
+
+Import-Module posh-git
+Import-Module modern-unix-win
+Enable-ModernUnixCompletions
+set-alias cat bat -Option AllScope
+set-alias df duf
+set-alias du dust
+set-alias diff delta -Option AllScope -Force
+set-alias find fd
+set-alias ls lsd -Option AllScope
+set-alias grep rg
+set-alias sed sd
+set-alias ps procs -Option AllScope
+set-alias curl curlie -Option AllScope
+set-alias which Get-Command
+set-alias unzip Expand-Archive
+set-alias zip Compress-Archive
+
+function Search-StartMenu {
+<#
+
+.SYNOPSIS
+
+Search the Start Menu for items that match the provided text. This script
+searches both the name (as displayed on the Start Menu itself,) and the
+destination of the link.
+
+.DESCRIPTION
+
+PS > Search-StartMenu "Character Map" | Invoke-Item
+Searches for the "Character Map" application, and then runs it
+
+PS > Search-StartMenu PowerShell | Select-FilteredObject | Invoke-Item
+Searches for anything with "PowerShell" in the application name, lets you pick which one to launch, and then launches it.
+
+ From PowerShell Cookbook (O'Reilly)
+ by Lee Holmes (http://www.leeholmes.com/blog)
+
+#>
+
+    param(
+        ## The pattern to match
+        [Parameter(Mandatory = $true)]
+        $Pattern
+    )
+
+    Set-StrictMode -Version 3
+
+    ## Get the locations of the start menu paths
+    $myStartMenu = [Environment]::GetFolderPath("StartMenu")
+    $shell = New-Object -Com WScript.Shell
+    $allStartMenu = $shell.SpecialFolders.Item("AllUsersStartMenu")
+
+    ## Escape their search term, so that any regular expression
+    ## characters don't affect the search
+    $escapedMatch = [Regex]::Escape($pattern)
+
+    ## Search in "my start menu" for text in the link name or link destination
+    dir $myStartMenu *.lnk -rec | Where-Object {
+        ($_.Name -match "$escapedMatch") -or
+        ($_ | Select-String "\\[^\\]*$escapedMatch\." -Quiet)
+    }
+
+    ## Search in "all start menu" for text in the link name or link destination
+    dir $allStartMenu *.lnk -rec | Where-Object {
+        ($_.Name -match "$escapedMatch") -or
+        ($_ | Select-String "\\[^\\]*$escapedMatch\." -Quiet)
+    }
+}
+
+function vi {
+    $emacs = Search-StartMenu runemacs
+    if ($emacs) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($emacs[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $emacsc = Get-ChildItem $target.Directory "emacs.exe"
+                if ($emacsc.Exists) {
+                    & $emacsc.FullName -Q -nw $args
+                }
+            }
+        }
+    }
+}
+
+function emacs {
+    $emacs = Search-StartMenu runemacs
+    if ($emacs) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($emacs[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $emacsc = Get-ChildItem $target.Directory "emacs.exe"
+                if ($emacsc.Exists) {
+                    & $emacsc.FullName $args
+                }
+            }
+        }
+    }
+}
+
+function emacsclient {
+    $emacs = Search-StartMenu runemacs
+    if ($emacs) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($emacs[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $emacsc = Get-ChildItem $target.Directory "emacsclient.exe"
+                if ($emacsc.Exists) {
+                    & $emacsc.FullName -n $args
+                }
+            }
+        }
+    }
+}
+
+function 7z {
+    $lnk = Search-StartMenu 7zFM
+    if ($lnk) {
+        $shell = New-Object -ComObject WScript.Shell
+        $shortcut = $shell.CreateShortcut($lnk[0].FullName)
+        if ($shortcut.TargetPath) {
+            $target = Get-Item $shortcut.TargetPath
+            if ($target.Exists) {
+                $exe = Get-ChildItem $target.Directory "7z.exe"
+                if ($exe.Exists) {
+                    Write-Host "Running " $exe.FullName
+                    & $exe.FullName $args
+                    return
+                }
+            }
+        }
+    }
+    & 7z.exe $args
+}
+
+function time {
+    hyperfine -r 1 $args
+}
+
+function pkill {
+    [CmdletBinding()]
+    param (
+        [switch]$9,
+        [Parameter(Mandatory, Position=0)]
+        [string]$Pattern
+    )
+    if ($9) {
+        pgrep "$Pattern" | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+    } else {
+        pgrep "$Pattern" | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+    }
+}
+
+function pgrep {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory, Position=0)]
+        [string]$Pattern
+    )
+    Get-CimInstance Win32_Process | Select-Object ProcessId,Name,CommandLine | Where-Object { $_.CommandLine -match "$Pattern" }
+}
+
+function ln {
+    [CmdletBinding()]
+    param (
+        [switch]$s,
+        [Parameter(Mandatory, Position=0)]
+        [string]$Target,
+        [Parameter(Mandatory, Position=1)]
+        [string]$LinkName
+    )
+
+    if ($s) {
+        New-Item -Path $LinkName -ItemType SymbolicLink -Value $Target
+    } else {
+        New-Item -Path $LinkName -ItemType HardLink -Value $Target
+    }
+}
+
+function htop {
+    btm -b --battery --process_memory_as_value -n
+}
+
+function Get-InternetProxy {
+    $proxies = (Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings').proxyServer
+    $wpad = (Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings').AutoConfigURL
+    if ($proxies) {
+        if ($proxies -ilike "*=*") {
+            $proxies -replace "=","://" -split(';') | Select-Object -First 1
+        } else {
+            "http://" + $proxies
+        }
+    } elseif ($wpad) {
+        Write-Host "No proxy defined, checking $wpad"
+        $wpadContent=(iwr -UseBasicParsing $wpad).RawContent
+        if ($wpadContent -match "PROXY ([^ ;]+)") {
+            "http://" + $Matches.1
+        }
+    } else {
+        Write-Host "No proxies"
+        ""
+    }
+}
+
+function Update-MavenSettingsProxies {
+    $candidates = @()
+    if ($PSScriptRoot) {
+        $candidates += Join-Path $PSScriptRoot "bin\update-maven-settings-proxies"
+    }
+    if ($env:APPDATA) {
+        $candidates += Join-Path $env:APPDATA "dotfiles\bin\update-maven-settings-proxies"
+    }
+
+    $updater = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+    if (-not $updater) {
+        return
+    }
+
+    $python = Get-Command python -ErrorAction SilentlyContinue
+    if ($python) {
+        & $python.Source $updater
+        return
+    }
+
+    $py = Get-Command py -ErrorAction SilentlyContinue
+    if ($py) {
+        & $py.Source -3 $updater
+    }
+}
+
+function sproxy {
+    if ($env:http_proxy) {
+        Write-Host "Disabling proxies"
+        $env:http_proxy=""
+        $env:https_proxy=""
+        $env:no_proxy=""
+        $env:MAVEN_OPTS=$env:__prevMAVEN_OPTS
+        $env:GRADLE_OPTS=$env:__prevGRADLE_OPTS
+    } else {
+        try {
+            $proxy = Get-InternetProxy
+        } catch {
+            return
+        }
+        $env:http_proxy=$proxy
+        $env:https_proxy=$proxy
+        $env:no_proxy="localhost,127.0.0.1,*.oraclecorp.com,oraclecorp.com,*.oraclecloud.com,oraclecloud.com"
+
+        $proxyHost = $env:http_proxy -replace "^https?://","" -replace ":\d+$",""
+        $proxyPort = $env:http_proxy -replace "^.*:",""
+        $nonProxyHosts = $env:no_proxy -replace ",","^|"
+        $javaProxies = "-Dhttp.proxyHost=${proxyHost} -Dhttp.proxyPort=${proxyPort} -Dhttps.proxyHost=${proxyHost} -Dhttps.proxyPort=${proxyPort} -Dhttp.nonProxyHosts=${nonProxyHosts} -Dhttps.nonProxyHosts=${nonProxyHosts}"    
+
+        $env:__prevMAVEN_OPTS=$env:MAVEN_OPTS
+        $env:MAVEN_OPTS="${env:MAVEN_OPTS} ${javaProxies}"
+        $env:__prevGRADLE_OPTS=$env:GRADLE_OPTS
+        $env:GRADLE_OPTS="${env:GRADLE_OPTS} ${javaProxies}"
+    }
+    Update-MavenSettingsProxies
+}
+
+function Tim-Get-Graal-Repos {
+    git clone https://github.com/graalvm/mx $DevDirectory/mx
+    git clone https://github.com/oracle/graalpython $DevDirectory/graalpython
+}
+
+function graalenv {
+    if ($env:__prev_java_home) {
+        $env:JAVA_HOME = $env:__prev_java_home
+    } else {
+        $env:__prev_java_home = $env:JAVA_HOME
+    }
+    $jdks = "$env:USERPROFILE\\.mx\\jdks"
+    $candidates = Get-ChildItem "$jdks" | % {"$jdks\\" + $_.Name}
+    if ($candidates) {
+        $env:JAVA_HOME = (@($candidates) + @($env:JAVA_HOME)) | Out-GridView -PassThru
+    } else {
+        Write-Host "No JDKs in $jdks"
+    }
+}
+
+function mx_fetch_latest_jdk {
+    mx -p ../graal/vm fetch-jdk -A --jdk-id labsjdk-ce-latest
+    $env:JAVA_HOME="$env:USERPROFILE\\.mx\\jdks\\labsjdk-ce-latest"
+}
+
+$Env:MX_CACHE_DIR="$DevDirectory\mx_cache"
+$Env:MX_ASYNC_DISTRIBUTIONS="true"
+$Env:MX_BUILD_EXPLODED="false"
+$Env:JDT="builtin"
+$Env:SDKMAN_DIR="$DevDirectory/.sdkman"
+$Env:PIP_CACHE_DIR="$DevDirectory\pip_cache"
+$Env:MAVEN_OPTS="-Dmaven.repo.local=$DevDirectory\maven_cache"
+$Env:GRADLE_USER_HOME="$DevDirectory\gradle_cache"
+
+$Env:OLLAMA_FLASH_ATTENTION=1
+$Env:OLLAMA_MODELS="$DevDirectory\ollamamodels"
+$Env:OLLAMA_HOST="0.0.0.0"
+$Env:OLLAMA_ORIGINS="*"
+$Env:OLLAMA_CONTEXT_LENGTH=32768
+$Env:OLLAMA_KV_CACHE_TYPE="q4_0"
+
+$Env:LLAMA_CACHE="$DevDirectory\llamacache"
+
+$Env:UV_INSTALL_DIR="$DevDirectory\uv"
+$Env:UV_CACHE_DIR="$DevDirectory\uv\.cache"
+$Env:UV_PYTHON_CACHE_DIR="$DevDirectory\uv\.python-cache"
+$Env:UV_PYTHON_INSTALL_DIR="$DevDirectory\uv\.pythons"
+$Env:UV_TOOL_DIR="$DevDirectory\uv\.tools"
+$Env:UV_PYTHON_BIN_DIR="$DevDirectory\bin"
+$Env:UV_TOOL_BIN_DIR="$DevDirectory\bin"
+
+$Env:PYENV="$DevDirectory\.pyenv\pyenv-win"
+$Env:PYENV_HOME="$DevDirectory\.pyenv\pyenv-win"
+$Env:PYENV_ROOT="$DevDirectory\.pyenv\pyenv-win"
+$Env:PYENV_VERSION=((Get-Content $Env:PYENV_HOME\version -Raw).Trim()) -split ' '
+$Env:PYTHONIOENCODING="utf-8"
+
+$Env:JAVA_HOME="$Env:SDKMAN_DIR\candidates\java\current"
+
+$MyPath="$DevDirectory\bin"
+$MyPath+=";$DevDirectory\mx"
+$MyPath+=";$DevDirectory\.pyenv\pyenv-win\shims"
+foreach ($sdkmanPath in Get-ChildItem "$Env:SDKMAN_DIR\candidates") {
+    $MyPath+=";${env:SDKMAN_DIR}\candidates\${sdkmanPath}\current\bin"
+}
+$Env:PATH = $MyPath + ";" + $Env:PATH
+
+if (Get-Command mise -ErrorAction SilentlyContinue) {
+    (& mise activate pwsh) | Out-String | Invoke-Expression
+}
