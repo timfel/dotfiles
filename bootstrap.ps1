@@ -99,7 +99,7 @@ function Ensure-GlobalMiseConfig {
         }
         $actual = (Resolve-Path -LiteralPath $config).Path
         $expected = (Resolve-Path -LiteralPath $target).Path
-        if ($actual -ne $expected) {
+        if ($actual -ne $expected -and (Get-Item $config).Target -ne $expected) {
             Throw-BootstrapError "mise config is a conflicting symlink: $config"
         }
         return

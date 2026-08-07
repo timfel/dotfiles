@@ -72,7 +72,6 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.vimrc" = { source = ".vimrc", mode = "symlink" }
 "~/.xbindkeysrc" = { source = ".xbindkeysrc", mode = "symlink" }
 "~/.xinitrc" = { source = ".xinitrc", mode = "symlink" }
-"~/.ssh/config" = { source = ".ssh/config", mode = "symlink" }
 
 "~/.cline" = { source = ".cline", mode = "symlink-each" }
 "~/.codex" = { source = ".codex", mode = "symlink-each", exclude = ["skills"] }

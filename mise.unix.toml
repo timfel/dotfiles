@@ -1,0 +1,3 @@
+# Dotfiles that should not be managed by native Windows.
+[dotfiles]
+"~/.ssh/config" = { source = ".ssh/config", mode = "symlink" }
