@@ -1,3 +1,12 @@
+# *********************************************
+# Ensure the script is running as Administrator
+# *********************************************
+If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "Script is not running as Administrator. Restarting elevated..."
+    Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Exit
+}
+
 [CmdletBinding()]
 param()
 

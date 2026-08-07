@@ -41,6 +41,8 @@
    autocrlf = false
    excludesfile = /home/tim/.gitignore
    mergetool = meld
+   longpaths = true
+   symlinks = true
 [gc]
    auto = 0
 [diff]
