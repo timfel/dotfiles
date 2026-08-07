@@ -30,8 +30,8 @@ dotfiles.default_mode = "symlink"
 
 # Current defaults. Projects can override any of these in their own mise.toml.
 [tools]
-python = ["latest", "graalpy3.12-community", "pypy3.11"]
-ruby = ["latest", "truffleruby"]
+python = "latest"
+ruby = "latest"
 node = "latest"
 java = "oracle-graalvm"
 maven = "latest"
