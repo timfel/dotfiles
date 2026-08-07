@@ -1,3 +1,6 @@
+[CmdletBinding()]
+param()
+
 # *********************************************
 # Ensure the script is running as Administrator
 # *********************************************
@@ -6,9 +9,6 @@ If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
     Exit
 }
-
-[CmdletBinding()]
-param()
 
 # Bootstrap the small set of prerequisites needed before mise can manage this
 # repository. The full machine setup belongs in mise.toml and is applied by
@@ -161,10 +161,12 @@ function Main {
     Write-BootstrapMessage "trusting $config"
     Invoke-Native $mise @('trust', '--yes', $config)
 
-    Write-BootstrapMessage 'running mise bootstrap'
+    # `[bootstrap.files]` and `[bootstrap.directories]` are Unix-only. mise
+    # 2026.8.2 validates that subsystem on Windows even when it has no entries.
+    Write-BootstrapMessage 'running mise bootstrap (skipping system files)'
     Push-Location $DotfilesDirectory
     try {
-        Invoke-Native $mise @('bootstrap', '--yes')
+        Invoke-Native $mise @('bootstrap', '--yes', '--skip', 'files')
     } finally {
         Pop-Location
     }
