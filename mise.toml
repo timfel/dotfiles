@@ -41,6 +41,8 @@ bun = "latest"
 uv = "latest"
 rust = "stable"
 pi = "latest"
+"npm:pi-acp" = "latest"
+"npm:@agentclientprotocol/codex-acp" = "latest"
 
 [bootstrap.repos]
 "~/.emacs.d" = { url = "https://github.com/timfel/.emacs.d.git" }

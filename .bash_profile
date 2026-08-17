@@ -30,7 +30,7 @@ if [ -n "$WT_SESSION" ]; then
 fi
 
 # General variables
-export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/bin:/sbin:$PATH"
+export PATH="$HOME/bin:$HOME/.local/bin:/usr/local/bin:/opt/bin:/sbin:/home/tim/.bun/bin:$PATH"
 export BIBINPUTS=".:~/texmf/bibliography/:~/Dropbox/Papers/:$BIBINPUTS"
 
 if [ -z $HOSTNAME ]; then
