@@ -96,31 +96,16 @@ if [ "$(uname -s 2>/dev/null)" = "Darwin" ]; then
 fi
 '''
 run_windows = '''
-# *********************************************
-# Ensure the script is running as Administrator
-# *********************************************
-If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Write-Host "Script is not running as Administrator. Restarting elevated..."
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
-    Exit
-}
-
 $ErrorActionPreference = "Stop"
 
-# ***************************************************************
-# Enable Developer Mode by setting the required registry settings
-# ***************************************************************
 $registryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"
 
-# Create the registry key if it doesn't exist yet
 if (-not (Test-Path $registryPath)) {
     New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion" -Name "AppModelUnlock" -Force | Out-Null
 }
 
-# Enable Developer Mode by setting both keys that some Windows versions require
 Set-ItemProperty -Path $registryPath -Name "AllowDevelopmentWithoutDevLicense" -Value 1 -Type DWord
 Set-ItemProperty -Path $registryPath -Name "DeveloperMode" -Value 1 -Type DWord
-
 Write-Host "Developer Mode has been enabled."
 
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name LongPathsEnabled -Type DWord -Value 1

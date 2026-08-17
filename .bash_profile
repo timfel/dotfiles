@@ -6,7 +6,7 @@ case "$(uname)" in
     Linux) export LINUX=1 ;;
 esac
 
-if which tmux >2&1 >/dev/null; then
+if which tmux 2>&1 >/dev/null; then
     export PROF_SCREEN_CMD="test -z ${TMUX} && (tmux -2 attach || tmux -2 new-session)"
 fi
 
