@@ -30,19 +30,35 @@ dotfiles.default_mode = "symlink"
 
 # Current defaults. Projects can override any of these in their own mise.toml.
 [tools]
+# Language runtimes
 python = "latest"
 ruby = "latest"
 node = "latest"
 java = "oracle-graalvm"
+rust = "stable"
+# Package management
 maven = "latest"
 gradle = "latest"
 jbang = "latest"
 bun = "latest"
 uv = "latest"
-rust = "stable"
+# LLM and agent stuff
 pi = "latest"
 "npm:pi-acp" = "latest"
 "npm:@agentclientprotocol/codex-acp" = "latest"
+# Language servers
+"npm:pyright" = "latest"
+"npm:typescript-language-server" = "latest"
+"gem:ruby-lsp" = "latest"
+"rust-analyzer" = "latest"
+"github:llvm/llvm-project" = "latest"
+# Developer tooling
+"github:cli/cli" = "latest"
+ripgrep = "latest"
+bottom = "latest"
+duf = "latest"
+dust = "latest"
+delta = "latest"
 
 [bootstrap.repos]
 "~/.emacs.d" = { url = "https://github.com/timfel/.emacs.d.git" }
