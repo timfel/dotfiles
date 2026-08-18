@@ -60,6 +60,12 @@ duf = "latest"
 dust = "latest"
 delta = "latest"
 
+[tools."github:keepassxreboot/keepassxc"]
+version = "latest"
+
+[tools."github:keepassxreboot/keepassxc".platforms]
+linux-x64 = { rename_exe = "keepassxc" }
+
 [bootstrap.repos]
 "~/.emacs.d" = { url = "https://github.com/timfel/.emacs.d.git" }
 "~/.tmux/plugins/tpm" = { url = "https://github.com/tmux-plugins/tpm.git" }
