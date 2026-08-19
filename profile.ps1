@@ -116,6 +116,7 @@ function vi {
     }
 }
 
+<#
 function emacs {
     $emacs = Search-StartMenu runemacs
     if ($emacs) {
@@ -149,6 +150,7 @@ function emacsclient {
         }
     }
 }
+#>
 
 function 7z {
     $lnk = Search-StartMenu 7zFM
