@@ -355,6 +355,8 @@ $Env:PYTHONIOENCODING="utf-8"
 
 $Env:JAVA_HOME="$Env:SDKMAN_DIR\candidates\java\current"
 
+$Env:MISE_DATA_DIR="$DevDirectory\mise\"
+
 $MyPath="$DevDirectory\bin"
 $MyPath+=";$DevDirectory\mx"
 $MyPath+=";$DevDirectory\.pyenv\pyenv-win\shims"

@@ -96,7 +96,6 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.vimrc" = { source = ".vimrc", mode = "symlink" }
 "~/.xbindkeysrc" = { source = ".xbindkeysrc", mode = "symlink" }
 "~/.xinitrc" = { source = ".xinitrc", mode = "symlink" }
-
 "~/.cline" = { source = ".cline", mode = "symlink-each" }
 "~/.codex" = { source = ".codex", mode = "symlink-each", exclude = ["skills"] }
 "~/.config" = { source = ".config", mode = "symlink-each" }
@@ -113,6 +112,7 @@ pre-dotfiles = "git submodule update --init --recursive"
 # Native Windows-only bootstrap. `run_windows` is not executed by WSL.
 [tasks.bootstrap]
 description = "Install native Windows applications/resources and link the PowerShell profile"
+shell = 'powershell'
 run = '''
 if [ "$(uname -s 2>/dev/null)" = "Darwin" ]; then
   command -v brew >/dev/null 2>&1 || { echo "Homebrew is required on macOS" >&2; exit 1; }
@@ -170,4 +170,6 @@ if (Test-Path -LiteralPath $profileTarget) {
 } else {
   New-Item -ItemType SymbolicLink -Path $profileTarget -Target $profileSource | Out-Null
 }
+
+New-Item -Force -ItemType SymbolicLink -Path $Env:APPDATA\.emacs.d -Target $Env:USERPROFILE\.emacs.d
 '''
