@@ -55,6 +55,7 @@ pi = "latest"
 "gem:ruby-lsp" = { version = "latest", depends = ["ruby"] }
 "rust-analyzer" = "latest"
 "github:llvm/llvm-project" = "latest"
+"npm:bash-language-server" = "latest"
 # Developer tooling
 "github:cli/cli" = "latest"
 ripgrep = "latest"
