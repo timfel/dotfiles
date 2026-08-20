@@ -111,6 +111,18 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.m2" = { source = ".m2", mode = "symlink-each" }
 "~/bin" = { source = "bin", mode = "symlink-each" }
 "~/texmf" = { source = "texmf", mode = "symlink" }
+
+# Flatpak browser policy extension points. The directory symlink is intentional:
+# Flatpak cannot resolve a symlink on an individual policy file while mounting it.
+"~/.local/share/flatpak/extension/org.mozilla.firefox.systemconfig/x86_64/stable" = { source = "firefox/flatpak-systemconfig", mode = "symlink", os = ["linux"] }
+"~/.local/share/flatpak/extension/org.mozilla.firefox.systemconfig/aarch64/stable" = { source = "firefox/flatpak-systemconfig", mode = "symlink", os = ["linux"] }
+"~/.local/share/flatpak/extension/org.chromium.Chromium.Extension.dotfiles/x86_64/1" = { source = "chromium/flatpak-extension", mode = "symlink", os = ["linux"] }
+"~/.local/share/flatpak/extension/org.chromium.Chromium.Extension.dotfiles/aarch64/1" = { source = "chromium/flatpak-extension", mode = "symlink", os = ["linux"] }
+
+# Firefox reads this user-level plist on macOS; Chromium is installed by the
+# bootstrap task into its managed-preferences location.
+"~/Library/Preferences/org.mozilla.firefox.plist" = { source = "firefox/macos/org.mozilla.firefox.plist", mode = "symlink", os = ["macos"] }
+
 "~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1" = { source = "profile.ps1", mode = "symlink", os = ["windows"] }
 
 # This is deliberately a symlink, not a second copy of the active config.
@@ -124,6 +136,22 @@ run = '''
 if [ "$(uname -s 2>/dev/null)" = "Darwin" ]; then
   command -v brew >/dev/null 2>&1 || { echo "Homebrew is required on macOS" >&2; exit 1; }
   brew install git zip unzip curl htop llvm
+
+  repo="${MISE_CONFIG_ROOT:-$(git rev-parse --show-toplevel)}"
+  source="$repo/chromium/macos/org.chromium.Chromium.plist"
+  target="/Library/Managed Preferences/${USER}/org.chromium.Chromium.plist"
+  if [ -L "$target" ]; then
+    [ "$(readlink "$target")" = "$source" ] || {
+      echo "browser policy is a conflicting symlink: $target" >&2
+      exit 1
+    }
+  elif [ -e "$target" ]; then
+    echo "refusing to replace existing browser policy: $target" >&2
+    exit 1
+  else
+    sudo mkdir -p "$(dirname "$target")"
+    sudo ln -s "$source" "$target"
+  fi
 fi
 '''
 run_windows = '''
@@ -164,6 +192,42 @@ foreach ($module in @("PowerShellGet", "Microsoft.PowerShell.PSResourceGet", "po
 }
 if (Get-Command uv -ErrorAction SilentlyContinue) {
   uv tool install --upgrade paatch
+}
+
+$repo = if ($env:MISE_CONFIG_ROOT) { $env:MISE_CONFIG_ROOT } else { (& git rev-parse --show-toplevel).Trim() }
+$chromiumPolicySource = Join-Path $repo "chromium\windows\policies.json"
+$chromiumPolicy = Get-Content -Raw -LiteralPath $chromiumPolicySource |
+  ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
+$chromiumRegistryPath = "HKCU:\Software\Policies\Chromium"
+New-Item -Path $chromiumRegistryPath -Force | Out-Null
+New-ItemProperty -Path $chromiumRegistryPath -Name "ExtensionSettings" -Value $chromiumPolicy -PropertyType String -Force | Out-Null
+
+$firefoxCandidates = @(
+  if ($env:ProgramFiles) { Join-Path $env:ProgramFiles "Mozilla Firefox\firefox.exe" }
+  if (${env:ProgramFiles(x86)}) { Join-Path ${env:ProgramFiles(x86)} "Mozilla Firefox\firefox.exe" }
+  if ($env:LOCALAPPDATA) { Join-Path $env:LOCALAPPDATA "Programs\Mozilla Firefox\firefox.exe" }
+) | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) }
+$firefoxExecutable = $firefoxCandidates | Select-Object -First 1
+if ($firefoxExecutable) {
+  $firefoxSource = Join-Path $repo "firefox\windows\policies.json"
+  $firefoxDistribution = Join-Path (Split-Path -Parent $firefoxExecutable) "distribution"
+  $firefoxTarget = Join-Path $firefoxDistribution "policies.json"
+  if (Test-Path -LiteralPath $firefoxTarget) {
+    $targetItem = Get-Item -Force -LiteralPath $firefoxTarget
+    if ($targetItem.LinkType -ne "SymbolicLink") {
+      throw "refusing to replace existing Firefox policy: $firefoxTarget"
+    }
+    $actual = (Resolve-Path -LiteralPath $firefoxTarget).Path
+    $expected = (Resolve-Path -LiteralPath $firefoxSource).Path
+    if ($actual -ne $expected) {
+      throw "Firefox policy is a conflicting symlink: $firefoxTarget"
+    }
+  } else {
+    New-Item -ItemType Directory -Force -Path $firefoxDistribution | Out-Null
+    New-Item -ItemType SymbolicLink -Path $firefoxTarget -Target $firefoxSource | Out-Null
+  }
+} else {
+  Write-Warning "Firefox executable was not found; its policy was not linked"
 }
 
 New-Item -Force -ItemType SymbolicLink -Path $Env:APPDATA\.emacs.d -Target $Env:USERPROFILE\.emacs.d
