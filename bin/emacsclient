@@ -1,0 +1,25 @@
+#!/bin/bash
+
+## Strip $HOME/bin from the PATH, even if it occurs multiple times by keeping
+## only prefix and suffix
+PRE_PATH="$PATH"
+POST_PATH="$PATH"
+while [[ "$PRE_PATH$POST_PATH" == *"${HOME}/bin"* ]]; do
+    PRE_PATH="${PRE_PATH%${HOME}/bin/:*}"
+    PRE_PATH="${PRE_PATH%${HOME}/bin:*}"
+    POST_PATH="${POST_PATH#*${HOME}/bin/:}"
+    POST_PATH="${POST_PATH#*${HOME}/bin:}"
+done
+
+appimage="$(env PATH="${PRE_PATH}${POST_PATH}" which emacs.AppImage)"
+if [ -n "$appimage" ]; then
+    exec -a emacsclient "$appimage" $@
+fi
+
+emacsclient="$(env PATH="${PRE_PATH}${POST_PATH}" which emacsclient)"
+if [ -n "$emacsclient" ]; then
+    exec "$emacsclient" $@
+fi
+
+echo "emacsclient not found" >/dev/stderr
+exit 127
