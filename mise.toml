@@ -9,6 +9,8 @@ dotfiles.default_mode = "symlink"
 # The small, platform-specific system prerequisite sets.
 [bootstrap.packages]
 "apt:git" = "latest"
+"apt:cmake" = "latest"
+"apt:libtool-bin" = "latest"
 "apt:build-essential" = "latest"
 "apt:zip" = "latest"
 "apt:unzip" = "latest"
@@ -60,7 +62,7 @@ duf = "latest"
 dust = "latest"
 delta = "latest"
 # Emacs
-"github:timfel/emacs-appimage" = { version = "latest", os = ["linux"] }
+"github:timfel/emacs-appimage" = { version = "latest", os = ["linux"], rename_exe = "emacs.AppImage" }
 "github:kiennq/emacs-build" = { version = "latest", os = ["windows"], asset_pattern = "*ucrt*emacs*full.zip" }
 
 [tools."github:keepassxreboot/keepassxc"]

@@ -158,6 +158,12 @@ function Main {
     }
     Ensure-GlobalMiseConfig
 
+    $profile = Join-Path $DotfilesDirectory 'profile.ps1'
+    if (-not (Test-Path -LiteralPath $config -PathType Leaf)) {
+        Throw-BootstrapError "profile.ps1 was not found in $DotfilesDirectory"
+    }
+    & $profile
+
     Write-BootstrapMessage "trusting $config"
     Invoke-Native $mise @('trust', '--yes', $config)
 
