@@ -34,7 +34,8 @@ dotfiles.default_mode = "symlink"
 [tools]
 # Language runtimes
 python = "latest"
-ruby = "latest"
+ruby = { version = "latest", os = ["linux", "macos"] }
+"core:ruby" = { version = "latest", os = ["windows"], postinstall = "ridk install 3" } # install the devkit so we can compile native extensions
 node = "latest"
 java = "oracle-graalvm"
 rust = "stable"
@@ -51,7 +52,7 @@ pi = "latest"
 # Language servers
 "npm:pyright" = "latest"
 "npm:typescript-language-server" = "latest"
-"gem:ruby-lsp" = { version = "latest", os = ["linux", "macos"], depends = ["ruby"] }
+"gem:ruby-lsp" = { version = "latest", depends = ["ruby"] }
 "rust-analyzer" = "latest"
 "github:llvm/llvm-project" = "latest"
 # Developer tooling
