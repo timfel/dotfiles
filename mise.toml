@@ -29,6 +29,11 @@ dotfiles.default_mode = "symlink"
 "dnf:automake" = "latest"
 "dnf:cmake" = "latest"
 "dnf:ninja" = "latest"
+# Desktop tools
+"flatpak:org.mozilla.firefox" = "latest"
+"flatpak:org.chromium.Chromium" = "latest"
+"flatpak:org.keepassxc.KeePassXC" = "latest"
+"flatpak:com.nextcloud.desktopclient.nextcloud" = "latest"
 
 # Current defaults. Projects can override any of these in their own mise.toml.
 [tools]
@@ -63,15 +68,16 @@ bottom = "latest"
 duf = "latest"
 dust = "latest"
 delta = "latest"
+hyperfine = "latest"
+procs = "latest"
+bat = { version = "latest", os = ["windows"], rename_exe = "cat" }
+lsd = { version = "latest", os = ["windows"], rename_exe = "ls" }
+fd = { version = "latest", os = ["windows"] }
+sd = { version = "latest", os = ["windows"], rename_exe = "sed" }
+"pipx:paatch" = { version = "latest", os = ["windows"] }
 # Emacs
 "github:timfel/emacs-appimage" = { version = "latest", os = ["linux"], rename_exe = "emacs.AppImage" }
 "github:kiennq/emacs-build" = { version = "latest", os = ["windows"], asset_pattern = "*ucrt*emacs*full.zip" }
-
-[tools."github:keepassxreboot/keepassxc"]
-version = "latest"
-
-[tools."github:keepassxreboot/keepassxc".platforms]
-linux-x64 = { rename_exe = "keepassxc" }
 
 [bootstrap.repos]
 "~/.emacs.d" = { url = "https://github.com/timfel/.emacs.d.git" }
@@ -133,28 +139,6 @@ pre-dotfiles = "git submodule update --init --recursive"
 [tasks.bootstrap]
 description = "Install native Windows applications/resources and link the PowerShell profile"
 shell = 'powershell'
-run = '''
-if [ "$(uname -s 2>/dev/null)" = "Darwin" ]; then
-  command -v brew >/dev/null 2>&1 || { echo "Homebrew is required on macOS" >&2; exit 1; }
-  brew install git zip unzip curl htop llvm
-
-  repo="${MISE_CONFIG_ROOT:-$(git rev-parse --show-toplevel)}"
-  source="$repo/chromium/macos/org.chromium.Chromium.plist"
-  target="/Library/Managed Preferences/${USER}/org.chromium.Chromium.plist"
-  if [ -L "$target" ]; then
-    [ "$(readlink "$target")" = "$source" ] || {
-      echo "browser policy is a conflicting symlink: $target" >&2
-      exit 1
-    }
-  elif [ -e "$target" ]; then
-    echo "refusing to replace existing browser policy: $target" >&2
-    exit 1
-  else
-    sudo mkdir -p "$(dirname "$target")"
-    sudo ln -s "$source" "$target"
-  fi
-fi
-'''
 run_windows = '''
 $ErrorActionPreference = "Stop"
 
@@ -184,51 +168,6 @@ foreach ($id in $ids) {
     winget install --id $id --exact --accept-source-agreements --accept-package-agreements
     if ($LASTEXITCODE -ne 0) { throw "winget failed for $id" }
   }
-}
-if (Get-Command Install-PackageProvider -ErrorAction SilentlyContinue) {
-  Install-PackageProvider NuGet -Force -Scope CurrentUser -ErrorAction SilentlyContinue | Out-Null
-}
-foreach ($module in @("PowerShellGet", "Microsoft.PowerShell.PSResourceGet", "posh-git", "modern-unix-win")) {
-  Install-Module $module -Scope CurrentUser -Force -AllowClobber -ErrorAction SilentlyContinue
-}
-if (Get-Command uv -ErrorAction SilentlyContinue) {
-  uv tool install --upgrade paatch
-}
-
-$repo = if ($env:MISE_CONFIG_ROOT) { $env:MISE_CONFIG_ROOT } else { (& git rev-parse --show-toplevel).Trim() }
-$chromiumPolicySource = Join-Path $repo "chromium\windows\policies.json"
-$chromiumPolicy = Get-Content -Raw -LiteralPath $chromiumPolicySource |
-  ConvertFrom-Json | ConvertTo-Json -Compress -Depth 10
-$chromiumRegistryPath = "HKCU:\Software\Policies\Chromium"
-New-Item -Path $chromiumRegistryPath -Force | Out-Null
-New-ItemProperty -Path $chromiumRegistryPath -Name "ExtensionSettings" -Value $chromiumPolicy -PropertyType String -Force | Out-Null
-
-$firefoxCandidates = @(
-  if ($env:ProgramFiles) { Join-Path $env:ProgramFiles "Mozilla Firefox\firefox.exe" }
-  if (${env:ProgramFiles(x86)}) { Join-Path ${env:ProgramFiles(x86)} "Mozilla Firefox\firefox.exe" }
-  if ($env:LOCALAPPDATA) { Join-Path $env:LOCALAPPDATA "Programs\Mozilla Firefox\firefox.exe" }
-) | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) }
-$firefoxExecutable = $firefoxCandidates | Select-Object -First 1
-if ($firefoxExecutable) {
-  $firefoxSource = Join-Path $repo "firefox\windows\policies.json"
-  $firefoxDistribution = Join-Path (Split-Path -Parent $firefoxExecutable) "distribution"
-  $firefoxTarget = Join-Path $firefoxDistribution "policies.json"
-  if (Test-Path -LiteralPath $firefoxTarget) {
-    $targetItem = Get-Item -Force -LiteralPath $firefoxTarget
-    if ($targetItem.LinkType -ne "SymbolicLink") {
-      throw "refusing to replace existing Firefox policy: $firefoxTarget"
-    }
-    $actual = (Resolve-Path -LiteralPath $firefoxTarget).Path
-    $expected = (Resolve-Path -LiteralPath $firefoxSource).Path
-    if ($actual -ne $expected) {
-      throw "Firefox policy is a conflicting symlink: $firefoxTarget"
-    }
-  } else {
-    New-Item -ItemType Directory -Force -Path $firefoxDistribution | Out-Null
-    New-Item -ItemType SymbolicLink -Path $firefoxTarget -Target $firefoxSource | Out-Null
-  }
-} else {
-  Write-Warning "Firefox executable was not found; its policy was not linked"
 }
 
 New-Item -Force -ItemType SymbolicLink -Path $Env:APPDATA\.emacs.d -Target $Env:USERPROFILE\.emacs.d

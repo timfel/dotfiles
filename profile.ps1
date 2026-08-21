@@ -33,12 +33,10 @@ WESTON_RDPRAIL_SHELL_ALLOW_ZAP=true
 Import-Module posh-git
 Import-Module modern-unix-win
 Enable-ModernUnixCompletions
-set-alias cat bat -Option AllScope
 set-alias df duf
 set-alias du dust
 set-alias diff delta -Option AllScope -Force
 set-alias find fd
-set-alias ls lsd -Option AllScope
 set-alias grep rg
 set-alias sed sd
 set-alias ps procs -Option AllScope
