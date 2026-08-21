@@ -171,7 +171,7 @@ Write-Host "Developer Mode has been enabled."
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name LongPathsEnabled -Type DWord -Value 1
 
 $ids = @(
-  "Microsoft.Powertoys", "Microsoft.WindowsTerminal.Preview", "Mozilla.Firefox",
+  "Microsoft.PowerToys", "Microsoft.WindowsTerminal.Preview", "Mozilla.Firefox",
   "SlackTechnologies.Slack", "Discord.Discord", "Zoom.Zoom", "Git.Git",
   "Microsoft.VisualStudio.2022.BuildTools", "Microsoft.VisualStudioCode",
   "Kitware.CMake", "GNU.Emacs", "Clement.bottom", "DominikReichl.KeePass",
