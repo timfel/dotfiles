@@ -13,7 +13,7 @@ If (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 # Bootstrap the small set of prerequisites needed before mise can manage this
 # repository. The full machine setup belongs in mise.toml and is applied by
 # `mise bootstrap` below.
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Inquire'
 
 $DefaultRepository = 'https://github.com/timfel/dotfiles.git'
 $Repository = if ($env:DOTFILES_REPO) { $env:DOTFILES_REPO } else { $DefaultRepository }
@@ -94,9 +94,6 @@ function Ensure-GlobalMiseConfig {
 
     if (Test-Path -LiteralPath $config) {
         $item = Get-Item -Force -LiteralPath $config
-        if ($item.LinkType -ne 'SymbolicLink') {
-            Throw-BootstrapError "refusing to replace existing mise config: $config"
-        }
         $actual = (Resolve-Path -LiteralPath $config).Path
         $expected = (Resolve-Path -LiteralPath $target).Path
         if ($actual -ne $expected -and (Get-Item $config).Target -ne $expected) {
@@ -176,7 +173,8 @@ function Main {
     } finally {
         Pop-Location
     }
-    Write-BootstrapMessage 'done'
+    Write-BootstrapMessage 'Done, press any key to continue...';
+    $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
 }
 
 Main

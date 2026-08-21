@@ -69,11 +69,10 @@ duf = "latest"
 dust = "latest"
 delta = "latest"
 hyperfine = "latest"
-procs = "latest"
-bat = { version = "latest", os = ["windows"], rename_exe = "cat" }
-lsd = { version = "latest", os = ["windows"], rename_exe = "ls" }
+bat = { version = "latest", os = ["windows"] }
+lsd = { version = "latest", os = ["windows"] }
 fd = { version = "latest", os = ["windows"] }
-sd = { version = "latest", os = ["windows"], rename_exe = "sed" }
+sd = { version = "latest", os = ["windows"] }
 "pipx:paatch" = { version = "latest", os = ["windows"] }
 # Emacs
 "github:timfel/emacs-appimage" = { version = "latest", os = ["linux"], rename_exe = "emacs.AppImage" }
@@ -140,7 +139,7 @@ pre-dotfiles = "git submodule update --init --recursive"
 description = "Install native Windows applications/resources and link the PowerShell profile"
 shell = 'powershell'
 run_windows = '''
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Inquire"
 
 $registryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"
 
