@@ -357,7 +357,7 @@ $Env:JAVA_HOME="$Env:SDKMAN_DIR\candidates\java\current"
 
 $Env:MISE_DATA_DIR="$DevDirectory\mise\"
 
-$MyPath="$DevDirectory\bin"
+$MyPath="$DevDirectory\bin;$Env:USERPROFILE\bin"
 $MyPath+=";$DevDirectory\mx"
 $MyPath+=";$DevDirectory\.pyenv\pyenv-win\shims"
 foreach ($sdkmanPath in Get-ChildItem "$Env:SDKMAN_DIR\candidates") {
