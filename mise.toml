@@ -39,8 +39,7 @@ dotfiles.default_mode = "symlink"
 [tools]
 # Language runtimes
 python = "latest"
-ruby = { version = "latest", os = ["linux", "macos"] }
-"core:ruby" = { version = "latest", os = ["windows"], postinstall = "ridk install 3" } # install the devkit so we can compile native extensions
+ruby = { version = "latest", postinstall = "ruby bin/postinstall.rb" }
 node = "latest"
 java = "oracle-graalvm"
 rust = "stable"
