@@ -1,2 +1,2 @@
 @ECHO OFF
-mise tool-stub "%~dp0"\jdtls
+mise tool-stub "%~dp0\jdtls"
