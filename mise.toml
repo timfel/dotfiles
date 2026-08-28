@@ -98,7 +98,6 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.cline" = { source = ".cline", mode = "symlink-each" }
 "~/.codex" = { source = ".codex", mode = "symlink-each", exclude = ["skills"] }
 "~/.config" = { source = ".config", mode = "symlink-each" }
-"~/.config/bottom/bottom.toml" = {}
 # This is deliberately a symlink, not a second copy of the active config.
 "~/.config/mise/config.toml" = { source = "mise.toml", mode = "symlink" }
 "~/.gdb" = { source = ".gdb", mode = "symlink-each" }

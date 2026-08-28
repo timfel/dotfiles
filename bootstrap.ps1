@@ -169,7 +169,7 @@ function Main {
     Write-BootstrapMessage 'running mise bootstrap (skipping system files)'
     Push-Location $DotfilesDirectory
     try {
-        Invoke-Native $mise @('bootstrap', '--yes', '--skip', 'files')
+        Invoke-Native $mise @('bootstrap', '--yes')
     } finally {
         Pop-Location
     }
