@@ -30,6 +30,8 @@ dotfiles.default_mode = "symlink"
 "apt:wl-clipboard" = "latest"
 "dnf:wl-clipboard" = "latest"
 "dnf:patch" = "latest"
+"apt:podman-docker" = "latest"
+"dnf:podman-docker" = "latest"
 # Desktop tools
 "flatpak:org.mozilla.firefox" = "latest"
 "flatpak:org.chromium.Chromium" = "latest"
@@ -57,7 +59,6 @@ pi = "latest"
 # Language servers
 "npm:pyright" = "latest"
 "npm:typescript-language-server" = "latest"
-"gem:ruby-lsp" = { version = "latest", depends = ["ruby"] }
 "rust-analyzer" = "latest"
 # "github:llvm/llvm-project" = "latest"
 "npm:bash-language-server" = "latest"
