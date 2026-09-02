@@ -52,7 +52,6 @@
 [merge]
    conflictstyle = diff3
    tool = meld
-
 [giggle]
    main-window-maximized = true
    main-window-geometry = 700x550+23+62
@@ -64,16 +63,14 @@
    blameviewer = git gui blame
 [gui]
    historybrowser = gitk
-[credential]
-   # helper = cache --timeout 3600
-   # helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
 [status]
    showUntrackedFiles = normal
-[github]
-   user = timfel
 [gitlab]
    user = timfelgentreff
+[github]
+   user = timfel
 [credential "https://github.com"]
    username = timfel
-[credential "https://dev.azure.com"]
-   useHttpPath = true
+   helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+   helper = !gh auth git-credential
