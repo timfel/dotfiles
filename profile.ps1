@@ -338,6 +338,7 @@ $Env:OLLAMA_CONTEXT_LENGTH=32768
 $Env:OLLAMA_KV_CACHE_TYPE="q4_0"
 
 $Env:LLAMA_CACHE="$DevDirectory\llamacache"
+$Env:LLAMA_ARG_MODELS_PRESET="$env:USERPROFILE\\.config\\llama.cpp\\models.ini"
 
 $Env:UV_INSTALL_DIR="$DevDirectory\uv"
 $Env:UV_CACHE_DIR="$DevDirectory\uv\.cache"

@@ -61,6 +61,9 @@ if [ -d "$HOME/.mx/mx" ]; then
     export PATH="$HOME/.ol/bin:$PATH"
 fi
 
+# for llama.cpp
+LLAMA_ARG_MODELS_PRESET="${HOME}/.config/llama.cpp/models.ini"
+
 if command -v mise >/dev/null 2>&1; then
     eval "$(mise activate bash)"
 fi
