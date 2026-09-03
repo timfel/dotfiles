@@ -114,6 +114,7 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.mambarc" = { source = ".mambarc", mode = "symlink" }
 "~/.mavenrc" = { source = ".mavenrc", mode = "symlink" }
 "~/.pdbrc" = { source = ".pdbrc", mode = "symlink" }
+"~/.pi/agent/models.json" = {}
 "~/.screenrc" = { source = ".screenrc", mode = "symlink" }
 "~/.stumpwmrc" = { source = ".stumpwmrc", mode = "symlink" }
 "~/.tmux.bashrc" = { source = ".tmux.bashrc", mode = "symlink" }
