@@ -6,9 +6,33 @@ set -Eeuo pipefail
 
 readonly DEFAULT_REPOSITORY="https://github.com/timfel/dotfiles.git"
 readonly MISE_INSTALL_URL="https://mise.run"
+readonly ANDROID_EMACSCLIENT="/data/data/org.gnu.emacs/lib/libemacsclient.so"
+readonly TERMUX_BIN="/data/data/com.termux/files/usr/bin"
+
+is_android() {
+    [[ "$(uname -o 2>/dev/null || true)" == Android ]] \
+        || [[ "$(uname -r 2>/dev/null || true)" == *-android* ]]
+}
+
+if is_android && [[ -d "$TERMUX_BIN" ]]; then
+    export PATH="$TERMUX_BIN:$PATH"
+fi
 
 repository="${DOTFILES_REPO:-$DEFAULT_REPOSITORY}"
 dotfiles_dir="${DOTFILES_DIR:-${HOME}/dotfiles}"
+has_git=0
+git_wrapper_dir=""
+
+cleanup() {
+    if [[ -n "${git_wrapper_dir}" ]]; then
+        rm -rf "${git_wrapper_dir}"
+    fi
+}
+trap cleanup EXIT
+
+inside_android_eshell() {
+    [[ "${INSIDE_EMACS:-}" == *eshell ]] && is_android
+}
 
 log() {
     printf 'bootstrap: %s\n' "$*"
@@ -31,6 +55,30 @@ as_root() {
 
 install_git() {
     if command -v git >/dev/null 2>&1; then
+        has_git=1
+        return
+    fi
+
+    if inside_android_eshell; then
+        log "git was not found; using jj's Git commands through mise"
+        git_wrapper_dir="$(mktemp -d)"
+        cat > "${git_wrapper_dir}/git" <<'EOF'
+#!/system/bin/sh
+if [ "${1:-}" = clone ]; then
+    exec mise x jj -- jj git "$@"
+fi
+{
+    printf 'bootstrap: ignoring unsupported git command:'
+    for argument do
+        printf ' %s' "$argument"
+    done
+    printf '\n'
+} >&2
+exit 0
+EOF
+        chmod +x "${git_wrapper_dir}/git"
+        export PATH="${git_wrapper_dir}:${PATH}"
+        hash -r
         return
     fi
 
@@ -53,6 +101,7 @@ install_git() {
     else
         fail "could not find a supported package manager; install git and rerun this script"
     fi
+    has_git=1
 }
 
 install_mise() {
@@ -60,12 +109,19 @@ install_mise() {
         return
     fi
 
-    command -v curl >/dev/null 2>&1 || fail "curl is required to install mise"
-
     log "mise was not found; installing it from ${MISE_INSTALL_URL}"
     local installer
     installer="$(mktemp)"
-    curl --fail --silent --show-error --location "${MISE_INSTALL_URL}" --output "${installer}"
+    if inside_android_eshell; then
+        [[ -x "${ANDROID_EMACSCLIENT}" ]] \
+            || fail "Android Emacs client is not executable: ${ANDROID_EMACSCLIENT}"
+        "${ANDROID_EMACSCLIENT}" --eval \
+            "(progn (require 'url-handlers) (url-copy-file \"${MISE_INSTALL_URL}\" \"${installer}\" t))" \
+            >/dev/null
+    else
+        command -v curl >/dev/null 2>&1 || fail "curl is required to install mise"
+        curl --fail --silent --show-error --location "${MISE_INSTALL_URL}" --output "${installer}"
+    fi
     sh "${installer}"
     rm -f "${installer}"
 
@@ -97,10 +153,21 @@ ensure_global_mise_config() {
 clone_or_use_repository() {
     if [[ -e "${dotfiles_dir}" ]]; then
         [[ -d "${dotfiles_dir}" ]] || fail "DOTFILES_DIR exists but is not a directory: ${dotfiles_dir}"
-        git -C "${dotfiles_dir}" rev-parse --show-toplevel >/dev/null 2>&1 \
-            || fail "DOTFILES_DIR exists but is not a git checkout: ${dotfiles_dir}"
+        if [[ $has_git -eq 1 ]]; then
+            git -C "${dotfiles_dir}" rev-parse --show-toplevel >/dev/null 2>&1 \
+                || fail "DOTFILES_DIR exists but is not a git checkout: ${dotfiles_dir}"
+        elif inside_android_eshell; then
+            [[ -d "${dotfiles_dir}/.jj" ]] \
+                || fail "DOTFILES_DIR exists but is not a jj checkout: ${dotfiles_dir}"
+        else
+            fail "DOTFILES_DIR exists but is not a supported checkout: ${dotfiles_dir}"
+        fi
         log "using existing checkout ${dotfiles_dir}"
-        log "not pulling automatically; update it manually with git -C ${dotfiles_dir} pull"
+        if inside_android_eshell; then
+            log "not pulling automatically; update it manually with mise x jj -- jj git fetch -R ${dotfiles_dir}"
+        else
+            log "not pulling automatically; update it manually with git -C ${dotfiles_dir} pull"
+        fi
         return
     fi
 
@@ -111,8 +178,8 @@ clone_or_use_repository() {
 
 main() {
     [[ -n "${HOME:-}" ]] || fail 'HOME is not set'
-    install_git
     install_mise
+    install_git
     clone_or_use_repository
 
     local config="${dotfiles_dir}/mise.toml"
@@ -123,7 +190,12 @@ main() {
     mise trust --yes "${config}"
 
     log "running mise bootstrap"
-    (cd "${dotfiles_dir}" && mise bootstrap --yes)
+    if [[ $has_git -eq 1 ]]; then
+        (cd "${dotfiles_dir}" && mise bootstrap --yes)
+    else
+        log "forcing dotfile overrides, since we already created a mise config to use jj instead of git"
+        (cd "${dotfiles_dir}" && mise bootstrap --force-dotfiles --yes)
+    fi
     log "done"
 }
 

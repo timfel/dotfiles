@@ -21,6 +21,14 @@ On Windows PowerShell:
 Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/timfel/dotfiles/master/bootstrap.ps1" -OutFile "./bootstrap.ps1"; &"./bootstrap.ps1"
 #+end_src
 
+Within Emacs on Android:
+
+#+begin_src eshell
+(server-start)
+(url-copy-file "https://raw.githubusercontent.com/timfel/dotfiles/refs/heads/master/bootstrap.sh" "bootstrap.sh" t)
+$SHELL bootstrap.sh
+#+end_src
+
 The scripts are deliberately conservative when the checkout already exists:
 they do not pull or reset it. Set =DOTFILES_REPO= to use another repository or
 =DOTFILES_DIR= to choose another checkout location. After reviewing the plan,
