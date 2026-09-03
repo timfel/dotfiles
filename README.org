@@ -23,7 +23,7 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/timfe
 
 Within Emacs on Android:
 
-#+begin_src eshell
+#+begin_src bash
 (server-start)
 (url-copy-file "https://raw.githubusercontent.com/timfel/dotfiles/refs/heads/master/bootstrap.sh" "bootstrap.sh" t)
 $SHELL bootstrap.sh

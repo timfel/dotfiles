@@ -21,17 +21,27 @@ fi
 repository="${DOTFILES_REPO:-$DEFAULT_REPOSITORY}"
 dotfiles_dir="${DOTFILES_DIR:-${HOME}/dotfiles}"
 has_git=0
-git_wrapper_dir=""
+wrapper_dir=""
 
 cleanup() {
-    if [[ -n "${git_wrapper_dir}" ]]; then
-        rm -rf "${git_wrapper_dir}"
+    if [[ -n "${wrapper_dir}" ]]; then
+        rm -rf "${wrapper_dir}"
     fi
 }
 trap cleanup EXIT
 
 inside_android_eshell() {
     [[ "${INSIDE_EMACS:-}" == *eshell ]] && is_android
+}
+
+ensure_wrapper_dir() {
+    if [[ -n "${wrapper_dir}" ]]; then
+        return
+    fi
+    wrapper_dir="$(mktemp -d)"
+    export DOTFILES_ANDROID_EMACSCLIENT="${ANDROID_EMACSCLIENT}"
+    export PATH="${wrapper_dir}:${PATH}"
+    hash -r
 }
 
 log() {
@@ -61,8 +71,8 @@ install_git() {
 
     if inside_android_eshell; then
         log "git was not found; using jj's Git commands through mise"
-        git_wrapper_dir="$(mktemp -d)"
-        cat > "${git_wrapper_dir}/git" <<'EOF'
+        ensure_wrapper_dir
+        cat > "${wrapper_dir}/git" <<'EOF'
 #!/system/bin/sh
 if [ "${1:-}" = clone ]; then
     exec mise x jj -- jj git "$@"
@@ -76,8 +86,7 @@ fi
 } >&2
 exit 0
 EOF
-        chmod +x "${git_wrapper_dir}/git"
-        export PATH="${git_wrapper_dir}:${PATH}"
+        chmod +x "${wrapper_dir}/git"
         hash -r
         return
     fi
@@ -131,6 +140,71 @@ install_mise() {
     command -v mise >/dev/null 2>&1 || fail "mise was installed but is not on PATH"
 }
 
+install_wget_wrapper() {
+    if ! inside_android_eshell; then
+        return
+    fi
+    if command -v curl >/dev/null 2>&1 || command -v wget >/dev/null 2>&1; then
+        return
+    fi
+
+    log "curl and wget were not found; providing wget through Android Emacs"
+    ensure_wrapper_dir
+    cat > "${wrapper_dir}/wget" <<'EOF'
+#!/system/bin/sh
+set -eu
+
+emacsclient="${DOTFILES_ANDROID_EMACSCLIENT:?}"
+
+unsupported() {
+    {
+        printf 'bootstrap: unsupported wget arguments:'
+        for argument do
+            printf ' %s' "$argument"
+        done
+        printf '\n'
+    } >&2
+    exit 2
+}
+
+copy_url() {
+    url="$1"
+    file="$2"
+    printf 'bootstrap: wget via Android Emacs: %s -> %s\n' "$url" "$file" >&2
+    "$emacsclient" --eval \
+        "(progn (require 'url-handlers) (url-copy-file \"$url\" \"$file\" t))" \
+        >/dev/null
+}
+
+case "${1:-}" in
+    -qO|-O)
+        [ "$#" -eq 3 ] || unsupported "$@"
+        output="$2"
+        url="$3"
+        ;;
+    -qO-|-O-)
+        [ "$#" -eq 2 ] || unsupported "$@"
+        output="-"
+        url="$2"
+        ;;
+    *)
+        unsupported "$@"
+        ;;
+esac
+
+if [ "$output" = - ]; then
+    temporary_file="$(mktemp)"
+    trap 'rm -f "$temporary_file"' 0 1 2 3 15
+    copy_url "$url" "$temporary_file"
+    cat "$temporary_file"
+else
+    copy_url "$url" "$output"
+fi
+EOF
+    chmod +x "${wrapper_dir}/wget"
+    hash -r
+}
+
 ensure_global_mise_config() {
     local config_dir config link_target actual_target
     config_dir="${XDG_CONFIG_HOME:-${HOME}/.config}/mise"
@@ -178,6 +252,7 @@ clone_or_use_repository() {
 
 main() {
     [[ -n "${HOME:-}" ]] || fail 'HOME is not set'
+    install_wget_wrapper
     install_mise
     install_git
     clone_or_use_repository
