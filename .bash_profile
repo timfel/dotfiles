@@ -51,7 +51,7 @@ if [ -d "$HOME/.mx/mx" ]; then
     export PATH="$HOME/.mx/mx:$PATH"
     export MX_PYTHON_VERSION=3
     # export MX_COMPDB=default
-    export MX_BUILD_SHALLOW_DEPENDENCY_CHECKS=true
+    # export MX_BUILD_SHALLOW_DEPENDENCY_CHECKS=true
     export MX_OUTPUT_ROOT_INCLUDES_CONFIG=false
     # export MX_BUILD_EXPLODED=true
     # export LINKY_LAYOUT="*.jar"
