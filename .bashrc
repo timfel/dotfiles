@@ -113,14 +113,6 @@ function prompt {
        PS1="$PS1 ⊙${CONDA_PROMPT_MODIFIER}"
    fi
 
-   # Show the current branch
-   VCS=`echo -e $(__prompt_command)`
-   if [ -z "$VCS" ]; then
-      EXITCODE="${EXITCODE}"
-   else
-      VCS=" [${VCS}] "
-   fi
-   PS1="$PS1$VCS"
    if [ -n "${TERM#screen*}" ]; then
       PS1="$PS1$EXITCODE "
    else
@@ -149,7 +141,7 @@ if [ -n "$LINUX" ]; then
 
     if [[ -n "$DISPLAY" ]]; then
 	if [ -f $HOME/.Xresources ]; then
-	    if ( which xrdb 2>&1 >/dev/null ); then
+	    if which xrdb 2>/dev/null >/dev/null ; then
                 xrdb -merge $HOME/.Xresources 2>&1 >/dev/null
 	    fi
 	fi

@@ -1,0 +1,14 @@
+[25624694-afa9-4021-a19c-63dce334474b]
+Description=Window settings for Emacs
+clientmachine=toolbx
+decocolor=BreezeModusOperandiTinted
+decocolorrule=2
+title=BreezeModusOperandiTinted.colors - GNU Emacs at toolbx
+types=1
+wmclass=emacs_real Emacs
+wmclasscomplete=true
+wmclassmatch=1
+
+[General]
+count=1
+rules=25624694-afa9-4021-a19c-63dce334474b

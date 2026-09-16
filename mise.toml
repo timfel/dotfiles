@@ -113,6 +113,8 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.hgrc" = { source = ".hgrc", mode = "symlink" }
 "~/.i3" = { source = ".i3", mode = "symlink-each" }
 "~/.irbrc" = { source = ".irbrc", mode = "symlink" }
+# This is the Breeze theme with Modus Operandi Tinted window decorations, for a fanzy emacs look
+"~/.local/share/color-schemes/BreezeModusOperandiTinted.colors" = {}
 # Flatpak browser policy extension points. The directory symlink is intentional: Flatpak cannot resolve a symlink on an individual policy file while mounting it.
 "~/.local/share/flatpak/extension/org.chromium.Chromium.Extension.dotfiles/aarch64/1" = { source = "chromium/flatpak-extension", mode = "symlink", os = ["linux"] }
 "~/.local/share/flatpak/extension/org.chromium.Chromium.Extension.dotfiles/x86_64/1" = { source = "chromium/flatpak-extension", mode = "symlink", os = ["linux"] }
