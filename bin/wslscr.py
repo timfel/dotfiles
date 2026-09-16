@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import datetime
+import shutil
 import os
 import shlex
 import subprocess
@@ -38,7 +38,7 @@ if __name__ == "__main__":
             """)
         os.system(get_ps() + " " + output + ".ps1")
         os.unlink(output + ".ps1")
-    else:
+    elif shutil.which("wslpath"):
         output = subprocess.check_output(["wslpath", "-m", sys.argv[1]]).decode().strip()
         cmd = f"""{get_ps()} \"
                 Add-Type -AssemblyName System.Windows.Forms
@@ -47,3 +47,9 @@ if __name__ == "__main__":
                 \\$img.Save(\\\"{output}\\\", [Drawing.Imaging.ImageFormat]::PNG)\"
         """
         os.system(cmd)
+    elif (
+            shutil.which("flatpak-spawn") and
+            subprocess.check_call(["flatpak-spawn", "--host", "spectacle", "--help"]) == 0
+    ):
+        output = os.path.abspath(sys.argv[1])
+        os.system(f"flatpak-spawn --host spectacle -b -r -i -o '{output}'")
