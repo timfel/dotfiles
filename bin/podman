@@ -1,0 +1,17 @@
+#!/bin/bash
+
+this="$(dirname "${BASH_SOURCE[0]}")"
+
+NEWPATH=":${PATH}:"
+NEWPATH="${NEWPATH//:${this}:/:}"
+NEWPATH="${NEWPATH#:}"
+NEWPATH="${NEWPATH%:}"
+export PATH="$NEWPATH"
+
+if which flatpak-spawn 2>/dev/null >/dev/null; then
+    if flatpak-spawn --host which podman 2>/dev/null >/dev/null; then
+        exec flatpak-spawn --host podman "$@"
+    fi
+fi
+
+exec podman "$@"
