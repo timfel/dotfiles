@@ -1,0 +1,26 @@
+#!/bin/bash
+
+this="$(dirname "${BASH_SOURCE[0]}")"
+
+NEWPATH=":${PATH}:"
+NEWPATH="${NEWPATH//:${this}:/:}"
+NEWPATH="${NEWPATH#:}"   # remove leading colon
+NEWPATH="${NEWPATH%:}"   # remove trailing colon
+export PATH="$NEWPATH"
+
+if which thunderbird 2>/dev/null >/dev/null; then
+    exec thunderbird "$@"
+elif which flatpak-spawn 2>/dev/null >/dev/null; then
+    if flatpak-spawn --host which flatpak 2>/dev/null >/dev/null; then
+        if flatpak-spawn --host flatpak info org.mozilla.thunderbird 2>/dev/null >/dev/null; then
+            exec flatpak-spawn --host flatpak run org.mozilla.thunderbird "$@"
+        fi
+    fi
+
+    if ( flatpak-spawn --host which thunderbird 2>/dev/null >/dev/null ); then
+        exec flatpak-spawn --host thunderbird "$@"
+    fi
+fi
+
+# fallback to error out
+exec thunderbird "$@"
