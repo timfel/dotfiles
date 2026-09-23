@@ -1,0 +1,25 @@
+version = 1
+revision = 3
+requires-python = ">=3.10"
+
+[options]
+exclude-newer = "2026-09-22T08:40:26.448010972Z"
+
+[[package]]
+name = "mise-pypi-tool-environment"
+version = "0.0.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "paatch" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "paatch", specifier = "==1.20.3" }]
+
+[[package]]
+name = "paatch"
+version = "1.20.3"
+source = { registry = "https://pypi.org/simple/" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/83/c3/6b46ac331c64ece4d3663c9e040bbbf36a20f589a0032b0f83ea0b63569f/paatch-1.20.3-py3-none-any.whl", hash = "sha256:adfbb2bbc28adc4e138e84976922b1ce1bdebdece0e59681a75baec75348bec8", size = 18515, upload-time = "2025-09-19T07:34:35.613Z" },
+]
