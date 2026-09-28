@@ -1,3 +1,15 @@
 # Dotfiles that should not be managed by native Windows.
 [dotfiles]
 "~/.ssh/config" = { source = ".ssh/config", mode = "symlink" }
+
+[bootstrap.hooks]
+"pre-packages" = '''
+if command -v flatpak >/dev/null 2>&1; then
+  flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+fi
+'''
+"post-packages" = """
+if command -v flatpak >/dev/null 2>&1; then
+  flatpak override --user --device=all org.mozilla.firefox || true
+fi
+"""

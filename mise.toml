@@ -15,10 +15,10 @@ dotfiles.default_mode = "symlink"
 "apt:libtool-bin" = "latest"
 "apt:build-essential" = "latest"
 "dnf:gcc" = "latest"
-"dnf:g++" = "latest"
+"dnf:gcc-c++" = "latest"
 "dnf:make" = "latest"
 "dnf:automake" = "latest"
-"dnf:ninja" = "latest"
+"dnf:ninja-build" = "latest"
 "apt:zip" = "latest"
 "dnf:zip" = "latest"
 "apt:unzip" = "latest"
@@ -30,16 +30,17 @@ dotfiles.default_mode = "symlink"
 "apt:wl-clipboard" = "latest"
 "dnf:wl-clipboard" = "latest"
 "dnf:patch" = "latest"
-"dnf:docker" = "latest"
+"dnf:moby-engine" = "latest"
 "dnf:docker-compose" = "latest"
 "dnf:gdouros-symbola-fonts" = "latest"
 "dnf:google-noto-color-emoji-fonts" = "latest"
 "dnf:google-noto-emoji-fonts" = "latest"
 "dnf:dejavu-sans-fonts" = "latest"
 "dnf:dejavu-sans-mono-fonts" = "latest"
-# Desktop tools are installed by the bootstrap task below so the Flathub
-# remote can be selected explicitly. mise's built-in Flatpak backend currently
-# invokes `flatpak install` without a remote, which is ambiguous on Fedora.
+# Desktop tools
+"flatpak-user:org.mozilla.firefox" = "latest"
+"flatpak-user:org.chromium.Chromium" = "latest"
+"flatpak-user:org.keepassxc.KeePassXC" = "latest"
 
 # Current defaults. Projects can override any of these in their own mise.toml.
 [tools]
@@ -98,6 +99,9 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.cline" = { source = ".cline", mode = "symlink-each" }
 "~/.codex" = { source = ".codex", mode = "symlink-each", exclude = ["skills"] }
 "~/.config" = { source = ".config", mode = "symlink-each" }
+# Some files are just to get started, and get modified later
+"~/.config/kwinrulesrc" = { source = ".config.templates/kwinrulesrc", mode = "copy" }
+"~/.config/Nextcloud/nextcloud.cfg" = { source = ".config.templates/Nextcloud/nextcloud.cfg", mode = "copy" }
 # This is deliberately a symlink, not a second copy of the active config.
 "~/.config/mise/config.toml" = { source = "mise.toml", mode = "symlink" }
 "~/.gdb" = { source = ".gdb", mode = "symlink-each" }
@@ -109,8 +113,10 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.hgrc" = { source = ".hgrc", mode = "symlink" }
 "~/.i3" = { source = ".i3", mode = "symlink-each" }
 "~/.irbrc" = { source = ".irbrc", mode = "symlink" }
+# The emacs desktop link contains fully qualified paths
+"~/.local/share/applications/Emacs.desktop" = { source = "Emacs.desktop.template", mode = "template", os = ["linux"] }
 # This is the Breeze theme with Modus Operandi Tinted window decorations, for a fanzy emacs look
-"~/.local/share/color-schemes/BreezeModusOperandiTinted.colors" = {}
+"~/.local/share/color-schemes/BreezeModusOperandiTinted.colors" = { os = ["linux"] }
 # Flatpak browser policy extension points. The directory symlink is intentional: Flatpak cannot resolve a symlink on an individual policy file while mounting it.
 "~/.local/share/flatpak/extension/org.chromium.Chromium.Extension.dotfiles/aarch64/1" = { source = "chromium/flatpak-extension", mode = "symlink", os = ["linux"] }
 "~/.local/share/flatpak/extension/org.chromium.Chromium.Extension.dotfiles/x86_64/1" = { source = "chromium/flatpak-extension", mode = "symlink", os = ["linux"] }
@@ -134,26 +140,8 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/bin" = { source = "bin", mode = "symlink-each" }
 "~/texmf" = { source = "texmf", mode = "symlink" }
 
-# Flatpak's non-interactive installer needs the remote as a separate argument;
-# otherwise Fedora's and Flathub's matching refs are ambiguous.
-[tasks.bootstrap-flatpaks]
-description = "Install desktop Flatpaks from Flathub"
-run = '''
-if command -v flatpak >/dev/null 2>&1; then
-  flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-  flatpak install --system --noninteractive flathub \
-    org.mozilla.firefox \
-    org.chromium.Chromium \
-    org.keepassxc.KeePassXC \
-    com.nextcloud.desktopclient.nextcloud
-  flatpak override --user --device=all org.mozilla.firefox
-fi
-'''
-run_windows = 'exit 0'
-
 # Native Windows-only bootstrap. `run_windows` is not executed by WSL.
 [tasks.bootstrap]
-depends = ["bootstrap-flatpaks"]
 description = "Install native Windows applications/resources and link the PowerShell profile"
 shell = 'powershell'
 run_windows = '''

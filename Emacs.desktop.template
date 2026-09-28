@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Emacs
+GenericName=Text Editor
+Comment=Edit text with Emacs
+Exec={{ env.HOME }}/.local/share/mise/installs/github-timfel-emacs-builder/-latest/bin/emacs
+Icon={{ env.HOME }}/.local/share/mise/installs/github-timfel-emacs-builder/-latest/Emacs.svg
+Terminal=false
+Categories=Development;TextEditor;
+MimeType=text/plain;
+StartupWMClass=Emacs
