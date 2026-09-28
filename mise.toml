@@ -101,7 +101,6 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.config" = { source = ".config", mode = "symlink-each" }
 # Some files are just to get started, and get modified later
 "~/.config/kwinrulesrc" = { source = ".config.templates/kwinrulesrc", mode = "copy" }
-"~/.config/Nextcloud/nextcloud.cfg" = { source = ".config.templates/Nextcloud/nextcloud.cfg", mode = "copy" }
 # This is deliberately a symlink, not a second copy of the active config.
 "~/.config/mise/config.toml" = { source = "mise.toml", mode = "symlink" }
 "~/.gdb" = { source = ".gdb", mode = "symlink-each" }
@@ -116,7 +115,7 @@ pre-dotfiles = "git submodule update --init --recursive"
 # The emacs desktop link contains fully qualified paths
 "~/.local/share/applications/Emacs.desktop" = { source = "Emacs.desktop.template", mode = "template", os = ["linux"] }
 # This is the Breeze theme with Modus Operandi Tinted window decorations, for a fanzy emacs look
-"~/.local/share/color-schemes/BreezeModusOperandiTinted.colors" = { os = ["linux"] }
+"~/.local/share/color-schemes/BreezeModusOperandiTinted.colors" = { os = ["linux"], mode = "symlink" }
 # Flatpak browser policy extension points. The directory symlink is intentional: Flatpak cannot resolve a symlink on an individual policy file while mounting it.
 "~/.local/share/flatpak/extension/org.chromium.Chromium.Extension.dotfiles/aarch64/1" = { source = "chromium/flatpak-extension", mode = "symlink", os = ["linux"] }
 "~/.local/share/flatpak/extension/org.chromium.Chromium.Extension.dotfiles/x86_64/1" = { source = "chromium/flatpak-extension", mode = "symlink", os = ["linux"] }

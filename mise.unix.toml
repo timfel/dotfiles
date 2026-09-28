@@ -2,6 +2,9 @@
 [dotfiles]
 "~/.ssh/config" = { source = ".ssh/config", mode = "symlink" }
 
+[bootstrap.files]
+"~/.config/Nextcloud/nextcloud.cfg" = { source = ".config.templates/nextcloud.cfg" }
+
 [bootstrap.hooks]
 "pre-packages" = '''
 if command -v flatpak >/dev/null 2>&1; then
@@ -13,3 +16,15 @@ if command -v flatpak >/dev/null 2>&1; then
   flatpak override --user --device=all org.mozilla.firefox || true
 fi
 """
+"pre-dotfiles" = '''
+if test -f ~/.bashrc; then
+  if ! test -L ~/.bashrc; then
+    rm ~/.bashrc
+  fi
+fi
+if test -f ~/.bash_profile; then
+  if ! test -L ~/.bash_profile; then
+    rm ~/.bash_profile
+  fi
+fi
+'''
