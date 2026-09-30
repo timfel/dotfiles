@@ -79,6 +79,7 @@ lsd = { version = "latest", os = ["windows"] }
 fd = { version = "latest", os = ["windows"] }
 sd = { version = "latest", os = ["windows"] }
 "pipx:paatch" = { version = "latest", os = ["windows"] }
+"nono" = { version = "latest", "os" = ["linux", "macos"] }
 # Emacs
 "github:timfel/emacs-builder" = { version = "latest", os = ["linux"], version_prefix = "emacs-bundle" }
 "github:kiennq/emacs-build" = { version = "latest", os = ["windows"], asset_pattern = "*ucrt*emacs*full.zip" }
