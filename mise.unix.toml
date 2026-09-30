@@ -2,6 +2,9 @@
 [dotfiles]
 "~/.ssh/config" = { source = ".ssh/config", mode = "symlink" }
 
+[bootstrap.directories]
+"~/.config/Nextcloud" = {}
+
 [bootstrap.files]
 "~/.config/Nextcloud/nextcloud.cfg" = { source = ".config.templates/nextcloud.cfg" }
 

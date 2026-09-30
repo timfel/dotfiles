@@ -946,6 +946,11 @@ url = "https://nodejs.org/dist/v26.10.0/node-v26.10.0-win-x64.zip"
 checksum = "sha256:9fef7eca6743a6b910989cd8e78712376b394fcb9b6e1e9c44a0799a287f90c5"
 url = "https://nodejs.org/dist/v26.10.0/node-v26.10.0-win-x64.zip"
 
+[[tools.nono]]
+version = "0.78.0"
+backend = "github:nolabs-ai/nono"
+specifiers = ["latest"]
+
 [[tools."npm:@agentclientprotocol/codex-acp"]]
 version = "1.12.0"
 aube = { path = ".mise/locks/npm-agentclientprotocol-codex-acp/1.12.0", digest = "sha256:c7fb9e85db52e2e5c2cdfdabd5113edff661dd50b767b0413eaaf623b235d501" }
