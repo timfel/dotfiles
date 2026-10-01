@@ -31,3 +31,5 @@ cd ~/dotfiles
 mise bootstrap --dry-run
 mise bootstrap --yes
 #+end_src
+
+To update, run ~mise lock --global --bump~ then ~mise install --locked~

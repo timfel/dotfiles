@@ -104,6 +104,8 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.config/kwinrulesrc" = { source = ".config.templates/kwinrulesrc", mode = "copy" }
 # This is deliberately a symlink, not a second copy of the active config.
 "~/.config/mise/config.toml" = { source = "mise.toml", mode = "symlink" }
+"~/.config/mise/locks" = { source = ".mise/locks", mode = "symlink" }
+"~/.config/mise/mise.lock" = { source = "mise.lock", mode = "symlink" }
 "~/.gdb" = { source = ".gdb", mode = "symlink-each" }
 "~/.gdbinit" = { source = ".gdbinit", mode = "symlink" }
 "~/.gemrc" = { source = ".gemrc", mode = "symlink" }
