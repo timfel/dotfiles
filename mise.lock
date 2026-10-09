@@ -1131,6 +1131,11 @@ backend = "pipx:paatch"
 specifiers = ["latest"]
 uv = { path = ".mise/locks/pipx-paatch/1.20.3", digest = "sha256:cc9ab3620be40ae978bd25e556e5bc17a8b2bde058557019eb7bababe5d7c2c0" }
 
+[[tools."pypi:amd-debug-tools"]]
+version = "0.2.22"
+backend = "pypi:amd-debug-tools"
+specifiers = ["latest"]
+
 [[tools.python]]
 version = "3.14.8"
 backend = "core:python"

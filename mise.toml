@@ -78,7 +78,8 @@ bat = { version = "latest", os = ["windows"] }
 lsd = { version = "latest", os = ["windows"] }
 fd = { version = "latest", os = ["windows"] }
 sd = { version = "latest", os = ["windows"] }
-"pipx:paatch" = { version = "latest", os = ["windows"] }
+"pypi:paatch" = { version = "latest", os = ["windows"] }
+"pypi:amd-debug-tools" = { version = "latest", os = ["linux"] }
 "nono" = { version = "latest", "os" = ["linux", "macos"] }
 # Emacs
 "github:timfel/emacs-builder" = { version = "latest", os = ["linux"], version_prefix = "emacs-bundle" }
@@ -179,3 +180,19 @@ foreach ($id in $ids) {
 
 New-Item -Force -ItemType SymbolicLink -Path $Env:APPDATA\.emacs.d -Target $Env:USERPROFILE\.emacs.d
 '''
+
+[tasks.strixhalo]
+description = "Update Strix Halo setup"
+run = """
+  amd-ttm
+
+  read -p "How many GB should we allow the GPU to take? " mem
+  if [ $? -eq 0 ]; then
+     if [ -n "$mem" ]; then
+       amd-ttm --set $mem
+     fi
+  fi
+
+  echo Turning off amd_iommu for slight speed bump. This disables passing PCIe devices to VMs
+  sudo grubby --update-kernel=ALL --args=amd_iommu=off
+"""
