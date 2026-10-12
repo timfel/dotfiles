@@ -1135,7 +1135,9 @@ uv = { path = ".mise/locks/pypi-amd-debug-tools/0.2.22", digest = "sha256:7dbfd5
 version = "2026.7.3"
 backend = "pypi:emailproxy"
 specifiers = ["latest"]
-uv = { path = ".mise/locks/pypi-emailproxy/2026.7.3", digest = "sha256:999dd80e1fc16e78b8ad9ff9ec0b471d1388f447c2c31d3f98c2e401ff2dcc97" }
+
+[tools."pypi:emailproxy".options]
+extras = "gui"
 
 [[tools."pypi:paatch"]]
 version = "1.20.3"

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Email OAuth 2.0 Proxy
+Comment=Start emailproxy for local mail clients
+Exec=/home/tim/.local/bin/mise -C /home/tim/dotfiles run emailproxy
+Path=/home/tim/dotfiles
+Terminal=false
+StartupNotify=false
+X-GNOME-Autostart-enabled=true

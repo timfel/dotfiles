@@ -1,0 +1,54 @@
+# mbsync talks to emailproxy on localhost.  emailproxy handles the
+# provider-side TLS and OAuth authentication.
+
+IMAPAccount gmail
+Host 127.0.0.1
+Port 2993
+User timfelgentreff@gmail.com
+PassCmd "secret-tool lookup service emailproxy account timfelgentreff@gmail.com"
+SSLType None
+AuthMechs LOGIN
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+SubFolders Verbatim
+Path ~/Mail/gmail/
+Inbox ~/Mail/gmail/INBOX
+
+Channel gmail
+Far :gmail-remote:
+Near :gmail-local:
+Patterns *
+Create Both
+Expunge None
+CopyArrivalDate yes
+SyncState *
+Sync All
+
+IMAPAccount outlook
+Host 127.0.0.1
+Port 1993
+User tim.felgentreff@oracle.com
+PassCmd "secret-tool lookup service emailproxy account tim.felgentreff@oracle.com"
+SSLType None
+AuthMechs LOGIN
+
+IMAPStore outlook-remote
+Account outlook
+
+MaildirStore outlook-local
+SubFolders Verbatim
+Path ~/Mail/outlook/
+Inbox ~/Mail/outlook/INBOX
+
+Channel outlook
+Far :outlook-remote:
+Near :outlook-local:
+Patterns *
+Create Both
+Expunge None
+CopyArrivalDate yes
+SyncState *
+Sync All
