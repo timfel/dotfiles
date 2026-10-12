@@ -45,10 +45,12 @@ EMAILPROXY_STATE = "{{ env.HOME }}/.local/state/emailproxy"
 "apt:isync" = "latest"
 "apt:msmtp" = "latest"
 "apt:mu4e" = "latest"
+"apt:notmuch" = "latest"
 "apt:libsecret-tools" = "latest"
 "dnf:isync" = "latest"
 "dnf:msmtp" = "latest"
 "dnf:maildir-utils" = "latest"
+"dnf:notmuch" = "latest"
 "dnf:libsecret" = "latest"
 # Desktop tools
 "flatpak-user:org.mozilla.firefox" = "latest"
@@ -121,6 +123,7 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.config/autostart/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
 "~/.mbsyncrc" = { source = ".mbsyncrc", mode = "symlink", os = ["linux"] }
 "~/.msmtprc" = { source = ".msmtprc", mode = "symlink", os = ["linux"] }
+"~/.notmuch-config" = { source = ".notmuch-config", mode = "template", os = ["linux"] }
 # This is deliberately a symlink, not a second copy of the active config.
 "~/.config/mise/config.toml" = { source = "mise.toml", mode = "symlink" }
 "~/.config/mise/locks" = { source = ".mise/locks", mode = "symlink" }

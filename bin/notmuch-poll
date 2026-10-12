@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+mbsync -a
+exec notmuch new

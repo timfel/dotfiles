@@ -1,0 +1,19 @@
+# Notmuch indexes the same Maildir used by mbsync and mu4e.
+
+[database]
+path={{ env.HOME }}/Mail
+
+[user]
+name=Tim Felgentreff
+primary_email=timfelgentreff@gmail.com
+other_email=tim.felgentreff@oracle.com
+
+[new]
+tags=unread;inbox
+ignore=
+
+[search]
+exclude_tags=deleted;spam
+
+[maildir]
+synchronize_flags=true
