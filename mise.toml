@@ -84,6 +84,8 @@ sd = { version = "latest", os = ["windows"] }
 # Emacs
 "github:timfel/emacs-builder" = { version = "latest", os = ["linux"], version_prefix = "emacs-bundle" }
 "github:kiennq/emacs-build" = { version = "latest", os = ["windows"], asset_pattern = "*ucrt*emacs*full.zip" }
+# Mail
+"pypi:emailproxy[gui]" = "latest"
 
 [bootstrap.repos]
 "~/.emacs.d" = { url = "https://github.com/timfel/.emacs.d.git" }
