@@ -5,16 +5,19 @@
 [bootstrap.directories]
 "~/.config/Nextcloud" = {}
 
-[bootstrap.files]
-"~/.config/Nextcloud/nextcloud.cfg" = { source = ".config.templates/nextcloud.cfg" }
-
 [bootstrap.hooks]
 "pre-packages" = '''
+# use official flathub
 if command -v flatpak >/dev/null 2>&1; then
   flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 fi
+# only copy the nextcloud.cfg template if we do not already have the config
+if ! test -f ~/.config/Nextcloud/nextcloud.cfg; then
+  cp ~/dotfiles/.config.templates/nextcloud.cfg ~/.config/Nextcloud/nextcloud.cfg
+fi
 '''
 "post-packages" = """
+# make sure flatpak firefox has all the permissions
 if command -v flatpak >/dev/null 2>&1; then
   flatpak override --user --device=all org.mozilla.firefox || true
 fi
