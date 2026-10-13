@@ -186,6 +186,10 @@ description = "Authorize emailproxy"
 run = '''
 umask 077
 mkdir -p "$EMAILPROXY_STATE"
+
+echo "Set your local encryption key for gmail tokens"
+secret-tool store --label='emailproxy Gmail' service emailproxy account timfelgentreff@gmail.com
+
 exec emailproxy --no-gui --external-auth \
   --config-file "$EMAILPROXY_CONFIG" \
   --cache-store "$EMAILPROXY_STATE/tokens" \
