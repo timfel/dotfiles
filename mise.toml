@@ -53,6 +53,9 @@ EMAILPROXY_STATE = "{{ env.HOME }}/.local/state/emailproxy"
 "dnf:notmuch" = "latest"
 "dnf:libsecret" = "latest"
 # Desktop tools
+"apt:firefox" = { state = "absent" }
+"apt:firefox-esr" = { state = "absent" }
+"dnf:firefox" = { state = "absent" }
 "flatpak-user:org.mozilla.firefox" = "latest"
 "flatpak-user:org.chromium.Chromium" = "latest"
 "flatpak-user:org.keepassxc.KeePassXC" = "latest"
