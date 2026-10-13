@@ -52,6 +52,12 @@ EMAILPROXY_STATE = "{{ env.HOME }}/.local/state/emailproxy"
 "dnf:maildir-utils" = "latest"
 "dnf:notmuch" = "latest"
 "dnf:libsecret" = "latest"
+# PyGObject
+"apt:libgirepository-2.0-dev" = "latest"
+"apt:libcairo2-dev" = "latest"
+"dnf:gobject-introspection-devel" = "latest"
+"dnf:cairo-devel" = "latest"
+"dnf:cairo-gobject-devel" = "latest"
 # Desktop tools
 "apt:firefox" = { state = "absent" }
 "apt:firefox-esr" = { state = "absent" }
@@ -103,7 +109,7 @@ sd = { version = "latest", os = ["windows"] }
 "github:timfel/emacs-builder" = { version = "latest", os = ["linux"], version_prefix = "emacs-bundle" }
 "github:kiennq/emacs-build" = { version = "latest", os = ["windows"], asset_pattern = "*ucrt*emacs*full.zip" }
 # Mail
-"pypi:emailproxy" = { version = "latest", extras = ["gui"] }
+"pypi:emailproxy" = { version = "latest", extras = ["gui"], with = ["PyGObject"], "os" = ["linux"] }
 
 [bootstrap.repos]
 "~/.emacs.d" = { url = "https://github.com/timfel/.emacs.d.git" }
@@ -113,6 +119,12 @@ sd = { version = "latest", os = ["windows"] }
 # Initialize exactly the submodule commit recorded by the parent repository.
 [bootstrap.hooks]
 pre-dotfiles = "git submodule update --init --recursive"
+
+[bootstrap.directories]
+"~/Mail" = {}
+"~/Mail/gmail" = {}
+"~/Mail/outlook" = {}
+"~/Mail/local" = {}
 
 [dotfiles]
 "~/.Xresources" = { source = ".Xresources", mode = "symlink" }
@@ -124,6 +136,7 @@ pre-dotfiles = "git submodule update --init --recursive"
 # Some files are just to get started, and get modified later
 "~/.config/kwinrulesrc" = { source = ".config.templates/kwinrulesrc", mode = "copy" }
 "~/.config/autostart/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
+"~/.local/share/applications/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
 "~/.mbsyncrc" = { source = ".mbsyncrc", mode = "symlink", os = ["linux"] }
 "~/.msmtprc" = { source = ".msmtprc", mode = "symlink", os = ["linux"] }
 "~/.notmuch-config" = { source = ".notmuch-config", mode = "template", os = ["linux"] }

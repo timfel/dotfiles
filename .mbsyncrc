@@ -20,7 +20,7 @@ Inbox ~/Mail/gmail/INBOX
 Channel gmail
 Far :gmail-remote:
 Near :gmail-local:
-Patterns *
+Patterns INBOX "[Google Mail]/Sent Mail" "[Google Mail]/Drafts"
 Create Both
 Expunge None
 CopyArrivalDate yes

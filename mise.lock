@@ -1138,6 +1138,7 @@ specifiers = ["latest"]
 
 [tools."pypi:emailproxy".options]
 extras = "gui"
+with = '["PyGObject"]'
 
 [[tools."pypi:paatch"]]
 version = "1.20.3"
