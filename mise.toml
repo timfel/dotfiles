@@ -53,11 +53,11 @@ EMAILPROXY_STATE = "{{ env.HOME }}/.local/state/emailproxy"
 "dnf:notmuch" = "latest"
 "dnf:libsecret" = "latest"
 # PyGObject
-"apt:libgirepository-2.0-dev" = "latest"
-"apt:libcairo2-dev" = "latest"
-"dnf:gobject-introspection-devel" = "latest"
-"dnf:cairo-devel" = "latest"
-"dnf:cairo-gobject-devel" = "latest"
+# "apt:libgirepository-2.0-dev" = "latest"
+# "apt:libcairo2-dev" = "latest"
+# "dnf:gobject-introspection-devel" = "latest"
+# "dnf:cairo-devel" = "latest"
+# "dnf:cairo-gobject-devel" = "latest"
 # Desktop tools
 "apt:firefox" = { state = "absent" }
 "apt:firefox-esr" = { state = "absent" }
@@ -109,7 +109,8 @@ sd = { version = "latest", os = ["windows"] }
 "github:timfel/emacs-builder" = { version = "latest", os = ["linux"], version_prefix = "emacs-bundle" }
 "github:kiennq/emacs-build" = { version = "latest", os = ["windows"], asset_pattern = "*ucrt*emacs*full.zip" }
 # Mail
-"pypi:emailproxy" = { version = "latest", extras = ["gui"], with = ["PyGObject"], "os" = ["linux"] }
+# "pypi:emailproxy" = { version = "latest", extras = ["gui"], with = ["PyGObject"], "os" = ["linux"] }
+"pypi:ical2orgpy" = "latest"
 
 [bootstrap.repos]
 "~/.emacs.d" = { url = "https://github.com/timfel/.emacs.d.git" }
@@ -135,8 +136,8 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.config" = { source = ".config", mode = "symlink-each" }
 # Some files are just to get started, and get modified later
 "~/.config/kwinrulesrc" = { source = ".config.templates/kwinrulesrc", mode = "copy" }
-"~/.config/autostart/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
-"~/.local/share/applications/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
+# "~/.config/autostart/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
+# "~/.local/share/applications/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
 "~/.mbsyncrc" = { source = ".mbsyncrc", mode = "symlink", os = ["linux"] }
 "~/.msmtprc" = { source = ".msmtprc", mode = "symlink", os = ["linux"] }
 "~/.notmuch-config" = { source = ".notmuch-config", mode = "template", os = ["linux"] }
