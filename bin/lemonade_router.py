@@ -44,7 +44,11 @@ SYSTEMD / BOOT
   keeping your source in /tmp does not break boot. Edit CONFIG in that installed
   copy, or rerun --ensure-service from your edited source, then restart the
   service when idle. Reinstallation preserves the environment file and refuses
-  to overwrite an unrelated unit. Rerun it if the installed uv executable moves.
+  to overwrite an unrelated unit. On SELinux-enforcing Fedora hosts, the unit
+  uses Fedora's unconfined_service_t domain so it can execute uv and the PEP
+  723 Python environment from the user's home directory. The selected uv binary
+  is also refreshed as /usr/local/bin/lemonade-router-uv, giving systemd a
+  system-labelled executable for the initial process launch.
 
   The unit runs as your user, with HOME set, a minimal PATH, and available
   render/video groups for boot-time GPU access. It uses an absolute uv path to
@@ -53,9 +57,8 @@ SYSTEMD / BOOT
   in ~/.config/lemonade-router/service.env (systemd KEY=value syntax). On FIRST
   installation only, existing Lemonade API keys and GITHUB_TOKEN are saved there
   with mode 0600; other shell variables are not copied. Use absolute launcher and
-  CLI paths in CONFIG if their binaries aren't on the service's PATH. On SELinux
-  enforcing hosts, administrator policy/file-context adjustments may be needed
-  for user-installed uv/Python or model paths; this installer never disables SELinux.
+  CLI paths in CONFIG if their binaries aren't on the service's PATH. The
+  service still runs with the invoking user's Unix UID/GID.
 
   The local lemond service is softly requested/ordered before the router, but
   stopping it for an RPM update does not stop the router. Graceful stop allows
@@ -225,21 +228,31 @@ CONFIG = {
     "stop_timeout": 15,
     "unload_timeout": 120,
     "models": {
-        "custom-example": {
-            "enabled": False,  # change paths/command, then set True
+        "qwen3.8-flash-next": {
+            # I use kksoftwareag/strix-halo-qwen-3.8-flash-next.git with a few edits
+            # to config.py to set host and port to what i give here and to run.sh
+            # to do the exec with
+            #   sudo --login -u tim uv run --directory path/to/checkout qwen38 "$@"
+            # so it works even when launched under the init  process
+            "enabled": True,  # change paths/command, then set True
             "host": "127.0.0.1",
-            "port": 8101,  # choose outside Lemonade's backend ports (often 8001+)
+            "port": 8881,  # choose outside Lemonade's backend ports (often 8001+)
             "api_prefix": "/v1",
             "health_path": "/health",  # root-relative; HTTP 200 means ready
             "startup_timeout": 300,
             # A foreground wrapper is also fine, e.g.:
-            # "command": ["/usr/bin/bash", "/home/YOU/start-special.sh", "{port}"],
             "command": [
-                "/home/YOU/llama-special/build/bin/llama-server",
-                "--model", "/home/YOU/models/special.gguf",
-                "--host", "{host}", "--port", "{port}",
-                "--alias", "{model}", "--n-gpu-layers", "99",
+                "/home/tim/StrixSetup/strix-halo-qwen-3.8-flash-next/run.sh",
+                "run",
+                "--preset",
+                "eh-agent",
             ],
+            # "command": [
+            #     "/home/YOU/llama-special/build/bin/llama-server",
+            #     "--model", "/home/YOU/models/special.gguf",
+            #     "--host", "{host}", "--port", "{port}",
+            #     "--alias", "{model}", "--n-gpu-layers", "99",
+            # ],
             "cwd": None,
             "env": {},  # e.g. {"CUDA_VISIBLE_DEVICES": "0"}
             # Optional different name in upstream JSON requests. Prefer --alias
@@ -247,9 +260,9 @@ CONFIG = {
             # "upstream_model": "different-backend-alias",
             "api_key": None,
             "metadata": {
-                "labels": ["chat"],  # add vision, reasoning, tool-calling as appropriate
+                "labels": ["chat", "tool-calling", "code", "agent"],
                 "recipe": "llamacpp",
-                # "max_context_window": 32768,
+                "max_context_window": 163840,
             },
             "load_options": {},  # read-only options to advertise in the UI
         },
@@ -258,7 +271,7 @@ CONFIG = {
         "interval_days": 7,
         "idle_seconds": 300,
         "poll_seconds": 60,
-        "rpm_policy": "notify",
+        "rpm_policy": "auto_when_idle",
         "backend_policy": "auto_when_idle",
         "backend_allowlist": None,  # None = all eligible Lemonade-managed backends
         "package": "lemonade-server",
@@ -286,6 +299,10 @@ LOG = logging.getLogger("router")
 CLIENT_AUTH = contextvars.ContextVar("client_authorization", default=None)
 SERVICE_NAME = "lemonade-router.service"
 SERVICE_UNIT_DIR = Path("/etc/systemd/system")
+# A systemd service must initially execute a system-labelled file. The actual
+# uv installation may remain in the user's home directory; this root-owned
+# copy is refreshed by --ensure-service and then runs uv's home-local cache.
+SERVICE_UV_PATH = Path("/usr/local/bin/lemonade-router-uv")
 SERVICE_MARKER = "# Managed by lemonade_router.py --ensure-service"
 SERVICE_ENV_KEYS = ("LEMONADE_API_KEY", "LEMONADE_ROUTER_API_KEY", "LEMONADE_ADMIN_API_KEY", "GITHUB_TOKEN")
 
@@ -1359,8 +1376,10 @@ def systemd_path(value):
     return value.replace("%", "%%")
 
 
-def service_unit(user, uv, script, environment_file, *, log_level="INFO", local_lemonade=True, gpu_groups=()):
+def service_unit(user, uv, script, environment_file, *, log_level="INFO", local_lemonade=True,
+                gpu_groups=(), selinux_context=None):
     home = Path(user.pw_dir)
+    selinux_line = f"SELinuxContext={selinux_context}\n" if selinux_context else ""
     path = ":".join(str(p) for p in (
         uv.parent, home / ".local/bin", home / "bin", Path("/usr/local/sbin"),
         Path("/usr/local/bin"), Path("/usr/sbin"), Path("/usr/bin"), Path("/sbin"), Path("/bin"),
@@ -1389,7 +1408,7 @@ Group={user.pw_gid}
 {groups}WorkingDirectory={systemd_path(script.parent)}
 Environment={systemd_quote('HOME=' + str(home))} "PYTHONUNBUFFERED=1" "UV_NO_PROGRESS=1" {systemd_quote('PATH=' + path)}
 EnvironmentFile=-{systemd_path(environment_file)}
-# ':' disables $ expansion in ExecStart; '%' is escaped separately above.
+{selinux_line}# ':' disables $ expansion in ExecStart; '%' is escaped separately above.
 ExecStart=:{command}
 Restart=on-failure
 RestartSec=5
@@ -1462,9 +1481,20 @@ def ensure_service(config, *, log_level="INFO"):
         except KeyError:
             continue
         gpu_groups.append(name)
-    unit = service_unit(user, uv, script, environment_file, log_level=log_level,
+    # A system service starts in SELinux's init_t domain. Fedora does not
+    # permit that domain to execute a binary labelled data_home_t, which is the
+    # label normally assigned to uv installations under /home. Use Fedora's
+    # unconfined_service_t domain for the service while retaining its explicit
+    # Unix UID/GID. This is only needed when SELinux is enforcing.
+    selinux_context = None
+    if shutil.which("getenforce") and subprocess.run(
+        ["getenforce"], capture_output=True, text=True, check=False
+    ).stdout.strip() == "Enforcing":
+        selinux_context = "system_u:system_r:unconfined_service_t:s0"
+    service_uv = SERVICE_UV_PATH
+    unit = service_unit(user, service_uv, script, environment_file, log_level=log_level,
                         local_lemonade=router.lemonade.host in {"127.0.0.1", "localhost", "::1"},
-                        gpu_groups=gpu_groups)
+                        gpu_groups=gpu_groups, selinux_context=selinux_context)
     # Validate quoting/environment BEFORE doing any writes or requesting sudo.
     environment = "# Optional environment for lemonade-router.service (not a shell script).\n"
     for key in SERVICE_ENV_KEYS:
@@ -1473,6 +1503,10 @@ def ensure_service(config, *, log_level="INFO"):
     environment += "# Add other variables here, e.g. PATH=/home/YOU/bin:/usr/local/bin:/usr/bin:/bin\n"
     private_file(script, Path(__file__).resolve().read_bytes())
     env_created = private_file(environment_file, environment.encode(), replace=False)
+    if unit != previous or not service_uv.is_file() or service_uv.read_bytes() != uv.read_bytes():
+        subprocess.run([tools["sudo"], tools["install"], "-o", "root", "-g", "root", "-m", "0755",
+                        str(uv), str(service_uv)], check=True)
+        subprocess.run([tools["sudo"], "restorecon", "-v", str(service_uv)], check=True)
     if unit != previous:
         fd, temporary = tempfile.mkstemp(prefix="lemonade-router-", suffix=".service")
         try:
