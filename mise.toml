@@ -6,6 +6,9 @@ experimental = true
 dotfiles.root = "~/dotfiles"
 dotfiles.default_mode = "symlink"
 
+[settings.self_update]
+auto = true
+
 [env]
 EMAILPROXY_CONFIG = "{{ env.HOME }}/dotfiles/emailproxy.config"
 EMAILPROXY_STATE = "{{ env.HOME }}/.local/state/emailproxy"
