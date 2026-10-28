@@ -109,7 +109,7 @@ sd = { version = "latest", os = ["windows"] }
 "pypi:amd-debug-tools" = { version = "latest", os = ["linux"] }
 "nono" = { version = "latest", "os" = ["linux", "macos"] }
 # Emacs
-"github:timfel/emacs-builder" = { version = "latest", os = ["linux"], version_prefix = "emacs-bundle" }
+"github:timfel/emacs-builder" = { version = "emacs-bundle-20260830-204038-33333194952-1", os = ["linux"] }
 "github:kiennq/emacs-build" = { version = "latest", os = ["windows"], asset_pattern = "*ucrt*emacs*full.zip" }
 # Mail
 # "pypi:emailproxy" = { version = "latest", extras = ["gui"], with = ["PyGObject"], "os" = ["linux"] }
