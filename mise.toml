@@ -3,6 +3,8 @@
 
 [settings]
 experimental = true
+# Keep the lockfile limited to the platforms this configuration supports.
+lockfile_platforms = ["linux-x64", "windows-x64"]
 dotfiles.root = "~/dotfiles"
 dotfiles.default_mode = "symlink"
 
