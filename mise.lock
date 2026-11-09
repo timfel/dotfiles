@@ -13,20 +13,20 @@ url = "https://github.com/sharkdp/bat/releases/download/v0.26.1/bat-v0.26.1-x86_
 url_api = "https://api.github.com/repos/sharkdp/bat/releases/assets/323549116"
 
 [[tools.bottom]]
-version = "0.14.9"
+version = "0.15.0"
 backend = "aqua:ClementTsang/bottom"
 specifiers = ["latest"]
 
 [tools.bottom."platforms.linux-x64"]
-checksum = "sha256:e0c325829e8bdcea25a8a7651da05dbb6f1fc109ac5d2f0187867d3d5d9c0df8"
-url = "https://github.com/ClementTsang/bottom/releases/download/0.14.9/bottom_x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/ClementTsang/bottom/releases/assets/531978159"
+checksum = "sha256:051888e0e064aa037728efed3fcf77820714f8f4dc7bea2b0179d40c54400c26"
+url = "https://github.com/ClementTsang/bottom/releases/download/0.15.0/bottom_x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/ClementTsang/bottom/releases/assets/696808858"
 provenance = "github-attestations"
 
 [tools.bottom."platforms.windows-x64"]
-checksum = "sha256:01660721b0fdc72b191f2b27b78dc9a3087aeb7b3fad4a890c53870089d6b500"
-url = "https://github.com/ClementTsang/bottom/releases/download/0.14.9/bottom_x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/ClementTsang/bottom/releases/assets/531978148"
+checksum = "sha256:aeff72e355116516d2583f34348e31f60c5899e394a08eeda79a2bdb361e27bd"
+url = "https://github.com/ClementTsang/bottom/releases/download/0.15.0/bottom_x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/ClementTsang/bottom/releases/assets/696808840"
 provenance = "github-attestations"
 
 [[tools.bun]]
@@ -91,19 +91,20 @@ url = "https://github.com/muesli/duf/releases/download/v0.9.1/duf_0.9.1_windows_
 url_api = "https://api.github.com/repos/muesli/duf/releases/assets/291083822"
 
 [[tools.dust]]
-version = "1.2.6"
+version = "1.2.7"
 backend = "aqua:bootandy/dust"
 specifiers = ["latest"]
 
 [tools.dust."platforms.linux-x64"]
-checksum = "sha256:14f788707aad217667f6812cf1a9639bf5c861a2ee815d486cffc36051f5e759"
-url = "https://github.com/bootandy/dust/releases/download/v1.2.6/dust-v1.2.6-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/bootandy/dust/releases/assets/568852367"
+checksum = "sha256:ec3bf712c660dcaa5578b996741f5cca36b30c021c1e4b49352b11137a95a96e"
+url = "https://github.com/bootandy/dust/releases/download/v1.2.7/dust-v1.2.7-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/bootandy/dust/releases/assets/699456259"
 
 [tools.dust."platforms.windows-x64"]
-checksum = "sha256:6a73222902d6960ce7183cd833a5d3ea99a3e3ff3cfb33720c1939a41cb7744d"
-url = "https://github.com/bootandy/dust/releases/download/v1.2.6/dust-v1.2.6-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/bootandy/dust/releases/assets/568855278"
+checksum = "sha256:d07a41521958895e701ad55f342302b7362799d6a328c843e8e2208ba0564c30"
+checksum_source = "mise-versions"
+url = "https://github.com/bootandy/dust/releases/download/v1.2.7/dust-v1.2.7-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/bootandy/dust/releases/assets/699459326"
 
 [[tools.fd]]
 version = "10.5.0"
@@ -147,32 +148,30 @@ url = "https://github.com/kiennq/emacs-build/releases/download/v32.429.20261022%
 url_api = "https://api.github.com/repos/kiennq/emacs-build/releases/assets/666949042"
 
 [[tools."github:timfel/emacs-builder"]]
-version = "emacs-bundle-20260830-204038-33333194952-1"
+version = "31.1-20261109-104700-42600891624-1"
 backend = "github:timfel/emacs-builder"
-specifiers = ["emacs-bundle-20260830-204038-33333194952-1"]
+specifiers = ["31.1-20261109-104700-42600891624-1"]
 
 [tools."github:timfel/emacs-builder"."platforms.linux-x64"]
-checksum = "sha256:cfc0b25dae1868b6f37893eb7617ccd8c132e4bf20d12a3bf275497abf2734cd"
-checksum_source = "mise-versions"
-url = "https://github.com/timfel/emacs-builder/releases/download/emacs-bundle-20260830-204038-33333194952-1/Emacs-31.1-x86_64.tar.zst"
-url_api = "https://api.github.com/repos/timfel/emacs-builder/releases/assets/537038534"
+checksum = "sha256:ca98b26a4bee356d7e78c163956584538c2398126903cdbb24ed5ee55d56e9a5"
+url = "https://github.com/timfel/emacs-builder/releases/download/31.1-20261109-104700-42600891624-1/Emacs-31.1-x86_64.tar.zst"
+url_api = "https://api.github.com/repos/timfel/emacs-builder/releases/assets/727122713"
 
 [[tools.gradle]]
-version = "9.8.2"
+version = "9.9.0"
 backend = "aqua:gradle/gradle-distributions"
 specifiers = ["latest"]
 
 [tools.gradle."platforms.linux-x64"]
-checksum = "sha256:21bd5da2de49b642904077f38c0efdc7778e92b3ed0889392dca61b97e389607"
-checksum_source = "mise-versions"
-url = "https://github.com/gradle/gradle-distributions/releases/download/v9.8.2/gradle-9.8.2-bin.zip"
-url_api = "https://api.github.com/repos/gradle/gradle-distributions/releases/assets/656830895"
+checksum = "sha256:0b00b0ffe07c4d4789c12d4935a44a7057d55774b7540bd4a3f76f336deb177a"
+url = "https://github.com/gradle/gradle-distributions/releases/download/v9.9.0/gradle-9.9.0-bin.zip"
+url_api = "https://api.github.com/repos/gradle/gradle-distributions/releases/assets/717698303"
 
 [tools.gradle."platforms.windows-x64"]
-checksum = "sha256:21bd5da2de49b642904077f38c0efdc7778e92b3ed0889392dca61b97e389607"
+checksum = "sha256:0b00b0ffe07c4d4789c12d4935a44a7057d55774b7540bd4a3f76f336deb177a"
 checksum_source = "mise-versions"
-url = "https://github.com/gradle/gradle-distributions/releases/download/v9.8.2/gradle-9.8.2-bin.zip"
-url_api = "https://api.github.com/repos/gradle/gradle-distributions/releases/assets/656830895"
+url = "https://github.com/gradle/gradle-distributions/releases/download/v9.9.0/gradle-9.9.0-bin.zip"
+url_api = "https://api.github.com/repos/gradle/gradle-distributions/releases/assets/717698303"
 
 [[tools.hyperfine]]
 version = "2.0.0"
@@ -205,19 +204,20 @@ checksum = "sha256:1c8331a2f6ed14b4b3624f8a8c158beda8c8a7f22c90aa3aff8ecf571960b
 url = "https://gds.oracle.com/download/graal/25/archive/graalvm-jdk-25.0.5.0.3_windows-x64_bin.zip"
 
 [[tools.jbang]]
-version = "0.142.0"
+version = "0.143.0"
 backend = "aqua:jbangdev/jbang"
 specifiers = ["latest"]
 
 [tools.jbang."platforms.linux-x64"]
-checksum = "sha256:75043cd77285c9ed23cb580019ac7c55d05403dd2688ccc6604b820aa60e8a08"
-url = "https://github.com/jbangdev/jbang/releases/download/v0.142.0/jbang.zip"
-url_api = "https://api.github.com/repos/jbangdev/jbang/releases/assets/581865997"
+checksum = "sha256:d05b2ffa0a4e58dff004416ceca180e843def23b8f3fc7814336bac9d3c625c1"
+url = "https://github.com/jbangdev/jbang/releases/download/v0.143.0/jbang.zip"
+url_api = "https://api.github.com/repos/jbangdev/jbang/releases/assets/692320237"
 
 [tools.jbang."platforms.windows-x64"]
-checksum = "sha256:75043cd77285c9ed23cb580019ac7c55d05403dd2688ccc6604b820aa60e8a08"
-url = "https://github.com/jbangdev/jbang/releases/download/v0.142.0/jbang.zip"
-url_api = "https://api.github.com/repos/jbangdev/jbang/releases/assets/581865997"
+checksum = "sha256:d05b2ffa0a4e58dff004416ceca180e843def23b8f3fc7814336bac9d3c625c1"
+checksum_source = "mise-versions"
+url = "https://github.com/jbangdev/jbang/releases/download/v0.143.0/jbang.zip"
+url_api = "https://api.github.com/repos/jbangdev/jbang/releases/assets/692320237"
 
 [[tools.lsd]]
 version = "1.2.0"
@@ -243,32 +243,32 @@ checksum = "sha512:908b1501bfb420bf7c8affb855534a9c407fd6099367bfb9f2f2dcb8e9799
 url = "https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz"
 
 [[tools.node]]
-version = "26.12.1"
+version = "26.13.0"
 backend = "core:node"
 specifiers = ["latest"]
 
 [tools.node."platforms.linux-x64"]
-checksum = "sha256:0fd1eb7770598f52a21995edf6ed35fc690400fa437c2386af329519e9143132"
-url = "https://nodejs.org/dist/v26.12.1/node-v26.12.1-linux-x64.tar.gz"
+checksum = "sha256:5848553868b402d3fabb5b09270649977780a390f832155721025a08b5104455"
+url = "https://nodejs.org/dist/v26.13.0/node-v26.13.0-linux-x64.tar.gz"
 
 [tools.node."platforms.windows-x64"]
-checksum = "sha256:b3efd5c70cba3308ed46e7e699a9b8aac075bbc6b027fcb39c84c31acc25e2b4"
-url = "https://nodejs.org/dist/v26.12.1/node-v26.12.1-win-x64.zip"
+checksum = "sha256:dcc60d59a0746999f99064a01c020445d54d84228c691cdbf25b49ac3b59150a"
+url = "https://nodejs.org/dist/v26.13.0/node-v26.13.0-win-x64.zip"
 
 [[tools.nono]]
-version = "0.80.0"
+version = "0.81.0"
 backend = "github:nolabs-ai/nono"
 specifiers = ["latest"]
 
 [tools.nono."platforms.linux-x64"]
-checksum = "sha256:6da665b61999570c10dffc7da78828fe1fb7f3cac53319e505cebecaef17037f"
-url = "https://github.com/nolabs-ai/nono/releases/download/v0.80.0/nono-v0.80.0-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/nolabs-ai/nono/releases/assets/636393746"
+checksum = "sha256:7ecc33ff9c349bdfa84b4496e7a7555f67bcc33f1e125c7df9efb653c6c4e569"
+url = "https://github.com/nolabs-ai/nono/releases/download/v0.81.0/nono-v0.81.0-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/nolabs-ai/nono/releases/assets/689330155"
 provenance = "github-attestations"
 
 [[tools."npm:@agentclientprotocol/codex-acp"]]
-version = "2.3.0"
-aube = { path = ".mise/locks/npm-agentclientprotocol-codex-acp/2.3.0", digest = "sha256:34364f7c7bf2dc314528edb85328b9bea0f778889b2bd6c233abd81fd3d80330" }
+version = "2.5.0"
+aube = { path = ".mise/locks/npm-agentclientprotocol-codex-acp/2.5.0", digest = "sha256:624557c02a64ad7bbdff3633a0f3a2e2dd6efe69bea33dff6635a3077ecf6641" }
 backend = "npm:@agentclientprotocol/codex-acp"
 specifiers = ["latest"]
 
@@ -291,27 +291,26 @@ backend = "npm:pyright"
 specifiers = ["latest"]
 
 [[tools."npm:typescript-language-server"]]
-version = "6.0.2"
-aube = { path = ".mise/locks/npm-typescript-language-server/6.0.2", digest = "sha256:c04c228752c1b960fe23a17ede2a5332d60f7a757f2485adadabf23ec0facdf0" }
+version = "6.0.3"
+aube = { path = ".mise/locks/npm-typescript-language-server/6.0.3", digest = "sha256:e4cdcc07515542ffa6a9a4f6a23faa66433e1c1b54b110d71fc149e9894775c9" }
 backend = "npm:typescript-language-server"
 specifiers = ["latest"]
 
 [[tools.pi]]
-version = "1.4.0"
+version = "1.5.0"
 backend = "aqua:earendil-works/pi"
 specifiers = ["latest"]
 
 [tools.pi."platforms.linux-x64"]
-checksum = "sha256:f2e4e4329603223d03260cdb8bd5033dbdc1f73ba58ab8939db2e56546e115d2"
-checksum_source = "mise-versions"
-url = "https://github.com/earendil-works/pi/releases/download/v1.4.0/pi-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/earendil-works/pi/releases/assets/663978808"
+checksum = "sha256:df870ba0e344cb7b3358d8d8f19397b8b8d225a8669784736ad68a5c2169d53b"
+url = "https://github.com/earendil-works/pi/releases/download/v1.5.0/pi-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/earendil-works/pi/releases/assets/701404869"
 
 [tools.pi."platforms.windows-x64"]
-checksum = "sha256:0f7256ea8bdac3af20012b94fdc1252a31cc6dc0d2f9b9eb539555d22e3e321b"
+checksum = "sha256:12d58a70e80b16ba9f764950b7a42bdeb07959495c0db68396cf2988c0b71af3"
 checksum_source = "mise-versions"
-url = "https://github.com/earendil-works/pi/releases/download/v1.4.0/pi-windows-x64.zip"
-url_api = "https://api.github.com/repos/earendil-works/pi/releases/assets/663978871"
+url = "https://github.com/earendil-works/pi/releases/download/v1.5.0/pi-windows-x64.zip"
+url_api = "https://api.github.com/repos/earendil-works/pi/releases/assets/701404945"
 
 [[tools."pypi:amd-debug-tools"]]
 version = "0.2.22"
@@ -391,21 +390,20 @@ backend = "core:rust"
 specifiers = ["stable"]
 
 [[tools.rust-analyzer]]
-version = "2026-10-26"
+version = "2026-11-02"
 backend = "aqua:rust-lang/rust-analyzer"
 specifiers = ["latest"]
 
 [tools.rust-analyzer."platforms.linux-x64"]
-checksum = "sha256:4c83773525f93b636ed79761389568b4d2a89c05fa7ecc440245032d49ad80ce"
-checksum_source = "mise-versions"
-url = "https://github.com/rust-lang/rust-analyzer/releases/download/2026-10-26/rust-analyzer-x86_64-unknown-linux-gnu.gz"
-url_api = "https://api.github.com/repos/rust-lang/rust-analyzer/releases/assets/677494570"
+checksum = "sha256:5249da68c3f36bb77ea7d401824f5e8bd8d0a47a162daf5f72208eb7c1bf1500"
+url = "https://github.com/rust-lang/rust-analyzer/releases/download/2026-11-02/rust-analyzer-x86_64-unknown-linux-gnu.gz"
+url_api = "https://api.github.com/repos/rust-lang/rust-analyzer/releases/assets/700825017"
 
 [tools.rust-analyzer."platforms.windows-x64"]
-checksum = "sha256:13549dd0c380647685c82c87b8d80904f81bc4de92a82c099b6083c5b9aa1ca1"
+checksum = "sha256:5450a3735c601f047dc9ca46a01add55c4ac7ef450ae5e710d249a26d65f5632"
 checksum_source = "mise-versions"
-url = "https://github.com/rust-lang/rust-analyzer/releases/download/2026-10-26/rust-analyzer-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/rust-lang/rust-analyzer/releases/assets/677494491"
+url = "https://github.com/rust-lang/rust-analyzer/releases/download/2026-11-02/rust-analyzer-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/rust-lang/rust-analyzer/releases/assets/700824961"
 
 [[tools.sd]]
 version = "1.1.0"
@@ -418,18 +416,18 @@ url = "https://github.com/chmln/sd/releases/download/v1.1.0/sd-v1.1.0-x86_64-pc-
 url_api = "https://api.github.com/repos/chmln/sd/releases/assets/362325573"
 
 [[tools.uv]]
-version = "0.13.6"
+version = "0.13.7"
 backend = "aqua:astral-sh/uv"
 specifiers = ["latest"]
 
 [tools.uv."platforms.linux-x64"]
-checksum = "sha256:f29c3e94ffabd7e6f3ba521dba169a9b7ec12100bf3257087f0f24f6123f3645"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.6/uv-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/679980644"
+checksum = "sha256:c5221ff41b7892bfc223543883600125f6a47fe845093e0f5bdff4f359196d83"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/704009823"
 provenance = "github-attestations"
 
 [tools.uv."platforms.windows-x64"]
-checksum = "sha256:a2a8820d5eea32f08ef467ef3b7f66883a9b076d5737a2fc2fbb5f458d1bb50f"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.6/uv-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/679980629"
+checksum = "sha256:0cdc5b38fe5a8168ed6a25814f5ba43c21d313dd3187314fccb37b7cec46e021"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/704009796"
 provenance = "github-attestations"
