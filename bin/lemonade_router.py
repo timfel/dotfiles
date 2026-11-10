@@ -266,6 +266,82 @@ CONFIG = {
             },
             "load_options": {},  # read-only options to advertise in the UI
         },
+        "qwen3.8-flash-next-nathanw": {
+            # Nathanw strix-halo-llamacpp v0.8.0 Vulkan portable build, config from
+            # https://sleepingrobots.com/dreams/halogen-vs-nathanw-qwen38-flash-next-strix-halo/
+            # Engine:  ~/StrixSetup/strix-halo-llamacpp-v0.8.0 (run-nathanw.sh + froggeric template)
+            # Models:  ~/StrixSetup/models (AtomicChat AD-4.27bpw + unsloth shared MTP + mmproj)
+            "enabled": True,
+            "host": "127.0.0.1",
+            "port": 8882,
+            "api_prefix": "/v1",
+            "health_path": "/health",
+            "startup_timeout": 900,  # headroom; mmap+lazy load is fast, this is just safety margin
+            "command": [
+                "/home/tim/StrixSetup/strix-halo-llamacpp-v0.8.0/run-nathanw.sh",
+                "--host", "{host}",
+                "--port", "{port}",
+                "--alias", "{model}",
+            ],
+            "cwd": None,
+            "env": {},
+            "api_key": None,
+            "metadata": {
+                "labels": ["chat", "tool-calling", "code", "agent"],
+                "recipe": "llamacpp",
+                "max_context_window": 262144,
+            },
+            "load_options": {},
+        },
+        "qwen3.8-flash-next-halobox-vk": {
+            # halo-box/strix-llama.cpp b1046, Vulkan build - A/B vs nathanw, same models/flags
+            # (minus --tensor-read-lazy, which halo-box does not have). ~/StrixSetup/run-halobox.sh
+            "enabled": True,
+            "host": "127.0.0.1",
+            "port": 8883,
+            "api_prefix": "/v1",
+            "health_path": "/health",
+            "startup_timeout": 900,
+            "command": [
+                "/home/tim/StrixSetup/run-halobox.sh", "vk",
+                "--host", "{host}",
+                "--port", "{port}",
+                "--alias", "{model}",
+            ],
+            "cwd": None,
+            "env": {},
+            "api_key": None,
+            "metadata": {
+                "labels": ["chat", "tool-calling", "code", "agent"],
+                "recipe": "llamacpp",
+                "max_context_window": 262144,
+            },
+            "load_options": {},
+        },
+        "qwen3.8-flash-next-halobox-rocm": {
+            # halo-box/strix-llama.cpp b1046, ROCm build (bundles ROCm runtime) - A/B variant
+            "enabled": True,
+            "host": "127.0.0.1",
+            "port": 8884,
+            "api_prefix": "/v1",
+            "health_path": "/health",
+            "startup_timeout": 900,
+            "command": [
+                "/home/tim/StrixSetup/run-halobox.sh", "rocm",
+                "--host", "{host}",
+                "--port", "{port}",
+                "--alias", "{model}",
+            ],
+            "cwd": None,
+            "env": {},
+            "api_key": None,
+            "metadata": {
+                "labels": ["chat", "tool-calling", "code", "agent"],
+                "recipe": "llamacpp",
+                "max_context_window": 262144,
+            },
+            "load_options": {},
+        },
     },
     "updates": {
         "interval_days": 7,
