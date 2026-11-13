@@ -108,7 +108,7 @@ lsd = { version = "latest", os = ["windows"] }
 fd = { version = "latest", os = ["windows"] }
 sd = { version = "latest", os = ["windows"] }
 "pypi:paatch" = { version = "latest", os = ["windows"] }
-"pypi:amd-debug-tools" = { version = "latest", os = ["linux"] }
+# "pypi:amd-debug-tools" = { version = "latest", os = ["linux"] }
 "nono" = { version = "latest", "os" = ["linux", "macos"] }
 # Emacs
 "github:timfel/emacs-builder" = { version = "31.1-20261109-104700-42600891624-1", os = ["linux"] }

@@ -71,6 +71,8 @@
    user = timfel
 [credential "https://github.com"]
    username = timfel
-   helper = !gh auth git-credential
+	helper = 
+	helper = !/home/tim/.local/share/mise/installs/github-cli-cli/2.103.3/bin/gh auth git-credential
 [credential "https://gist.github.com"]
-   helper = !gh auth git-credential
+	helper = 
+	helper = !/home/tim/.local/share/mise/installs/github-cli-cli/2.103.3/bin/gh auth git-credential
