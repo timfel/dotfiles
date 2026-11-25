@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       pi-acp:
-        specifier: 0.0.34
-        version: 0.0.34
+        specifier: git+https://github.com/timfel/pi-acp#6f544f3352fb12ffe0d88cc10eed1a1ddbb7fc36
+        version: https://github.com/timfel/pi-acp#6f544f3352fb12ffe0d88cc10eed1a1ddbb7fc36
 
 packages:
 
@@ -30,10 +30,8 @@ packages:
     resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
     engines: {node: '>=8'}
 
-  pi-acp@0.0.34:
-    resolution: {integrity: sha512-MrCp37UbpUzkTkzTIMJQf1RYrT+kr4fgGDGFoLmBN26UupuCZp0XxVIY+7XYsMo3yDnzDeZUJ0jPyM3Si6Bkkg==}
-    engines: {node: '>=20'}
-    hasBin: true
+  pi-acp@https://github.com/timfel/pi-acp#6f544f3352fb12ffe0d88cc10eed1a1ddbb7fc36:
+    resolution: {commit: 6f544f3352fb12ffe0d88cc10eed1a1ddbb7fc36, repo: https://github.com/timfel/pi-acp, type: git}
 
   shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
@@ -67,7 +65,7 @@ snapshots:
 
   path-key@3.1.1: {}
 
-  pi-acp@0.0.34:
+  pi-acp@https://github.com/timfel/pi-acp#6f544f3352fb12ffe0d88cc10eed1a1ddbb7fc36:
     dependencies:
       '@agentclientprotocol/sdk': 0.26.0(zod@3.25.76)
       cross-spawn: 7.0.6

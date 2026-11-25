@@ -117,20 +117,20 @@ url = "https://github.com/sharkdp/fd/releases/download/v10.5.0/fd-v10.5.0-x86_64
 url_api = "https://api.github.com/repos/sharkdp/fd/releases/assets/530482901"
 
 [[tools."github:cli/cli"]]
-version = "2.103.3"
+version = "2.104.0"
 backend = "github:cli/cli"
 specifiers = ["latest"]
 
 [tools."github:cli/cli"."platforms.linux-x64"]
-checksum = "sha256:4c806978ffce1cec70853302a56d70ac6da4f19bae7adca4e1a8ab00633dd91d"
-url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195621"
+checksum = "sha256:98cb101ad87dbbd3f6b2f2bfcbd43197ccd07643140121d8a9cfaa91eadbc24e"
+url = "https://github.com/cli/cli/releases/download/v2.104.0/gh_2.104.0_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/cli/cli/releases/assets/740718892"
 provenance = "github-attestations"
 
 [tools."github:cli/cli"."platforms.windows-x64"]
-checksum = "sha256:98d0cfa794721665d7973dd728c78aff7bd836d58f10f6d7a03568eccb0a22e0"
-url = "https://github.com/cli/cli/releases/download/v2.103.3/gh_2.103.3_windows_amd64.zip"
-url_api = "https://api.github.com/repos/cli/cli/releases/assets/679195750"
+checksum = "sha256:08c06d10482f12c478018cd259f64acbd5f625712cadf331aad19ba973c879e5"
+url = "https://github.com/cli/cli/releases/download/v2.104.0/gh_2.104.0_windows_amd64.zip"
+url_api = "https://api.github.com/repos/cli/cli/releases/assets/740719168"
 provenance = "github-attestations"
 
 [[tools."github:kiennq/emacs-build"]]
@@ -230,17 +230,17 @@ url = "https://github.com/lsd-rs/lsd/releases/download/v1.2.0/lsd-v1.2.0-x86_64-
 url_api = "https://api.github.com/repos/lsd-rs/lsd/releases/assets/303320206"
 
 [[tools.maven]]
-version = "3.10.0"
+version = "3.10.1"
 backend = "aqua:apache/maven"
 specifiers = ["latest"]
 
 [tools.maven."platforms.linux-x64"]
-checksum = "sha512:908b1501bfb420bf7c8affb855534a9c407fd6099367bfb9f2f2dcb8e9799102bffb84518cde74c679bd76870247c6528683abdd620581bffa90f95d92d175aa"
-url = "https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz"
+checksum = "sha512:8af2fcc48ee6b8f8fc0b21054226e14404b88500df6483cdeb3ae603408f6de27b1397ac591a9fb0d98fee64f4f624fee1383efd25b8998786cda1598fb9ea39"
+url = "https://archive.apache.org/dist/maven/maven-3/3.10.1/binaries/apache-maven-3.10.1-bin.tar.gz"
 
 [tools.maven."platforms.windows-x64"]
-checksum = "sha512:908b1501bfb420bf7c8affb855534a9c407fd6099367bfb9f2f2dcb8e9799102bffb84518cde74c679bd76870247c6528683abdd620581bffa90f95d92d175aa"
-url = "https://archive.apache.org/dist/maven/maven-3/3.10.0/binaries/apache-maven-3.10.0-bin.tar.gz"
+checksum = "sha512:8af2fcc48ee6b8f8fc0b21054226e14404b88500df6483cdeb3ae603408f6de27b1397ac591a9fb0d98fee64f4f624fee1383efd25b8998786cda1598fb9ea39"
+url = "https://archive.apache.org/dist/maven/maven-3/3.10.1/binaries/apache-maven-3.10.1-bin.tar.gz"
 
 [[tools.node]]
 version = "26.13.1"
@@ -256,19 +256,19 @@ checksum = "sha256:e2edda75bfb089654705cf65a13b58933bfd5f57148e8ebda916f58a2474f
 url = "https://nodejs.org/dist/v26.13.1/node-v26.13.1-win-x64.zip"
 
 [[tools.nono]]
-version = "0.81.0"
+version = "0.82.0"
 backend = "github:nolabs-ai/nono"
 specifiers = ["latest"]
 
 [tools.nono."platforms.linux-x64"]
-checksum = "sha256:7ecc33ff9c349bdfa84b4496e7a7555f67bcc33f1e125c7df9efb653c6c4e569"
-url = "https://github.com/nolabs-ai/nono/releases/download/v0.81.0/nono-v0.81.0-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/nolabs-ai/nono/releases/assets/689330155"
+checksum = "sha256:81d7a5616622dcf68ca0ed2b7e6b3af08c1216fb0c42dc6d7ecfbd2bbf2d3f50"
+url = "https://github.com/nolabs-ai/nono/releases/download/v0.82.0/nono-v0.82.0-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/nolabs-ai/nono/releases/assets/748568293"
 provenance = "github-attestations"
 
 [[tools."npm:@agentclientprotocol/codex-acp"]]
-version = "2.6.0"
-aube = { path = ".mise/locks/npm-agentclientprotocol-codex-acp/2.6.0", digest = "sha256:d04f07000b34fe0afb650bd24e01a1591c3d0876515344f8674606bdd4ff7acb" }
+version = "2.7.0"
+aube = { path = ".mise/locks/npm-agentclientprotocol-codex-acp/2.7.0", digest = "sha256:41384be7eb6e7a793b5480da13df37adf680e255062a47e7b2049669a6c96c8c" }
 backend = "npm:@agentclientprotocol/codex-acp"
 specifiers = ["latest"]
 
@@ -278,11 +278,14 @@ aube = { path = ".mise/locks/npm-bash-language-server/5.8.1", digest = "sha256:8
 backend = "npm:bash-language-server"
 specifiers = ["latest"]
 
-[[tools."npm:pi-acp"]]
-version = "0.0.34"
-aube = { path = ".mise/locks/npm-pi-acp/0.0.34", digest = "sha256:d620034c59b01e5bff086439734309b38e472afc22274a3f4c740c59eb814913" }
-backend = "npm:pi-acp"
+[[tools."npm:git+https://github.com/timfel/pi-acp"]]
+version = "6f544f3352fb12ffe0d88cc10eed1a1ddbb7fc36"
+aube = { path = ".mise/locks/npm-git-https-github-com-timfel-pi-acp/6f544f3352fb12ffe0d88cc10eed1a1ddbb7fc36~83de9c70", digest = "sha256:c0bb3ebf521456f2138eec7fc9082bcacf2b003b55ef4c6046215884256ae89f" }
+backend = "npm:git+https://github.com/timfel/pi-acp"
 specifiers = ["latest"]
+
+[tools."npm:git+https://github.com/timfel/pi-acp".options]
+allow_builds = '["pi-acp"]'
 
 [[tools."npm:pyright"]]
 version = "1.1.414"
@@ -291,8 +294,8 @@ backend = "npm:pyright"
 specifiers = ["latest"]
 
 [[tools."npm:typescript-language-server"]]
-version = "6.0.3"
-aube = { path = ".mise/locks/npm-typescript-language-server/6.0.3", digest = "sha256:e4cdcc07515542ffa6a9a4f6a23faa66433e1c1b54b110d71fc149e9894775c9" }
+version = "6.1.0"
+aube = { path = ".mise/locks/npm-typescript-language-server/6.1.0", digest = "sha256:f86c7cfd9fe629ca833f239e754750b6d0cf1dd9524941638366bcaca28b85fe" }
 backend = "npm:typescript-language-server"
 specifiers = ["latest"]
 
@@ -311,11 +314,6 @@ checksum = "sha256:e6adb8cb8c84eca14391ad24b363de9d2be98a89ca3ba3fdee1fa4de32b7f
 checksum_source = "mise-versions"
 url = "https://github.com/earendil-works/pi/releases/download/v1.5.2/pi-windows-x64.zip"
 url_api = "https://api.github.com/repos/earendil-works/pi/releases/assets/731292654"
-
-[[tools."pypi:amd-debug-tools"]]
-version = "0.2.22"
-backend = "pypi:amd-debug-tools"
-specifiers = ["latest"]
 
 [[tools."pypi:ical2orgpy"]]
 version = "0.5"
@@ -390,20 +388,20 @@ backend = "core:rust"
 specifiers = ["stable"]
 
 [[tools.rust-analyzer]]
-version = "2026-11-09"
+version = "2026-11-16"
 backend = "aqua:rust-lang/rust-analyzer"
 specifiers = ["latest"]
 
 [tools.rust-analyzer."platforms.linux-x64"]
-checksum = "sha256:8c039b25cb338b3970c731646677a4c9d4e9dd7a92c9ab9ae459c71467fbf4a9"
-url = "https://github.com/rust-lang/rust-analyzer/releases/download/2026-11-09/rust-analyzer-x86_64-unknown-linux-gnu.gz"
-url_api = "https://api.github.com/repos/rust-lang/rust-analyzer/releases/assets/726381773"
+checksum = "sha256:4a08727a03094e5114db4438e4bd1d6182cc26eff37d6962115ea1ec1a491ca3"
+url = "https://github.com/rust-lang/rust-analyzer/releases/download/2026-11-16/rust-analyzer-x86_64-unknown-linux-gnu.gz"
+url_api = "https://api.github.com/repos/rust-lang/rust-analyzer/releases/assets/753603644"
 
 [tools.rust-analyzer."platforms.windows-x64"]
-checksum = "sha256:973ab11e84955a7f8e3cf01ccd98a33f3ecbd6d4a14bf59bb164aa9e831c6fef"
+checksum = "sha256:dbf0c36ec54cf727d34cc40c9994fe71b7d52e3c28a3112c3deca1aba46fbc8f"
 checksum_source = "mise-versions"
-url = "https://github.com/rust-lang/rust-analyzer/releases/download/2026-11-09/rust-analyzer-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/rust-lang/rust-analyzer/releases/assets/726381721"
+url = "https://github.com/rust-lang/rust-analyzer/releases/download/2026-11-16/rust-analyzer-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/rust-lang/rust-analyzer/releases/assets/753603552"
 
 [[tools.sd]]
 version = "1.1.0"
@@ -416,18 +414,18 @@ url = "https://github.com/chmln/sd/releases/download/v1.1.0/sd-v1.1.0-x86_64-pc-
 url_api = "https://api.github.com/repos/chmln/sd/releases/assets/362325573"
 
 [[tools.uv]]
-version = "0.13.7"
+version = "0.13.8"
 backend = "aqua:astral-sh/uv"
 specifiers = ["latest"]
 
 [tools.uv."platforms.linux-x64"]
-checksum = "sha256:c5221ff41b7892bfc223543883600125f6a47fe845093e0f5bdff4f359196d83"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/704009823"
+checksum = "sha256:5acfd9177cfecf0bf87578f059728215ccc884388988f55f7a65041b57387d91"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/740313966"
 provenance = "github-attestations"
 
 [tools.uv."platforms.windows-x64"]
-checksum = "sha256:0cdc5b38fe5a8168ed6a25814f5ba43c21d313dd3187314fccb37b7cec46e021"
-url = "https://github.com/astral-sh/uv/releases/download/0.13.7/uv-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/704009796"
+checksum = "sha256:529e78a9cec6cd7e3e014f7ecd8bda0c113969d4ed0f2efeedb85c30943325b8"
+url = "https://github.com/astral-sh/uv/releases/download/0.13.8/uv-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/astral-sh/uv/releases/assets/740313927"
 provenance = "github-attestations"

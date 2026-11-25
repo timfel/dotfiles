@@ -1,0 +1,36 @@
+{
+    "providers": {
+        "local": {
+            "baseUrl": "http://192.168.178.32:8080/v1",
+            "api": "openai-completions",
+            "apiKey": "qwen3.8-flash",
+            "models": [
+                {
+                    "id": "qwen3.8-flash-next-nathanw",
+                    "name": "Qwen3.8 Flash Next (Nathanw v0.8.0)",
+                    "reasoning": true,
+                    "input": ["text", "image"],
+                    "contextWindow": 262144,
+                    "maxTokens": 32768,
+                    "thinkingLevelMap": {
+                        "off": "none",
+                        "minimal": null,
+                        "low": "low",
+                        "medium": "medium",
+                        "high": null,
+                        "xhigh": "xhigh",
+                        "max": null
+                    },
+                    "compat": {
+                        "thinkingFormat": "chat-template",
+                        "chatTemplateKwargs": {
+                            "enable_thinking": { "$var": "thinking.enabled" },
+                            "preserve_thinking": true,
+                            "reasoning_effort": { "$var": "thinking.effort", "omitWhenOff": true }
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

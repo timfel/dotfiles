@@ -1,0 +1,12 @@
+{
+  "name": "mise-npm-install",
+  "private": true,
+  "aube": {
+    "allowBuilds": {
+      "pi-acp": true
+    }
+  },
+  "dependencies": {
+    "pi-acp": "git+https://github.com/timfel/pi-acp#6f544f3352fb12ffe0d88cc10eed1a1ddbb7fc36"
+  }
+}

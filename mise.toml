@@ -86,8 +86,9 @@ jbang = "latest"
 bun = "latest"
 uv = "latest"
 # LLM and agent stuff
-pi = "latest"
-"npm:pi-acp" = "latest"
+pi = { version = "latest", postinstall = "pi install npm:pi-claude-bridge; pi install npm:pi-web-access; pi install npm:pi-simplify; pi install npm:@agent-sh/computer-use-linux; pi install npm:@dietrichgebert/ponytail" }
+# "npm:pi-acp" = "latest"
+"npm:git+https://github.com/timfel/pi-acp" = { version = "latest", allow_builds = ["pi-acp"] }
 "npm:@agentclientprotocol/codex-acp" = "latest"
 # Language servers
 "npm:pyright" = "latest"
@@ -141,11 +142,6 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.config" = { source = ".config", mode = "symlink-each" }
 # Some files are just to get started, and get modified later
 "~/.config/kwinrulesrc" = { source = ".config.templates/kwinrulesrc", mode = "copy" }
-# "~/.config/autostart/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
-# "~/.local/share/applications/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
-"~/.mbsyncrc" = { source = ".mbsyncrc", mode = "symlink", os = ["linux"] }
-"~/.msmtprc" = { source = ".msmtprc", mode = "symlink", os = ["linux"] }
-"~/.notmuch-config" = { source = ".notmuch-config", mode = "template", os = ["linux"] }
 # This is deliberately a symlink, not a second copy of the active config.
 "~/.config/mise/config.toml" = { source = "mise.toml", mode = "symlink" }
 "~/.config/mise/locks" = { source = ".mise/locks", mode = "symlink" }
@@ -171,7 +167,13 @@ pre-dotfiles = "git submodule update --init --recursive"
 "~/.m2" = { source = ".m2", mode = "symlink-each" }
 "~/.mambarc" = { source = ".mambarc", mode = "symlink" }
 "~/.mavenrc" = { source = ".mavenrc", mode = "symlink" }
+# "~/.config/autostart/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
+# "~/.local/share/applications/emailproxy.desktop" = { source = "autostart/emailproxy.desktop", mode = "symlink", os = ["linux"] }
+"~/.mbsyncrc" = { source = ".mbsyncrc", mode = "symlink", os = ["linux"] }
+"~/.msmtprc" = { source = ".msmtprc", mode = "symlink", os = ["linux"] }
+"~/.notmuch-config" = { source = ".notmuch-config", mode = "template", os = ["linux"] }
 "~/.pdbrc" = { source = ".pdbrc", mode = "symlink" }
+"~/.pi/agent/models.json" = {}
 "~/.screenrc" = { source = ".screenrc", mode = "symlink" }
 "~/.stumpwmrc" = { source = ".stumpwmrc", mode = "symlink" }
 "~/.tmux.bashrc" = { source = ".tmux.bashrc", mode = "symlink" }
