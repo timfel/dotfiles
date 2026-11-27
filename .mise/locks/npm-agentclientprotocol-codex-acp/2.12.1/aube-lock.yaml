@@ -9,17 +9,17 @@ importers:
   .:
     dependencies:
       '@agentclientprotocol/codex-acp':
-        specifier: 2.7.0
-        version: 2.7.0
+        specifier: 2.12.1
+        version: 2.12.1
 
 packages:
 
-  '@agentclientprotocol/codex-acp@2.7.0':
-    resolution: {integrity: sha512-fFFU/tV5DltBzN4cZIh5tJEWGTZFXbwHU7I5RxPkmrGraw3jhAIuvTeudYwK3wAbV311WgIi7qONl2I8uRV2jw==}
+  '@agentclientprotocol/codex-acp@2.12.1':
+    resolution: {integrity: sha512-4RGVK+bI2T7kkcfzj4hkmCtX1bVmoXB1nR2IXmzX9KVCXUY6cj9clHkyuGQBuIs2swr9Tf0AdWcY+5fQaYHpZQ==}
     hasBin: true
 
-  '@agentclientprotocol/sdk@2.6.0':
-    resolution: {integrity: sha512-3FtL6MkAV5F9qxg0FQV8wmBszIm2xuVPoDWOILIFSDQ+Vq3Twdh7Cw6Hk2GOPUbevgrTUpUAqZXQy7Geaj79mw==}
+  '@agentclientprotocol/sdk@2.9.1':
+    resolution: {integrity: sha512-8iJdxGa3SunLfzqLLb3RfQFmr4hnmWeAyeAK6MbkJiXJbrRlMRgKsVnDl/7Hu48yu/30gAlytNDzh5W77rv5SA==}
     peerDependencies:
       '@modelcontextprotocol/server': ^2.4.0
       zod: ^3.25.76 || ^4.0.0
@@ -27,50 +27,50 @@ packages:
       '@modelcontextprotocol/server':
         optional: true
 
-  '@openai/codex-darwin-arm64@0.166.0-darwin-arm64':
-    resolution: {integrity: sha512-5fWH6qqUInACcRADIewjlnRxDb4QLe0uriwehiZz0+viuAAB8I+WWefqw4xwHvyKaxeiGX4uK56+vrgfvFk3FQ==}
+  '@openai/codex-darwin-arm64@0.172.0-darwin-arm64':
+    resolution: {integrity: sha512-B239wE7pGeOmjylfqLymDIwuL4QgQR7pQZc5phHpZ3t8UVkno9AS3dNPEprm7AzZHw3kf2I6Uf+uOFfjGegELQ==}
     engines: {node: '>=16'}
     cpu: [arm64]
     os: [darwin]
     aliasOf: '@openai/codex'
 
-  '@openai/codex-darwin-x64@0.166.0-darwin-x64':
-    resolution: {integrity: sha512-Vj5wXJPizKmrzNtnRNQf9PP6FJkG3iJU/UO3NE4WvkENZGoQfmImdwf4MVRI5NgwjSuC6LT0HbBRHPVVnwGHuw==}
+  '@openai/codex-darwin-x64@0.172.0-darwin-x64':
+    resolution: {integrity: sha512-hrL9NQwH9E0WqK8Yofqe6fipE1XDSXx/C2fwSOagXdTRcjYXOrfQ9fSCKaKZXr/xm43ATdsRSjGGAn8IJhGmhA==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [darwin]
     aliasOf: '@openai/codex'
 
-  '@openai/codex-linux-arm64@0.166.0-linux-arm64':
-    resolution: {integrity: sha512-w0ScAsBr9aZKtIFrh6HN6KU2yjKKeSCzYfbb7DB0Ccj4BYPzeZtUeQprbycLCwuX3AFQdbdjapmLho2iot74jQ==}
+  '@openai/codex-linux-arm64@0.172.0-linux-arm64':
+    resolution: {integrity: sha512-qLH5VdeTkPlknWgKkU11IlGMyyxKXp9vcj65libT3Zp4P3Kt7gEbK4YDXlDBqWtA09+fGnIUpWERs6BaNo86DA==}
     engines: {node: '>=16'}
     cpu: [arm64]
     os: [linux]
     aliasOf: '@openai/codex'
 
-  '@openai/codex-linux-x64@0.166.0-linux-x64':
-    resolution: {integrity: sha512-CxDm3+D1cpbGJeHrdzINoG+3wn9BVncP4qpZaaNYkxe8iPtRJOYyCJnnPoVjWRIBvI9vPKbRoifsMSA5xDaUpw==}
+  '@openai/codex-linux-x64@0.172.0-linux-x64':
+    resolution: {integrity: sha512-YJq6Wz3PFXV5LZ0OQc3/o+gpM3pLmQ/8n8uM2zF/m0O/8zED+uSPT8Ln1KGRrqR8Q6eon9YdWlhueAunVTZ+eg==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [linux]
     aliasOf: '@openai/codex'
 
-  '@openai/codex-win32-arm64@0.166.0-win32-arm64':
-    resolution: {integrity: sha512-LWO1cyGlxbKgeUM7QJ1a6QMSsJi++3PqgIi6BmIUBoj/kzZqRIR69UDMQgeU/9izzJFYMSbwt++lHnUFyjQXlA==}
+  '@openai/codex-win32-arm64@0.172.0-win32-arm64':
+    resolution: {integrity: sha512-lO+hS8rLV3xS5ZZZCBVfPTAqpI1VENId12qhzZ1jNPUBSzKQBOGKs+GHNplak1RHXXXpgK9UHkPQ3A2IvQ8lJg==}
     engines: {node: '>=16'}
     cpu: [arm64]
     os: [win32]
     aliasOf: '@openai/codex'
 
-  '@openai/codex-win32-x64@0.166.0-win32-x64':
-    resolution: {integrity: sha512-NS8Ps5oG5r19pCrMCUXwUqOui6odnUIoBlQkrjCJ+h1k6KiwCzC/+mI9d3nSZCqFoVONPBTmqyq8NYq3YaFGyA==}
+  '@openai/codex-win32-x64@0.172.0-win32-x64':
+    resolution: {integrity: sha512-48pULjlTwpBZ/TfbOnpnmloHaTQAYELbaiKHEX7qmrtLFIcnPigaNN3omyetPdAuvrRXrmNFRlKfvQme19ZmRA==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
     aliasOf: '@openai/codex'
 
-  '@openai/codex@0.166.0':
-    resolution: {integrity: sha512-2Szlp1l1cz5TX1ccpX4Zok3DZrot9xeZe0km+6/1v8JmqxADwyJxKBJah4dBymkwtS25j/u6dipJusTOI97Z8Q==}
+  '@openai/codex@0.172.0':
+    resolution: {integrity: sha512-yHf/6wbw4Zvha2M2ylDhDrU9FgfKLYgV6xSzSjlz3gxQNsiVLkXo+fPGwBqvP0A5geLtZs9wAbq+1v7+ZVWJ0g==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -161,10 +161,10 @@ packages:
 
 snapshots:
 
-  '@agentclientprotocol/codex-acp@2.7.0':
+  '@agentclientprotocol/codex-acp@2.12.1':
     dependencies:
-      '@agentclientprotocol/sdk': 2.6.0(zod@4.6.7)
-      '@openai/codex': 0.166.0
+      '@agentclientprotocol/sdk': 2.9.1(zod@4.6.7)
+      '@openai/codex': 0.172.0
       cross-spawn: 7.0.6
       diff: 9.0.0
       open: 11.0.4
@@ -173,36 +173,36 @@ snapshots:
     transitivePeerDependencies:
       - '@modelcontextprotocol/server'
 
-  '@agentclientprotocol/sdk@2.6.0(zod@4.6.7)':
+  '@agentclientprotocol/sdk@2.9.1(zod@4.6.7)':
     dependencies:
       zod: 4.6.7
 
-  '@openai/codex-darwin-arm64@0.166.0-darwin-arm64':
+  '@openai/codex-darwin-arm64@0.172.0-darwin-arm64':
     optional: true
 
-  '@openai/codex-darwin-x64@0.166.0-darwin-x64':
+  '@openai/codex-darwin-x64@0.172.0-darwin-x64':
     optional: true
 
-  '@openai/codex-linux-arm64@0.166.0-linux-arm64':
+  '@openai/codex-linux-arm64@0.172.0-linux-arm64':
     optional: true
 
-  '@openai/codex-linux-x64@0.166.0-linux-x64':
+  '@openai/codex-linux-x64@0.172.0-linux-x64':
     optional: true
 
-  '@openai/codex-win32-arm64@0.166.0-win32-arm64':
+  '@openai/codex-win32-arm64@0.172.0-win32-arm64':
     optional: true
 
-  '@openai/codex-win32-x64@0.166.0-win32-x64':
+  '@openai/codex-win32-x64@0.172.0-win32-x64':
     optional: true
 
-  '@openai/codex@0.166.0':
+  '@openai/codex@0.172.0':
     optionalDependencies:
-      '@openai/codex-darwin-arm64': 0.166.0-darwin-arm64
-      '@openai/codex-darwin-x64': 0.166.0-darwin-x64
-      '@openai/codex-linux-arm64': 0.166.0-linux-arm64
-      '@openai/codex-linux-x64': 0.166.0-linux-x64
-      '@openai/codex-win32-arm64': 0.166.0-win32-arm64
-      '@openai/codex-win32-x64': 0.166.0-win32-x64
+      '@openai/codex-darwin-arm64': 0.172.0-darwin-arm64
+      '@openai/codex-darwin-x64': 0.172.0-darwin-x64
+      '@openai/codex-linux-arm64': 0.172.0-linux-arm64
+      '@openai/codex-linux-x64': 0.172.0-linux-x64
+      '@openai/codex-win32-arm64': 0.172.0-win32-arm64
+      '@openai/codex-win32-x64': 0.172.0-win32-x64
 
   bundle-name@4.1.1:
     dependencies:

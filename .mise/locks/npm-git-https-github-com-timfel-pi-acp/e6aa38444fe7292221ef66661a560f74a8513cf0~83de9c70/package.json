@@ -7,6 +7,6 @@
     }
   },
   "dependencies": {
-    "pi-acp": "git+https://github.com/timfel/pi-acp#6f544f3352fb12ffe0d88cc10eed1a1ddbb7fc36"
+    "pi-acp": "git+https://github.com/timfel/pi-acp#e6aa38444fe7292221ef66661a560f74a8513cf0"
   }
 }

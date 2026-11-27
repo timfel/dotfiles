@@ -86,9 +86,16 @@ jbang = "latest"
 bun = "latest"
 uv = "latest"
 # LLM and agent stuff
-pi = { version = "latest", postinstall = "pi install npm:pi-claude-bridge; pi install npm:pi-web-access; pi install npm:pi-simplify; pi install npm:@agent-sh/computer-use-linux; pi install npm:@dietrichgebert/ponytail" }
+pi = { version = "latest", depends = ["node"], postinstall = """
+  pi install npm:pi-claude-bridge;
+  pi install npm:pi-web-access;
+  pi install npm:pi-simplify;
+  pi install npm:@agent-sh/computer-use-linux;
+  pi install npm:@dietrichgebert/ponytail
+  """
+}
 # "npm:pi-acp" = "latest"
-"npm:git+https://github.com/timfel/pi-acp" = { version = "latest", allow_builds = ["pi-acp"] }
+"npm:git+https://github.com/timfel/pi-acp" = { depends = ["node"], version = "latest", allow_builds = ["pi-acp"] }
 "npm:@agentclientprotocol/codex-acp" = "latest"
 # Language servers
 "npm:pyright" = "latest"
@@ -117,6 +124,7 @@ sd = { version = "latest", os = ["windows"] }
 # Mail
 # "pypi:emailproxy" = { version = "latest", extras = ["gui"], with = ["PyGObject"], "os" = ["linux"] }
 "pypi:ical2orgpy" = "latest"
+difftastic = "latest"
 
 [bootstrap.repos]
 "~/.emacs.d" = { url = "https://github.com/timfel/.emacs.d.git" }
