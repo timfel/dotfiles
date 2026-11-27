@@ -75,7 +75,7 @@ EMAILPROXY_STATE = "{{ env.HOME }}/.local/state/emailproxy"
 [tools]
 # Language runtimes
 python = "latest"
-ruby = { version = "latest", postinstall = "ruby bin/postinstall.rb" }
+ruby = { version = "latest", postinstall = "ruby ~/dotfiles/bin/postinstall.rb" }
 node = "latest"
 java = "oracle-graalvm"
 rust = "stable"
